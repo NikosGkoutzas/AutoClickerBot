@@ -112,29 +112,40 @@ class ProcessEmails(ProcessEmailsInterface):
     def download_new_version_from_github(self) -> None:
         try:
             # mhpws na diagrapsw kai to palio pycache/ dhmiourgia neou??? <<<< SOS
-            tmp_folder_dir = f'{os.getcwd()}/NewVersionTmpFolder'
+            tmp_folder_dir = os.path.join(os.getcwd() , 'NewVersionTmpFolder')
             
             if(os.path.isdir(tmp_folder_dir)):
+                print('exists')
                 shutil.rmtree(tmp_folder_dir)
             else:
-                os.makedirs(tmp_folder_dir)
-            
-            os.chdir('NewVersionTmpFolder')
+                print('Not exists.')
+            os.makedirs(tmp_folder_dir)
+            print('Created')
+            os.chdir('NewVersionTmpFolder/')
             os.system('git clone https://github.com/NikosGkoutzas/AutoClickerBot.git')
             
-            source_dir = f'{os.getcwd()}/AutoClickerBot/'
+            source_dir = f'{os.getcwd()}/AutoClickerBot/app'
             destination_dir = f'{os.path.expanduser("~")}/Music/AutoClickerBot/app/'
 
-            excluded_files_and_folders_list = ['main.py' , 'paths' , 'selenium-profile' , '.git' , '.gitignore' , \
+            excluded_files_and_folders_list = ['main.py' , '.env' , 'selenium-profile' , '.env_example' , 
                                                '__pycache__' , 'all_files' , 'requirements.txt']
             
             for item in os.listdir(destination_dir):
                 if(item not in excluded_files_and_folders_list):
                     print(f'Deleting {item}...')
-                    shutil.rmtree(os.path.join(destination_dir , item))
-                
+                    deleted_file_folder_dir = os.path.join(destination_dir , item)
+                    
+                    if(os.path.isdir(deleted_file_folder_dir)):
+                        shutil.rmtree(deleted_file_folder_dir)
+                    
+                    elif(os.path.isfile(deleted_file_folder_dir)):
+                        os.remove(deleted_file_folder_dir)   
+                         
+                    print(f'{item} deleted')
+            print('----------------------------------------')
             for item in os.listdir(source_dir):
                 if(item not in excluded_files_and_folders_list):
+                    print(f'{item} moved!')
                     shutil.move(os.path.join(source_dir , item) , destination_dir)
                     
             print('SUCCESS!')

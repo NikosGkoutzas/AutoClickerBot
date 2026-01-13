@@ -1,0 +1,8 @@
+# RUN inside 'app' folder using: pip install -r requirements.txt
+
+
+selenium==4.25.0
+webdriver-manager==4.0.2
+python-dotenv==1.2.1
+pyautogui==0.9.54
+inject==5.2.1

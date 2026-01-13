@@ -127,7 +127,7 @@ class ProcessEmails(ProcessEmailsInterface):
             source_dir = f'{os.getcwd()}/AutoClickerBot/app'
             destination_dir = f'{os.path.expanduser("~")}/Music/AutoClickerBot/app/'
 
-            excluded_files_and_folders_list = ['main.py' , '.env' , 'selenium-profile' , '.env_example' , 
+            excluded_files_and_folders_list = ['__init__.py' , '.env' , 'selenium-profile' , '.env_example' , 
                                                '__pycache__' , 'all_files' , 'requirements.txt']
             
             for item in os.listdir(destination_dir):

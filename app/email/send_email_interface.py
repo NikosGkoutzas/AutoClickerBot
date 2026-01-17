@@ -43,7 +43,12 @@ class SendEmailInterface(ABC):
     
     
     @abstractmethod
-    def send_email_install_new_version(self , success: bool) -> None:
+    def send_email_new_version_failed_to_update(self) -> None:
+        pass
+    
+    
+    @abstractmethod
+    def send_email_error_installing_new_version_missing_type(self) -> None:
         pass
     
     
@@ -68,5 +73,5 @@ class SendEmailInterface(ABC):
     
     
     @abstractmethod
-    def send_email_connect_via_rustdesk(self) -> None:
+    def send_email_connect_via_teamviewer(self) -> None:
         pass

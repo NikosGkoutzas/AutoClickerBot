@@ -11,3 +11,8 @@ class ActionInterface(ABC):
     @abstractmethod
     def check_login(self) -> None:
         pass
+    
+    
+    @abstractmethod
+    def check_for_latest_version(self) -> None:
+        pass

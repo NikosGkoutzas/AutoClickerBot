@@ -39,11 +39,9 @@ class SendEmail(SendEmailInterface):
         server.quit()
 
 
-
     def send_email_to_all_receivers(self , title: str , message: str) -> None:
         self.send_email_general(title=title , body_message=message , email_receiver=os.getenv('email_receiver_1'))
         #self.send_email_general(title=title , body_message=message , email_receiver=os.getenv('email_receiver_2'))
-
 
 
     def send_email_launch(self) -> None:
@@ -80,7 +78,6 @@ class SendEmail(SendEmailInterface):
         self.send_email_to_all_receivers(self.email_message.credentails_update_title_message(cond_str) , self.email_message.credentials_update_body_message(cond_str))
 
 
-
     def send_email_progress(self) -> None:
         self.send_email_to_all_receivers(self.email_message.progress_title_message() , self.email_message.progress_body_message(number_of_machines=self.read_files.read_number_of_urls() ,
                                                                                                                                 current_updates=self.read_files.read_total_updates() ,
@@ -92,19 +89,21 @@ class SendEmail(SendEmailInterface):
                                                                                                                                 version=self.read_files.read_app_version())
                                                                                                                                 )
 
-    def send_email_install_new_version(self , success: bool) -> None:
-        self.send_email_to_all_receivers(self.email_message.install_new_version_title_message() , self.email_message.install_new_version_body_message(success , self.read_files.read_app_version() , self.calculations.compute_time_of_new_version_installation()))
+
+    def send_email_new_version_failed_to_update(self) -> None:
+        self.send_email_to_all_receivers(self.email_message.error_installing_new_version_title_message() , self.email_message.general_error_installing_new_version_body_message())
         
+        
+    def send_email_error_installing_new_version_missing_type(self) -> None:
+        self.send_email_to_all_receivers(self.email_message.error_installing_new_version_title_message() , self.email_message.error_installing_new_version_body_message_missing_type())
         
         
     def send_email_all_links(self) -> None:
         self.send_email_to_all_receivers(self.email_message.see_all_available_links_title_message() , self.email_message.see_all_available_links_body_message(self.calculations.list_of_all_machines()))
         
         
-        
     def send_email_unable_to_login(self) -> None:
         self.send_email_to_all_receivers(self.email_message.unable_to_login_title_message() , self.email_message.unable_to_login_body_message())
-        
         
         
     def send_email_captcha_failed_to_solve(self) -> None:
@@ -115,5 +114,5 @@ class SendEmail(SendEmailInterface):
         self.send_email_to_all_receivers(self.email_message.notify_every_10_errors_title_message() , self.email_message.notify_every_10_errors_body_message(errors))
         
         
-    def send_email_connect_via_rustdesk(self) -> None:
-        self.send_email_to_all_receivers(self.email_message.connect_via_rustdesk_title_message() , self.email_message.connect_via_rustdesk_body_message())
+    def send_email_connect_via_teamviewer(self) -> None:
+        self.send_email_to_all_receivers(self.email_message.connect_via_teamviewer_title_message() , self.email_message.connect_via_teamviewer_body_message())

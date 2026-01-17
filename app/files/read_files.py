@@ -244,3 +244,8 @@ class ReadFiles(ReadFilesInterface):
     
     def read_daily_report_sent(self) -> int:
         return self.general_read_int(daily_report_sent_filename)
+    
+    
+    
+    def read_new_version_update_flag(self) -> bool:
+        return self.general_read_int(new_version_update_flag_filename)

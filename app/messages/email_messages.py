@@ -52,7 +52,7 @@ class EmailMessages(EmailMessagesInterface):
         body_update_semantic_versioning = '(Major, Minor or Patch).'
         action_update = 'Updates the app to the latest version from GitHub.'
         action_progress = 'Returns a summary of the app\'s current status.'
-        action_links = 'Returns a list of all available links.'
+        action_links = 'Returns all available links.'
         body_credentials = 'Provide only the field you want to update (username/password). Eg:'
         body_example_username_credential = 'username: admin'
         body_example_password_credential = 'password: •••••'
@@ -897,16 +897,45 @@ class EmailMessages(EmailMessagesInterface):
         
         
         
-        
-        
-    def install_new_version_title_message(self) -> str:
-        return '⚙️ Installing New Version'
+
+    def error_installing_new_version_title_message(self) -> str:
+        return '❌ New Version Failed To Install'
     
     
-    def install_new_version_body_message(self , success: bool , new_version: str , installation_completed_time: datetime.time) -> str:
-        msg1 = 'The program has paused to prepare for a version update.'
-        msg2 = f'The application is scheduled to restart approximately at {installation_completed_time} with the new version {new_version}.'
-        msg3 = 'Please do not close or terminate the application during this process.'
+    
+    def general_error_installing_new_version_body_message(self) -> str:
+        error_msg = 'An unexpected error occurred while attempting to install the latest version from GitHub. \
+                     TeamViewer has been launched and the system is now available for remote access to allow manual resolution of the issue.'
+        
+        return f'''
+        <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed;">
+            <tr>
+                <td width="100%" style="padding:0; margin:0;">
+                    {self.time_message()}
+                </td>
+            </tr>
+            <tr><br></tr>
+            <tr>
+                <td width="100%" style="padding:0; margin:0;">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:5px; border-radius:16px;">
+                        <tr>
+                            <td align="center">{error_msg}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr><br></tr>
+            <tr><br></tr>
+            <tr>
+                <td width="100%" style="padding:0; margin:0;">
+                    {self.built_with_python_and_copyright_message()}
+                </td>
+            </tr>
+        </table>
+        '''
+    
+    
+    def error_installing_new_version_body_message_missing_type(self) -> str:
         error_msg1 = 'The new version will not be installed due to an invalid or missing version type.'
         error_msg2 = 'Please specify one of the following:'
         error_msg3 = 'major, minor or patch.'
@@ -923,29 +952,15 @@ class EmailMessages(EmailMessagesInterface):
             <tr>
                 <td width="100%" style="padding:0; margin:0;">
                     <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:5px; border-radius:16px;">
-                        {f'''<tr>
-                                <td align="center">{msg1}</td>
-                            </tr>
-                            <tr>
-                                <td align="center">{msg2}</td>
-                            </tr>
-                            <tr>
-                                <td align="center">{msg3}</td>
-                            </tr>
-                            ''' if(success)
-                                else
-                                f'''
-                                <tr>
-                                    <td align="center">{error_msg1}</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">{error_msg2}</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">{error_msg3}</td>
-                                </tr>
-                            '''
-                        }
+                        <tr>
+                            <td align="center">{error_msg1}</td>
+                        </tr>
+                        <tr>
+                            <td align="center">{error_msg2}</td>
+                        </tr>
+                        <tr>
+                            <td align="center">{error_msg3}</td>
+                        </tr>
                     </table>
                 </td>
             </tr>
@@ -1089,14 +1104,14 @@ class EmailMessages(EmailMessagesInterface):
         
         
         
-    def connect_via_rustdesk_title_message(self) -> str:
-        return '🖥️ Connect via TeamViewer'
+    def connect_via_teamviewer_title_message(self) -> str:
+        return '🖥️ Connect Via TeamViewer'
     
     
     
 
-    def connect_via_rustdesk_body_message(self) -> str:
-        msg = 'The system has launched RustDesk and is now ready for remote access.'
+    def connect_via_teamviewer_body_message(self) -> str:
+        msg = 'TeamViewer has been launched and the system is now available for remote access.'
         
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">

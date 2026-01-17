@@ -108,12 +108,17 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def install_new_version_title_message(self) -> str:
+    def error_installing_new_version_title_message(self) -> str:
         pass
     
     
     @abstractmethod
-    def install_new_version_body_message(self , new_version: str , new_time: datetime.time) -> str:
+    def general_error_installing_new_version_body_message(self) -> str:
+        pass
+    
+    
+    @abstractmethod
+    def error_installing_new_version_body_message_missing_type(self) -> str:
         pass
     
     
@@ -158,10 +163,10 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def connect_via_rustdesk_title_message(self) -> str:
+    def connect_via_teamviewer_title_message(self) -> str:
         pass
     
     
     @abstractmethod
-    def connect_via_rustdesk_body_message(self) -> str:
+    def connect_via_teamviewer_body_message(self) -> str:
         pass

@@ -26,6 +26,7 @@ class ResetFiles(ResetFilesInterface):
             self.write_files.write_number_in_file(app_started_filename , 0)
             self.write_files.write_number_in_file(app_ended_filename , 0)
             self.write_files.write_number_in_file(delay_per_update_filename , 5)
+            self.write_files.write_number_in_file(new_version_update_flag_filename , 0)
             self.write_files.reset_all_updates_per_machine()
             
         except Exception as e:

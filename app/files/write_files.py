@@ -107,6 +107,13 @@ class WriteFiles(WriteFilesInterface):
             raise ValueError(f'An error occured: {str(e)}')
         
         
+    
+
+    def write_new_version_update_flag(self , flag: int) -> None:
+        self.write_number_in_file(new_version_update_flag_filename , flag)
+
+
+
 
     def write_delay_per_update(self , delay: float) -> None:
         try:
@@ -351,6 +358,7 @@ class WriteFiles(WriteFilesInterface):
             self.write_number_in_file(total_updates_filename , 0)
             self.write_number_in_file(url_current_pos_filename , 1)
             self.write_number_in_file(daily_report_sent_filename , 1)
+            self.write_number_in_file(new_version_update_flag_filename , 0)
             self.write_check_email_every_20_minutes('06:30:00')
             self.reset_all_updates_per_machine()
             

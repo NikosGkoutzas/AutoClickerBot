@@ -2,6 +2,7 @@ import os
 
 urls_filename = os.path.join(f'{os.getcwd()}/app/files/all_files/' , 'urls.txt')
 app_version_filename = os.path.join(f'{os.getcwd()}/app/files/all_files/' , 'app_version.txt')
+new_version_update_flag_filename = os.path.join(f'{os.getcwd()}/app/files/all_files/' , 'new_version_update_flag.txt')
 url_current_pos_filename = os.path.join(f'{os.getcwd()}/app/files/all_files/' , 'url_current_pos.txt')
 delay_per_update_filename = os.path.join(f'{os.getcwd()}/app/files/all_files/' , 'delay_per_update.txt')
 total_updates_filename = os.path.join(f'{os.getcwd()}/app/files/all_files/' , 'total_updates.txt')

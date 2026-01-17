@@ -22,6 +22,10 @@ class WriteFilesInterface(ABC):
     def write_app_version(self , semantic_versioning: str) -> None:
         pass
     
+    
+    @abstractmethod
+    def write_new_version_update_flag(self , flag: int) -> None:
+        pass
 
     @abstractmethod
     def write_delay_per_update(self , delay: float) -> None:

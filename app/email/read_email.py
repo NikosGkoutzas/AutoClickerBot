@@ -50,11 +50,11 @@ class ReadEmail(ReadEmailInterface):
         emails_progress_list = []
         emails_new_version_list = []
         emails_credentials_list = []
-        emails_rustdesk_list = []
+        emails_teamviewer_list = []
         emails_credentials_found = False
         emails_progress_found = False
         emails_new_version_found = False
-        emails_rustdesk_found = False
+        emails_teamviewer_found = False
         
         for i in range(len(first_x_recent_ids)):    
             _ ,email_data = mail.fetch(first_x_recent_ids[i] , '(RFC822)')
@@ -67,9 +67,9 @@ class ReadEmail(ReadEmailInterface):
                     self.read_insert_subject(body_list_added , email_subject , msg , email_date , number_of_recent_emails , i , emails_add_list)     
                     self.read_remove_subject(body_list_removed , email_subject , msg , email_date , number_of_recent_emails , i , emails_delete_list)
                     
-                    if(not emails_rustdesk_found):
-                        emails_rustdesk_found = True
-                        self.read_connect_with_rustdesk_email(email_subject , email_date , emails_rustdesk_list)
+                    if(not emails_teamviewer_found):
+                        emails_teamviewer_found = True
+                        self.read_connect_with_teamviewer_email(email_subject , email_date , emails_teamviewer_list)
                         
                     if(not emails_new_version_found):
                         emails_new_version_found = True
@@ -114,7 +114,7 @@ class ReadEmail(ReadEmailInterface):
                 elif(title.strip().lower() == 'credentials'):
                     email_content_list.append('OK')
                     
-                elif(title.strip().lower() == 'rustdesk'):
+                elif(title.strip().lower() == 'teamviewer'):
                     email_content_list.append('OK')
                 
                 if(msg is not None):
@@ -214,17 +214,14 @@ class ReadEmail(ReadEmailInterface):
         if(body_list):
             body_list.clear()
             
-        if(success):
-            self.write_files.write_app_version(semantic_input)
-        
-        if(len(emails_new_version_list) > 0):  
-            self.send_email.send_email_install_new_version(success)
-            
-            if(success):
-                self.process_emails.download_new_version_from_github()
-                self.send_email.send_email_new_version_updated()
+        if(len(emails_new_version_list) > 0): 
+            if(success):                   
+                if(not self.process_emails.download_new_version_from_github(semantic_input)):
+                    self.send_email.send_email_new_version_failed_to_update()
 
-    
+            else:
+                self.send_email.send_email_error_installing_new_version_missing_type()
+
     
     
         
@@ -254,13 +251,13 @@ class ReadEmail(ReadEmailInterface):
             
             
     
-    def read_connect_with_rustdesk_email(self ,
+    def read_connect_with_teamviewer_email(self ,
                                         email_subject: str ,
                                         email_date: str ,
-                                        emails_rustdesk_list: list[str]
+                                        emails_teamviewer_list: list[str]
                                         ) -> None:
         
-        _ , emails_rustdesk_list = self.read_email_subject('RustDesk' , None , email_subject , None , email_date , emails_rustdesk_list)
+        _ , emails_teamviewer_list = self.read_email_subject('TeamViewer' , None , email_subject , None , email_date , emails_teamviewer_list)
         
-        if(len(emails_rustdesk_list) > 0):
-            self.send_email.send_email_connect_via_rustdesk()
+        if(len(emails_teamviewer_list) > 0):
+            self.send_email.send_email_connect_via_teamviewer()

@@ -24,6 +24,11 @@ class Action(ActionInterface):
         
 
     def update_machine_procedure(self) -> None:
+        '''
+        Executes the machine update process using the URL from the current
+        position that is stored in a file. If the update is successful,
+        updates the current position and total number of the updates.
+        '''
         current_url = self.read_files.read_url_from_current_pos()
         updated = self.driver.update_machine(current_url)
 
@@ -39,17 +44,37 @@ class Action(ActionInterface):
     
     
     
-    '''
-    0: captcha challenge solved after a few attempts
-    1: captcha is inactive
-    2: captcha challenge failed to solve
-    3: wrong login credentials after 3 attempts. Email sent
-    '''
     def check_login(self) -> None:
-        flag = self.driver.login()
+        '''
+        On system startup, checks whether a captcha is present.
+        If detected, the system attempts to solve it and upon success,
+        enters the user credentials.
 
-        if(flag == 3):
+        The captcha challenge appears again, the system is trying to
+        solve it and a status code is returned.
+        Finallym an appropriate email notification is sent.
+
+        Returned values from login function:
+        2: Failed to solve captcha
+        3: Invalid login credentials after three attempts (email sent)
+        '''
+        flag = self.driver.login()
+            
+        if(flag == 2):
+            self.send_email.send_email_captcha_failed_to_solve()
+            
+        elif(flag == 3):
             self.send_email.send_email_unable_to_login()
             
-        elif(flag == 2):
-            self.send_email.send_email_captcha_failed_to_solve()
+
+    
+    def check_for_latest_version(self) -> None:
+        '''
+        Read the 'new_version_update_flag' filename and if it contains '1', it
+        means a new version has already been installed (many files have been replaced)
+        and send an email to inform the new installation of the new app's version.
+        Finally, reset the flag from the file. 
+        '''
+        if(self.read_files.read_new_version_update_flag()):
+            self.write_files.write_new_version_update_flag(0)
+            self.send_email.send_email_new_version_updated()

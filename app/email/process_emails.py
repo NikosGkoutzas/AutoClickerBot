@@ -1,7 +1,7 @@
 from .process_emails_interface import ProcessEmailsInterface
 from ..files.read_files_interface import ReadFilesInterface
 from ..files.write_files_interface import WriteFilesInterface
-import inject , os , shutil
+import inject , os , shutil , sys
 
 
 
@@ -109,7 +109,7 @@ class ProcessEmails(ProcessEmailsInterface):
     
     
     
-    def download_new_version_from_github(self) -> None:
+    def download_new_version_from_github(self , semantic_input: str) -> bool:
         try:
             # mhpws na diagrapsw kai to palio pycache/ dhmiourgia neou??? <<<< SOS
             tmp_folder_dir = os.path.join(os.getcwd() , 'NewVersionTmpFolder')
@@ -147,11 +147,15 @@ class ProcessEmails(ProcessEmailsInterface):
                 if(item not in excluded_files_and_folders_list):
                     print(f'{item} moved!')
                     shutil.move(os.path.join(source_dir , item) , destination_dir)
-                    
+
+            BASE_DIR = os.path.join(os.getcwd() , 'AutoClickerBot')
+
+            os.chdir(BASE_DIR)
+            self.write_files.write_app_version(semantic_input)
+            self.write_files.write_new_version_update_flag(1)
             print('SUCCESS!')
+            os.execv(sys.executable , [sys.executable, "-m", "app.main"])
+        
         except Exception as e:
-            print(f'An error occured while trying to download a new version from github: {str(e)}')
-            # send corresponding email
-            
-        #time.sleep(7*60)
-        #os.system("wget 'https://github.com/NikosGkoutzas/AutoClickerBot/raw/main/carClickerBot.py' && mv carClickerBot.py.1 carClickerBot.py")
+            print(f'An error occured while trying to install the latest version from github: {str(e)}')
+            return False

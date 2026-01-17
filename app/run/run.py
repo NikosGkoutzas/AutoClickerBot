@@ -41,11 +41,12 @@ class Run(RunInterface):
         
         
     def run(self):
+        self.action.check_for_latest_version()
         self.reset_files.reset_all_files()
         self.chrome_boot.boot()
         self.driver.start_driver()
         self.driver.open_url('https://www.car.gr/login/')
-        wait_for_captcha = 60 # sec.
+        #wait_for_captcha = 60 # sec.
         #print(f'Wait {wait_for_captcha} seconds to allow captcha detection...')
         #time.sleep(wait_for_captcha)
         print('Launch.')
@@ -63,8 +64,8 @@ class Run(RunInterface):
                     
             
             else:
-                if(self.calculation.check_emails()):
-                    self.read_email.fetch_last_emails()
+                #if(self.calculation.check_emails()):
+                self.read_email.fetch_last_emails()
                     
                 if(not self.calculation.updates_completed()):
                     if(self.internet.check_for_internet_connection()):

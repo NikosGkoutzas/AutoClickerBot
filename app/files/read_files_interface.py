@@ -136,3 +136,8 @@ class ReadFilesInterface(ABC):
     @abstractmethod
     def read_daily_report_sent(self) -> int:
         pass
+    
+    
+    @abstractmethod
+    def read_new_version_update_flag(self) -> bool:
+        pass

@@ -23,5 +23,5 @@ class ProcessEmailsInterface(ABC):
     
 
     @abstractmethod
-    def download_new_version_from_github(self) -> None:
+    def download_new_version_from_github(self , semantic_input: str) -> bool:
         pass

@@ -177,7 +177,7 @@ class Calculations(CalculationInterface):
             return 1
         
         delay = (end_time - current_time).total_seconds() / (total_required_updates - total_current_updates) if(end_time > current_time) else 1
-        return max(1 , delay)
+        return max(1 , int(delay))
     
     
     

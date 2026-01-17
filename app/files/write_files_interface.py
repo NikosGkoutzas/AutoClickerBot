@@ -28,7 +28,7 @@ class WriteFilesInterface(ABC):
         pass
 
     @abstractmethod
-    def write_delay_per_update(self , delay: float) -> None:
+    def write_delay_per_update(self , delay: int) -> None:
         pass
 
 

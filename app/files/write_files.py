@@ -115,10 +115,9 @@ class WriteFiles(WriteFilesInterface):
 
 
 
-    def write_delay_per_update(self , delay: float) -> None:
+    def write_delay_per_update(self , delay: int) -> None:
         try:
             with open(delay_per_update_filename , 'w') as f:
-                #delay = 5 if delay < 5 else delay # min delay is 5 minutes
                 f.write(str(delay))
 
         except FileNotFoundError:

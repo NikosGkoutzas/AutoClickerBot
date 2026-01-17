@@ -29,6 +29,7 @@ class Action(ActionInterface):
         position that is stored in a file. If the update is successful,
         updates the current position and total number of the updates.
         '''
+        
         current_url = self.read_files.read_url_from_current_pos()
         updated = self.driver.update_machine(current_url)
 
@@ -58,6 +59,7 @@ class Action(ActionInterface):
         2: Failed to solve captcha
         3: Invalid login credentials after three attempts (email sent)
         '''
+        
         flag = self.driver.login()
             
         if(flag == 2):
@@ -75,6 +77,7 @@ class Action(ActionInterface):
         and send an email to inform the new installation of the new app's version.
         Finally, reset the flag from the file. 
         '''
+        
         if(self.read_files.read_new_version_update_flag()):
             self.write_files.write_new_version_update_flag(0)
             self.send_email.send_email_new_version_updated()

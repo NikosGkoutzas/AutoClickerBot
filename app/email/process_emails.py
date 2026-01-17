@@ -148,8 +148,9 @@ class ProcessEmails(ProcessEmailsInterface):
                     print(f'{item} moved!')
                     shutil.move(os.path.join(source_dir , item) , destination_dir)
 
-            BASE_DIR = os.path.join(os.getcwd() , 'AutoClickerBot')
-
+            #BASE_DIR = os.path.join(os.getcwd() , 'AutoClickerBot')
+            BASE_DIR = f'{os.path.expanduser("~")}/Music/AutoClickerBot/'
+            print(BASE_DIR)
             os.chdir(BASE_DIR)
             self.write_files.write_app_version(semantic_input)
             self.write_files.write_new_version_update_flag(1)

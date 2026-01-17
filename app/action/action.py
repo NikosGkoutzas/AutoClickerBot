@@ -70,7 +70,7 @@ class Action(ActionInterface):
             
 
     
-    def check_for_latest_version(self) -> None:
+    def latest_version_available(self) -> bool:
         '''
         Read the 'new_version_update_flag' filename and if it contains '1', it
         means a new version has already been installed (many files have been replaced)
@@ -81,3 +81,6 @@ class Action(ActionInterface):
         if(self.read_files.read_new_version_update_flag()):
             self.write_files.write_new_version_update_flag(0)
             self.send_email.send_email_new_version_updated()
+            return True
+        
+        return False

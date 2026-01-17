@@ -41,17 +41,17 @@ class Run(RunInterface):
         
         
     def run(self):
-        self.action.check_for_latest_version()
-        self.reset_files.reset_all_files()
-        self.chrome_boot.boot()
-        self.driver.start_driver()
-        self.driver.open_url('https://www.car.gr/login/')
-        #wait_for_captcha = 60 # sec.
-        #print(f'Wait {wait_for_captcha} seconds to allow captcha detection...')
-        #time.sleep(wait_for_captcha)
-        print('Launch.')
-        self.driver.accept_cookies()
-        self.action.check_login()
+        if(not self.action.latest_version_available()):
+            self.reset_files.reset_all_files()
+            self.chrome_boot.boot()
+            self.driver.start_driver()
+            self.driver.open_url('https://www.car.gr/login/')
+            #wait_for_captcha = 60 # sec.
+            #print(f'Wait {wait_for_captcha} seconds to allow captcha detection...')
+            #time.sleep(wait_for_captcha)
+            print('Launch.')
+            self.driver.accept_cookies()
+            self.action.check_login()
         
         while(True):
             if(not self.calculation.app_in_time()):

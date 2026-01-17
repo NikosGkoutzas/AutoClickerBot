@@ -14,5 +14,5 @@ class ActionInterface(ABC):
     
     
     @abstractmethod
-    def check_for_latest_version(self) -> None:
+    def latest_version_available(self) -> bool:
         pass

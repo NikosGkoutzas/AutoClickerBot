@@ -41,7 +41,7 @@ class SendEmail(SendEmailInterface):
 
     def send_email_to_all_receivers(self , title: str , message: str) -> None:
         self.send_email_general(title=title , body_message=message , email_receiver=os.getenv('email_receiver_1'))
-        #self.send_email_general(title=title , body_message=message , email_receiver=os.getenv('email_receiver_2'))
+        self.send_email_general(title=title , body_message=message , email_receiver=os.getenv('email_receiver_2'))
 
 
     def send_email_launch(self) -> None:

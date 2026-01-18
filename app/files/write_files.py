@@ -356,7 +356,7 @@ class WriteFiles(WriteFilesInterface):
             self.write_number_in_file(total_errors_filename , 0)
             self.write_number_in_file(total_updates_filename , 0)
             self.write_number_in_file(url_current_pos_filename , 1)
-            self.write_number_in_file(daily_report_sent_filename , 1)
+            self.write_number_in_file(daily_report_sent_filename , 0)
             self.write_number_in_file(new_version_update_flag_filename , 0)
             self.write_check_email_every_20_minutes('06:30:00')
             self.reset_all_updates_per_machine()

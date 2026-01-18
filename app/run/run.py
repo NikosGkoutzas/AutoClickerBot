@@ -41,6 +41,7 @@ class Run(RunInterface):
         
         
     def run(self):
+        print(f'---> {self.action.latest_version_available()}')
         if(not self.action.latest_version_available()):
             self.reset_files.reset_all_files()
             self.chrome_boot.boot()

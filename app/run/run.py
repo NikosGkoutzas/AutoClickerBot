@@ -60,8 +60,11 @@ class Run(RunInterface):
                     self.write_files.write_app_ended()
                     if(self.internet.check_for_internet_connection()):
                         self.send_email.send_email_daily_report()
-                        self.write_files.write_daily_report_sent()
+                        self.write_files.write_daily_report_sent(1)
                         self.calculation.sleep_till_next_day()
+                        
+                    else:
+                        self.write_files.write_daily_report_sent(0)
                     
             
             else:
@@ -72,7 +75,7 @@ class Run(RunInterface):
                     if(self.internet.check_for_internet_connection()):
                         if(self.read_files.read_daily_report_sent() == 0):
                             self.send_email.send_email_daily_report()
-                            self.write_files.write_daily_report_sent()
+                            self.write_files.write_daily_report_sent(1)
                             
                         if(self.read_files.read_app_started() == 0):
                             self.write_files.reset_all_files() # reset all files here, because if daily report is going to be sent

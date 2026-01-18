@@ -133,5 +133,5 @@ class WriteFilesInterface(ABC):
     
     
     @abstractmethod
-    def write_daily_report_sent(self) -> None:
+    def write_daily_report_sent(self , value: int) -> None:
         pass

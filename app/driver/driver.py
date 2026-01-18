@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
+from ..paths.paths import port
 from .driver_interface import DriverInterface
 from ..files.write_files_interface import WriteFilesInterface
 import os , time , pyautogui , inject
@@ -29,6 +30,7 @@ class Driver(DriverInterface):
     
     def quit_driver(self):
         self.driver.quit()
+        os.system(f"pkill -f 'remote-debugging-port={port}'")
     
     
 

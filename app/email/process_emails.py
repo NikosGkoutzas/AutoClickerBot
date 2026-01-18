@@ -111,51 +111,76 @@ class ProcessEmails(ProcessEmailsInterface):
     
     def download_new_version_from_github(self , semantic_input: str) -> bool:
         try:
-            # mhpws na diagrapsw kai to palio pycache/ dhmiourgia neou??? <<<< SOS
             tmp_folder_dir = os.path.join(os.getcwd() , 'NewVersionTmpFolder')
             
             if(os.path.isdir(tmp_folder_dir)):
-                print('exists')
                 shutil.rmtree(tmp_folder_dir)
-            else:
-                print('Not exists.')
+           
             os.makedirs(tmp_folder_dir)
-            print('Created')
             os.chdir('NewVersionTmpFolder/')
             os.system('git clone https://github.com/NikosGkoutzas/AutoClickerBot.git')
-            
+                
             source_dir = f'{os.getcwd()}/AutoClickerBot/app'
             destination_dir = f'{os.path.expanduser("~")}/Music/AutoClickerBot/app/'
+            files_destination_path = f'{os.path.expanduser("~")}/Music/AutoClickerBot/app/files'
 
             excluded_files_and_folders_list = ['__init__.py' , '.env' , 'selenium-profile' , '.env_example' , 
-                                               '__pycache__' , 'all_files' , 'requirements.txt']
+                                               '__pycache__' , 'requirements.txt']
             
+            os.chdir('AutoClickerBot/app/')
             for item in os.listdir(destination_dir):
                 if(item not in excluded_files_and_folders_list):
-                    print(f'Deleting {item}...')
-                    deleted_file_folder_dir = os.path.join(destination_dir , item)
+                    deleted_file_folder_dir = os.path.join(destination_dir , item)  
+
+                    if(item == 'files'):
+                        os.chdir('files/')
+                        files_path = os.getcwd()
+                        print(files_path)
+                        for inner_item in os.listdir(files_path):
+                            if(os.path.isfile(inner_item)):
+                                os.remove(inner_item)
+                                
+                            else:
+                                if(os.path.isdir(inner_item) and inner_item != 'all_files'):
+                                    shutil.rmtree(inner_item)
+                                    
+                        os.chdir('..')
+                        
+                    else:
+                        if(os.path.isfile(deleted_file_folder_dir)):
+                            os.remove(deleted_file_folder_dir) 
+                        
+                        elif(os.path.isdir(deleted_file_folder_dir)):
+                            shutil.rmtree(deleted_file_folder_dir)
                     
-                    if(os.path.isdir(deleted_file_folder_dir)):
-                        shutil.rmtree(deleted_file_folder_dir)
-                    
-                    elif(os.path.isfile(deleted_file_folder_dir)):
-                        os.remove(deleted_file_folder_dir)   
                          
-                    print(f'{item} deleted')
-            print('----------------------------------------')
             for item in os.listdir(source_dir):
                 if(item not in excluded_files_and_folders_list):
-                    print(f'{item} moved!')
-                    shutil.move(os.path.join(source_dir , item) , destination_dir)
+                    if(item == 'files'):
+                        os.chdir('files/')
+                        files_path = os.getcwd()
+
+                        for inner_item in os.listdir(files_path):
+                            if(os.path.isdir(inner_item) and inner_item == 'all_files'):
+                                shutil.rmtree(inner_item)
+                        
+                        
+                        for inner_item in os.listdir(files_path):
+                            shutil.move(os.path.join(os.getcwd() , inner_item) , files_destination_path)
+                            
+                        os.chdir('..')
+                    
+                    else:
+                        shutil.move(os.path.join(source_dir , item) , destination_dir)
 
             #BASE_DIR = os.path.join(os.getcwd() , 'AutoClickerBot')
-            BASE_DIR = f'{os.path.expanduser("~")}/Music/AutoClickerBot/'
+            '''BASE_DIR = f'{os.path.expanduser("~")}/Music/AutoClickerBot/'
             print(BASE_DIR)
             os.chdir(BASE_DIR)
             self.write_files.write_app_version(semantic_input)
             self.write_files.write_new_version_update_flag(1)
             print('SUCCESS!')
-            os.execv(sys.executable , [sys.executable, "-m", "app.main"])
+            os.execv(sys.executable , [sys.executable, "-m", "app.main"])'''
         
         except Exception as e:
             print(f'An error occured while trying to install the latest version from github: {str(e)}')

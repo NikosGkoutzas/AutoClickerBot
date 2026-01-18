@@ -128,18 +128,12 @@ class ProcessEmails(ProcessEmailsInterface):
             source_dir = f'{os.getcwd()}/AutoClickerBot/app'
             
             home_folder_path = os.path.expanduser("~")
-            autoClickerBot_folder_path = None
-            
-            for root , dirs , _ in os.walk(home_folder_path):
-                if('AutoClickerBot' in dirs):
-                    autoClickerBot_folder_path = os.path.join(root , 'AutoClickerBot')
-            
+            autoClickerBot_folder_path = f'{home_folder_path}/{os.getenv('folder_path_to_app')}/AutoClickerBot'
             
             app_destination_dir = os.path.join(autoClickerBot_folder_path , 'app')
             files_destination_path = os.path.join(app_destination_dir , 'files')
 
-            excluded_files_and_folders_list = ['__init__.py' , '.env' , 'selenium-profile' , '.env_example' , 
-                                               '__pycache__' , 'requirements.txt']
+            excluded_files_and_folders_list = ['__init__.py' , 'selenium-profile' , '.env_example' , '__pycache__' , 'requirements.txt']
             
             os.chdir('AutoClickerBot/app/')
             for item in os.listdir(app_destination_dir):

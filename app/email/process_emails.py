@@ -132,7 +132,7 @@ class ProcessEmails(ProcessEmailsInterface):
             
             for root , dirs , _ in os.walk(home_folder_path):
                 if('AutoClickerBot' in dirs):
-                    autoClickerBot_folder_path = os.path.join(root , dirs)
+                    autoClickerBot_folder_path = os.path.join(root , 'AutoClickerBot')
             
             
             app_destination_dir = os.path.join(autoClickerBot_folder_path , 'app')
@@ -187,9 +187,7 @@ class ProcessEmails(ProcessEmailsInterface):
                     else:
                         shutil.move(os.path.join(source_dir , item) , app_destination_dir)
 
-            BASE_DIR = f'{os.path.expanduser("~")}/Music/AutoClickerBot/'
-
-            os.chdir(BASE_DIR)
+            os.chdir(autoClickerBot_folder_path)
             self.write_files.write_app_version(semantic_input)
             self.write_files.write_new_version_update_flag(1)
             self.driver.quit_driver()

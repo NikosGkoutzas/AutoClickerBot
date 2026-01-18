@@ -8,14 +8,20 @@ from selenium.webdriver.common.by import By
 from ..paths.paths import port
 from .driver_interface import DriverInterface
 from ..files.write_files_interface import WriteFilesInterface
+from ..files.read_files_interface import ReadFilesInterface
 import os , time , pyautogui , inject
 
 
 
 class Driver(DriverInterface):
     @inject.autoparams()
-    def __init__(self , write_files_interface: WriteFilesInterface):
+    def __init__(self ,
+                 write_files_interface: WriteFilesInterface ,
+                 read_files_interface: ReadFilesInterface
+                 ):
+        
         self.write_files = write_files_interface
+        self.read_files = read_files_interface
         self.driver = None
     
                 
@@ -169,7 +175,8 @@ class Driver(DriverInterface):
             button.click()
             state_span = button.find_element(By.XPATH, ".//span[contains(@class,'tw-max-w-full')]")
             text = state_span.text.strip()
-
+            print(f'{self.read_files.read_total_updates()}/{os.getenv('total_required_updates')}')
+            
             return text == 'Ανανέωση'
 
         except TimeoutException as e:

@@ -175,7 +175,7 @@ class Driver(DriverInterface):
             button.click()
             state_span = button.find_element(By.XPATH, ".//span[contains(@class,'tw-max-w-full')]")
             text = state_span.text.strip()
-            print(f'{self.read_files.read_total_updates()}/{os.getenv('total_required_updates')}')
+            print(f'{self.read_files.read_total_updates()}/{os.getenv('total_required_updates')} machines updated.')
             
             return text == 'Ανανέωση'
 

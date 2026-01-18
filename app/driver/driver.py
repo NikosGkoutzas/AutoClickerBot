@@ -27,6 +27,10 @@ class Driver(DriverInterface):
     
     
     
+    def quit_driver(self):
+        self.driver.quit()
+    
+    
 
     '''
     0: captcha challenge solved after a few attempts

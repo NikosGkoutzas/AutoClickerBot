@@ -8,6 +8,11 @@ class DriverInterface(ABC):
     
     
     @abstractmethod
+    def quit_driver(self) -> None:
+        pass
+    
+    
+    @abstractmethod
     def login(self) -> int:
         pass
     

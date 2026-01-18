@@ -1,16 +1,21 @@
 from .process_emails_interface import ProcessEmailsInterface
 from ..files.read_files_interface import ReadFilesInterface
 from ..files.write_files_interface import WriteFilesInterface
+from ..driver.driver_interface import DriverInterface
 import inject , os , shutil , sys
 
 
 
 class ProcessEmails(ProcessEmailsInterface):
     @inject.autoparams()
-    def __init__(self , read_files_interface: ReadFilesInterface , write_files_interface: WriteFilesInterface):
+    def __init__(self ,
+                 read_files_interface: ReadFilesInterface ,
+                 write_files_interface: WriteFilesInterface ,
+                 driver_interface: DriverInterface):
+        
         self.read_files = read_files_interface
         self.write_files = write_files_interface
-
+        self.driver = driver_interface
 
 
     def process_add_link_email(self , list_added_links: list[str]) -> tuple[list[str] , list[str]]:
@@ -179,6 +184,7 @@ class ProcessEmails(ProcessEmailsInterface):
             os.chdir(BASE_DIR)
             self.write_files.write_app_version(semantic_input)
             self.write_files.write_new_version_update_flag(1)
+            self.driver.quit_driver()
             print('SUCCESS!')
             os.execv(sys.executable , [sys.executable, "-m", "app.main"])
         

@@ -26,7 +26,6 @@ class Internet(InternetInterface):
                     restored = str(datetime.now().replace(microsecond=0).strftime('%b %d, %Y - %H:%M:%S'))
                     self.write_files.write_internet_error_date('') # clear
                     self.send_email.send_email_no_internet_connection(occured.strftime('%b %d, %Y - %H:%M:%S') , restored)
-                print('YES')
                 return True
             
             except Exception as e:
@@ -35,7 +34,7 @@ class Internet(InternetInterface):
         
         self.write_files.write_total_errors()
         internet_error_date = self.read_files.read_error_datetime()
+        
         if(not internet_error_date):
             self.write_files.write_internet_error_date(str(datetime.now().replace(microsecond=0).strftime('%b %d, %Y - %H:%M:%S')))
-        print('NO')
         return False

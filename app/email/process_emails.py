@@ -126,21 +126,30 @@ class ProcessEmails(ProcessEmailsInterface):
             os.system('git clone https://github.com/NikosGkoutzas/AutoClickerBot.git')
                 
             source_dir = f'{os.getcwd()}/AutoClickerBot/app'
-            destination_dir = f'{os.path.expanduser("~")}/Music/AutoClickerBot/app/'
-            files_destination_path = f'{os.path.expanduser("~")}/Music/AutoClickerBot/app/files'
+            
+            home_folder_path = os.path.expanduser("~")
+            autoClickerBot_folder_path = None
+            
+            for root , dirs , _ in os.walk(home_folder_path):
+                if('AutoClickerBot' in dirs):
+                    autoClickerBot_folder_path = os.path.join(root , dirs)
+            
+            
+            app_destination_dir = os.path.join(autoClickerBot_folder_path , 'app')
+            files_destination_path = os.path.join(app_destination_dir , 'files')
 
             excluded_files_and_folders_list = ['__init__.py' , '.env' , 'selenium-profile' , '.env_example' , 
                                                '__pycache__' , 'requirements.txt']
             
             os.chdir('AutoClickerBot/app/')
-            for item in os.listdir(destination_dir):
+            for item in os.listdir(app_destination_dir):
                 if(item not in excluded_files_and_folders_list):
-                    deleted_file_folder_dir = os.path.join(destination_dir , item)  
+                    deleted_file_folder_dir = os.path.join(app_destination_dir , item)  
 
                     if(item == 'files'):
                         os.chdir('files/')
                         files_path = os.getcwd()
-                        print(files_path)
+
                         for inner_item in os.listdir(files_path):
                             if(os.path.isfile(inner_item)):
                                 os.remove(inner_item)
@@ -176,16 +185,15 @@ class ProcessEmails(ProcessEmailsInterface):
                         os.chdir('..')
                     
                     else:
-                        shutil.move(os.path.join(source_dir , item) , destination_dir)
+                        shutil.move(os.path.join(source_dir , item) , app_destination_dir)
 
-            #BASE_DIR = os.path.join(os.getcwd() , 'AutoClickerBot')
             BASE_DIR = f'{os.path.expanduser("~")}/Music/AutoClickerBot/'
-            print(BASE_DIR)
+
             os.chdir(BASE_DIR)
             self.write_files.write_app_version(semantic_input)
             self.write_files.write_new_version_update_flag(1)
             self.driver.quit_driver()
-            print('SUCCESS!')
+            print('The new version has been downloaded, installed and files have been replaced successfully.')
             os.execv(sys.executable , [sys.executable, "-m", "app.main"])
         
         except Exception as e:

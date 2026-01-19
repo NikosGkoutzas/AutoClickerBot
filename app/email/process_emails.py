@@ -2,6 +2,7 @@ from .process_emails_interface import ProcessEmailsInterface
 from ..files.read_files_interface import ReadFilesInterface
 from ..files.write_files_interface import WriteFilesInterface
 from ..driver.driver_interface import DriverInterface
+from dotenv import load_dotenv
 import inject , os , shutil , sys
 
 
@@ -61,7 +62,7 @@ class ProcessEmails(ProcessEmailsInterface):
         if(not (len(list_changed_credentials) == 1 or len(list_changed_credentials) == 2) ):
             return 'Please ensure your request includes one or two credential updates: username or password.'    
             
-            
+        load_dotenv(override=True)
         old_username = os.getenv('site_username')
         old_password = os.getenv('site_password')
         new_username = None
@@ -128,6 +129,7 @@ class ProcessEmails(ProcessEmailsInterface):
             source_dir = f'{os.getcwd()}/AutoClickerBot/app'
             
             home_folder_path = os.path.expanduser("~")
+            load_dotenv(override=True)
             autoClickerBot_folder_path = f'{home_folder_path}/{os.getenv('folder_path_to_app')}/AutoClickerBot'
             
             app_destination_dir = os.path.join(autoClickerBot_folder_path , 'app')

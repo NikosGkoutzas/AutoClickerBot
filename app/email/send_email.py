@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 from ..files.read_files_interface import ReadFilesInterface
 from ..messages.email_messages_interface import EmailMessagesInterface
 from ..calculations.calculations_interface import CalculationInterface
-from datetime import datetime
+from dotenv import load_dotenv
 import smtplib , os , inject
 
 
@@ -25,6 +25,7 @@ class SendEmail(SendEmailInterface):
     def send_email_general(self , title: str , body_message: str , email_receiver: str) -> None:
         message = MIMEMultipart('alternative')
         message['subject'] = title
+        load_dotenv(override=True)
         email_sender = os.getenv('email_sender')
         message['From'] = email_sender
         message['To'] = email_receiver
@@ -40,6 +41,7 @@ class SendEmail(SendEmailInterface):
 
 
     def send_email_to_all_receivers(self , title: str , message: str) -> None:
+        load_dotenv(override=True)
         self.send_email_general(title=title , body_message=message , email_receiver=os.getenv('email_receiver_1'))
         self.send_email_general(title=title , body_message=message , email_receiver=os.getenv('email_receiver_2'))
 

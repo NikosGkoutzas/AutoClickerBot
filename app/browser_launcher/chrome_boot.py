@@ -1,11 +1,8 @@
 from .chrome_boot_interface import ChromeBootInterface
 from ..files.write_files_interface import WriteFilesInterface
-from dotenv import load_dotenv
 from ..paths.paths import chrome_path , user_data_dir , port
 import subprocess , inject
 
-
-load_dotenv()
 
 
 class ChromeBoot(ChromeBootInterface):

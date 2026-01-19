@@ -4,6 +4,7 @@ from ..files.read_files_interface import ReadFilesInterface
 from ..files.write_files_interface import WriteFilesInterface
 from datetime import datetime
 from ..messages.numbers import number
+from dotenv import load_dotenv
 import os , time , inject
 
 
@@ -43,6 +44,7 @@ class Calculations(CalculationInterface):
 
     def updates_completed(self) -> bool:
         current_updates = self.read_files.read_total_updates()
+        load_dotenv(override=True)
         total_updates = int(os.getenv('total_required_updates'))
         return current_updates == total_updates
 
@@ -163,6 +165,7 @@ class Calculations(CalculationInterface):
     
     
     def delay_between_updates(self) -> int:
+        load_dotenv(override=True)
         total_required_updates = int(os.getenv('total_required_updates')) 
         total_current_updates = self.read_files.read_total_updates()
         current_time = datetime.now().replace(microsecond=0)

@@ -47,7 +47,6 @@ class Run(RunInterface):
             
         self.chrome_boot.boot()
         self.driver.start_driver()
-        self.driver.open_url('https://www.car.gr/login/')
         #wait_for_captcha = 60 # sec.
         #print(f'Wait {wait_for_captcha} seconds to allow captcha detection...')
         #time.sleep(wait_for_captcha)

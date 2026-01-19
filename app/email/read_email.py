@@ -7,6 +7,7 @@ from ..files.read_files_interface import ReadFilesInterface
 from ..files.write_files_interface import WriteFilesInterface
 from ..driver.driver_interface import DriverInterface
 from ..action.action_interface import ActionInterface
+from dotenv import load_dotenv
 import email.message , inject
 
 
@@ -35,6 +36,7 @@ class ReadEmail(ReadEmailInterface):
         self.SMTP_SERVER = 'imap.gmail.com'                                         # server domain
         self.SMTP_PORT = 993                                                        # port
         mail = imaplib.IMAP4_SSL(self.SMTP_SERVER)                                  # connect to gmail server
+        load_dotenv(override=True)
         mail.login(os.getenv('email_sender') , os.getenv('email_sender_password'))  # login to gmail with credentials
         mail.select('inbox')                                                        # select inbox
         data = mail.search(None , 'ALL')                                            # ('OK', [b'1 2 3 4 5 6'])

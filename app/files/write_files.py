@@ -2,6 +2,7 @@ from .write_files_interface import WriteFilesInterface
 from .read_files_interface import ReadFilesInterface
 from .filenames import *
 from datetime import datetime
+from dotenv import load_dotenv
 import inject
 
 
@@ -14,6 +15,7 @@ class WriteFiles(WriteFilesInterface):
 
     def compute_delay_between_updates(self) -> None:
         try:
+            load_dotenv(override=True)
             total_required_updates = int(os.getenv('total_required_updates'))
             current_time = datetime.now().replace(microsecond=0)
             end_time_from_file = str(self.read_files.read_end_time())

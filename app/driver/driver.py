@@ -9,6 +9,7 @@ from ..paths.paths import port
 from .driver_interface import DriverInterface
 from ..files.write_files_interface import WriteFilesInterface
 from ..files.read_files_interface import ReadFilesInterface
+from dotenv import load_dotenv
 import os , time , pyautogui , inject
 
 
@@ -49,6 +50,7 @@ class Driver(DriverInterface):
     def login(self) -> int:
         total_attempts = 3
         
+        self.accept_cookies()
         self.is_captcha_active_before_login_credentials()
             
         for _ in range(total_attempts):
@@ -56,6 +58,7 @@ class Driver(DriverInterface):
                 return 1
             
             try:
+                load_dotenv(override=True)
                 site_username = os.getenv('site_username')
                 site_password = os.getenv('site_password')
                 username_input = self.find_input("#input-username")
@@ -117,6 +120,8 @@ class Driver(DriverInterface):
     
     
     def accept_cookies(self) -> bool:
+        self.open_url('https://www.car.gr/login/')
+        
         if not self.has_cookies_popup():
             return False
 
@@ -175,8 +180,6 @@ class Driver(DriverInterface):
             button.click()
             state_span = button.find_element(By.XPATH, ".//span[contains(@class,'tw-max-w-full')]")
             text = state_span.text.strip()
-            print(f'{self.read_files.read_total_updates()}/{os.getenv('total_required_updates')} machines updated.')
-            
             return text == 'Ανανέωση'
 
         except TimeoutException as e:
@@ -256,7 +259,9 @@ class Driver(DriverInterface):
             self.write_files.write_number_of_captcha_challenge()
             width , height = pyautogui.size()
             pyautogui.FAILSAFE = False
-            pyautogui.moveTo(width / 2 - 345 , height / 2 - 105 , duration=1)
+            x = -345
+            y = -105
+            pyautogui.moveTo(width / 2 + x , height / 2 + y , duration=1)
             
             captcha_attempts = 10
             for i in range(captcha_attempts):
@@ -287,19 +292,21 @@ class Driver(DriverInterface):
             self.write_files.write_number_of_captcha_challenge()
             width , height = pyautogui.size()
             pyautogui.FAILSAFE = False
-            pyautogui.moveTo(width / 2 - 100 , height / 2 + 60 , duration=1)
+            x = -100
+            y = 60
+            pyautogui.moveTo(width / 2 + x , height / 2 + y , duration=1)
 
             captcha_attempts = 10
             for i in range(captcha_attempts):
-                if(self.wrong_credentials_in_login()):
-                    return 3
-
                 if(not self.is_logged_in()):
                     pyautogui.click()
                     time.sleep(7)
                     
-                else:
+                if(self.is_logged_in()):
                     return 0
+                
+                elif(self.wrong_credentials_in_login()):
+                    return 3
             
             if(not self.is_logged_in()):
                 return 2

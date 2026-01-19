@@ -3,7 +3,8 @@ from ..driver.driver_interface import DriverInterface
 from ..files.read_files_interface import ReadFilesInterface
 from ..files.write_files_interface import WriteFilesInterface
 from ..email.send_email_interface import SendEmailInterface
-import inject
+from dotenv import load_dotenv
+import inject , os
 
 
 
@@ -37,6 +38,8 @@ class Action(ActionInterface):
             current_pos = self.read_files.read_url_current_pos()
             self.write_files.write_update_number_of_machine(current_pos)
             self.write_files.write_total_updates()
+            load_dotenv(override=True)
+            print(f'{self.read_files.read_total_updates()}/{os.getenv('total_required_updates')} machines updated.')
             
         self.write_files.write_url_current_pos()
         
@@ -64,9 +67,11 @@ class Action(ActionInterface):
             
         if(flag == 2):
             self.send_email.send_email_captcha_failed_to_solve()
+            exit(0)
             
         elif(flag == 3):
             self.send_email.send_email_unable_to_login()
+            exit(0)
             
 
     

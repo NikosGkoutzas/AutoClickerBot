@@ -21,11 +21,6 @@ class DriverInterface(ABC):
     def logout(self) -> None:
         pass
     
-    
-    @abstractmethod
-    def accept_cookies(self) -> bool:
-        pass
-    
 
     @abstractmethod
     def update_machine(self , url_link: str) -> bool:

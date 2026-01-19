@@ -1,5 +1,6 @@
 from .email_messages_interface import EmailMessagesInterface
 from datetime import datetime
+from dotenv import load_dotenv
 import os
 
 
@@ -42,6 +43,7 @@ class EmailMessages(EmailMessagesInterface):
         
         
     def launch_app_body_message(self) -> str:
+        load_dotenv(override=True)
         developer = 'Nikos Gkoutzas'
         developer_email = 'nickgkoutzas@gmail.com'
         body_add = 'The urls you want to add one per line.'
@@ -306,6 +308,8 @@ class EmailMessages(EmailMessagesInterface):
                                   inserted_machines: int ,
                                   removed_machines: int ,
                                   updated_result: str) -> str:
+        
+        load_dotenv(override=True)
         analytics_link = 'https://www.car.gr/analytics/overview?fbclid=IwAR0PP4jRq9XOQROeGJIRON7gSMOO4RPUDBAEiJXrPPhg44pTBiZNRsS6vz4&date-preset=lastDay'
         analytics_display_name = 'analytics'
         analytics = f'<a href="{analytics_link}">{analytics_display_name}</a>'

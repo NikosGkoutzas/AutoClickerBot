@@ -47,9 +47,9 @@ class Run(RunInterface):
             
         self.chrome_boot.boot()
         self.driver.start_driver()
-        #wait_for_captcha = 60 # sec.
-        #print(f'Wait {wait_for_captcha} seconds to allow captcha detection...')
-        #time.sleep(wait_for_captcha)
+        wait_for_captcha = 60 # sec.
+        print(f'Wait {wait_for_captcha} seconds to allow captcha detection...')
+        time.sleep(wait_for_captcha)
         print('System launched!')
         self.action.check_login()
         

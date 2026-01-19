@@ -256,9 +256,12 @@ class Driver(DriverInterface):
         if("needs to review the security" in self.driver.page_source.lower()):
             self.write_files.write_number_of_captcha_challenge()
             width , height = pyautogui.size()
-            pyautogui.FAILSAFE = False
+            
+            # (SOS) Coordinates for my laptop (Dell). These may vary for other laptops.
             x = -345
             y = -105
+            
+            pyautogui.FAILSAFE = False
             pyautogui.moveTo(width / 2 + x , height / 2 + y , duration=1)
             
             captcha_attempts = 10
@@ -289,9 +292,15 @@ class Driver(DriverInterface):
         if(self.captcha_challenge_after_login_credentials()):
             self.write_files.write_number_of_captcha_challenge()
             width , height = pyautogui.size()
-            pyautogui.FAILSAFE = False
+            
+            # (SOS) Coordinates for my laptop (Dell). These may vary for other laptops.
             x = -100
-            y = 60
+            #y = 60
+            
+            # Coordinates for other laptop.
+            y = 15
+            
+            pyautogui.FAILSAFE = False
             pyautogui.moveTo(width / 2 + x , height / 2 + y , duration=1)
 
             captcha_attempts = 10

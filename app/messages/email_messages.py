@@ -1026,8 +1026,9 @@ class EmailMessages(EmailMessagesInterface):
     
 
     def unable_to_login_body_message(self) -> str:
-        msg = 'Sign-in failed. Authentication was unsuccessful after 3 attempts due to invalid username or password. Please verify your credentials.'
-        
+        msg = 'Sign-in failed after 3 unsuccessful authentication attempts due to invalid credentials.\
+               TeamViewer has been launched and the system is now available for remote access to allow manual resolution of the issue.'
+               
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>
@@ -1055,8 +1056,9 @@ class EmailMessages(EmailMessagesInterface):
     
     def captcha_failed_to_solve_body_message(self) -> str:
         captcha_attempts = 10
-        msg = f'Login failed. A CAPTCHA challenge blocked the process after {captcha_attempts} attempts. Manual verification is required.'        
-        
+        msg = f'Login failed. A CAPTCHA challenge blocked the process after {captcha_attempts} attempts. \
+                TeamViewer has been launched and the system is now available for remote access to allow manual resolution of the issue.'
+               
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>

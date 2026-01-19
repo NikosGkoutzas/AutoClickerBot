@@ -113,7 +113,7 @@ class Calculations(CalculationInterface):
             current_time = datetime.now()
             time_of_sleep_minus_10_sec = datetime.now().replace(hour=start_time_hour - 1 , minute=59 , second=50 , microsecond=0)
             seconds_difference = (time_of_sleep_minus_10_sec - current_time).total_seconds()
-            
+            print(f'Sleeping until {self.read_files.read_start_time()} ...')
             time.sleep(seconds_difference)
 
         except Exception as e:

@@ -126,9 +126,7 @@ class Driver(DriverInterface):
             return False
 
         try:
-            button = WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable((By.ID, "accept-btn"))
-            )
+            button = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID , "accept-btn")))
             button.click()
             return True
         
@@ -216,7 +214,7 @@ class Driver(DriverInterface):
             
     def has_cookies_popup(self) -> bool:
         try:
-            WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.ID, "onetrust-banner-sdk")))
+            WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.XPATH, "//button[@id='accept-btn']")))
             return True
         
         except TimeoutException:

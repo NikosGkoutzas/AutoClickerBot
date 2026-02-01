@@ -20,6 +20,20 @@ class ProcessEmails(ProcessEmailsInterface):
 
 
     def process_add_link_email(self , list_added_links: list[str]) -> tuple[list[str] , list[str]]:
+        '''
+        Processes a list of links received via email and categorizes them
+        into valid and invalid links.
+
+        A link is considered invalid if: - it already exists in the stored URLs, or
+                                         - it does not start with the expected car.gr base URL, or
+                                         - it does not end with the expected vendor identifier ('electronord-gr').
+
+        Valid links are stored and returned separately.
+
+        :Parameters: list_added_links (list[str]): A list of links extracted from the email.
+        :Returns: tuple[list[str], list[str]]: - A list of valid links that were successfully stored.
+                                               - A list of invalid links that were rejected.
+        '''
         invalid_links = []
         valid_links = []
 
@@ -40,6 +54,21 @@ class ProcessEmails(ProcessEmailsInterface):
 
     
     def process_remove_link_email(self , list_removed_links: list[str]) -> tuple[list[str] , list[str]]:
+        '''
+        Processes a list of links received via email and categorizes them
+        into removable (valid) and invalid links.
+
+        A link is considered invalid if: - it does not exist in the stored URLs, or
+                                         - it does not start with the expected car.gr base URL, or
+                                         - it does not end with the expected vendor identifier ('electronord-gr').
+
+        Valid links are removed from storage and returned separately.
+
+        :Parameters: list_removed_links (list[str]): A list of links extracted from the email that
+                                                     are requested to be removed.
+        :Returns: tuple[list[str], list[str]]: - A list of successfully removed links.
+                                               - A list of invalid links that could not be removed.
+        '''
         invalid_links = []
         valid_links = []
 
@@ -58,7 +87,29 @@ class ProcessEmails(ProcessEmailsInterface):
     
     
     
-    def process_change_credentials_email(self , list_changed_credentials: list[str]) -> str:        
+    def process_change_credentials_email(self , list_changed_credentials: list[str]) -> str:
+        '''
+        Processes a request received via email to update login credentials
+        (username and/or password).
+
+        The request must contain either one or two credential entries, formatted as:
+            - "username:<new_username>"
+            - "password:<new_password>"
+
+        Validation rules: - Only one username and one password may be provided.
+                          - The new username or password must differ from the existing values.
+                          - At least one valid credential update must be included.
+                          - Requests with invalid structure or duplicate fields are rejected.
+
+        If the validation succeeds, the credentials are updated in the environment
+        configuration file.
+
+        :Parameters: list_changed_credentials (list[str]): A list of credential update strings
+                                                           extracted from the email.
+        :Returns: str: - 'Ok' if the credentials were successfully updated.
+                       - An explanatory error message if the request is invalid
+                         or cannot be applied.
+        '''
         if(not (len(list_changed_credentials) == 1 or len(list_changed_credentials) == 2) ):
             return 'Please ensure your request includes one or two credential updates: username or password.'    
             
@@ -107,7 +158,23 @@ class ProcessEmails(ProcessEmailsInterface):
     
     
     def process_new_version_email(self , list_semantic_versioning: list[str]) -> tuple[bool , str]:
-        
+        '''
+        Processes a request received via email to determine the type of
+        semantic version increment to apply.
+
+        The function expects a list containing a single value indicating
+        the desired version change. Supported values are: - "major"
+                                                          - "minor"
+                                                          - "patch"
+
+        The comparison is case-insensitive and ignores leading/trailing whitespace.
+
+        :Parameters: list_semantic_versioning (list[str]): A list of versioning instructions
+                                                           extracted from the email.
+        :Returns: tuple[bool, str]: - True and the normalized version type ("major", "minor", or "patch")
+                                      if the request is valid.
+                                    - False and None if the request is invalid or unsupported.
+        '''
         if(list_semantic_versioning and list_semantic_versioning[0].strip().lower() in ['major' , 'minor' , 'patch']):
             return True , list_semantic_versioning[0].strip().lower()
         
@@ -115,7 +182,25 @@ class ProcessEmails(ProcessEmailsInterface):
     
     
     
-    def download_new_version_from_github(self , semantic_input: str) -> bool:
+    
+    def process_download_new_version_from_github(self , semantic_input: str) -> bool:
+        '''
+        Downloads and installs a new version of the application from GitHub.
+
+        The function clones the latest version of the repository into a temporary
+        directory, replaces the existing application files while preserving
+        critical configuration and data directories, updates the application
+        version, and restarts the application.
+
+        Certain files and folders (such as environment files and stored data)
+        are excluded from deletion to ensure continuity.
+
+        :Parameters: semantic_input (str): The semantic version update type
+                                           applied (e.g. "major", "minor", "patch").
+        :Returns: bool: - True if the new version was successfully downloaded, installed,
+                          and the application was restarted.
+                        - False if an error occurred during the update process.
+        '''
         try:
             tmp_folder_dir = os.path.join(os.getcwd() , 'NewVersionTmpFolder')
             

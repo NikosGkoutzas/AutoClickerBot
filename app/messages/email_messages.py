@@ -1,10 +1,23 @@
 from .email_messages_interface import EmailMessagesInterface
+from ..files.read_files_interface import ReadFilesInterface
 from datetime import datetime
 from dotenv import load_dotenv
-import os
+import os , inject
 
 
 class EmailMessages(EmailMessagesInterface):
+    '''
+    This class generates well-formatted email subjects and HTML bodies for the application.
+    It centralizes all email content, ensuring consistent layout, styling, and messaging.
+    The class only builds messages and is used by other components that handle sending emails.
+    '''
+
+    @inject.autoparams()
+    def __init__(self , read_files_interface: ReadFilesInterface):
+        self.read_files = read_files_interface
+        
+        
+        
     def time_message(self) -> str:
         time_message = datetime.now().replace(microsecond=0).strftime('%b %d, %Y - %H:%M:%S')
         return f'''
@@ -37,7 +50,7 @@ class EmailMessages(EmailMessagesInterface):
         
         
         
-    def launch_app_title_message(self) -> str:
+    def launch_app_subject_message(self) -> str:
         return '✅ Application Launch'
         
         
@@ -59,16 +72,13 @@ class EmailMessages(EmailMessagesInterface):
         body_example_username_credential = 'username: admin'
         body_example_password_credential = 'password: •••••'
         action_credentials = 'Updates the user login credentials.'
+        action_start_teamviewer = 'Enables remote access via TeamViewer using your access credentials.'
+        action_stop_teamviewer = 'Disables remote access and closes TeamViewer.'
         email = os.getenv('email_sender')
         perform_email = f'To perform an action, send an email to {email}.'
         summary_email = 'A summary email is sent every day at 23:55.'
         confirmation_email = 'A confirmation email will be sent.'
-        
-        ##### prepei na to kanw me inject <<<<<<<<<<<<<<<<<<<<
-        from ..files.read_files import ReadFiles
-        rf = ReadFiles()
-        app_version = rf.read_app_version()
-        
+                
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>
@@ -101,7 +111,7 @@ class EmailMessages(EmailMessagesInterface):
                         </tr>
                         <tr>
                             <td><i>Version</i></td>
-                            <td align="right">{app_version}</td>
+                            <td align="right">{self.read_files.read_app_version()}</td>
                         </tr>
                     </table>
                 </td>
@@ -127,7 +137,7 @@ class EmailMessages(EmailMessagesInterface):
                         <!-- ADD -->
                         <tr>
                             <td style='padding-right:7px;  vertical-align:top;'>⤵️</td>
-                            <td><i>Title:</i></td>
+                            <td><i>Subject:</i></td>
                             <td><b>Add</b></td>
                         </tr>
                         <tr>
@@ -144,7 +154,7 @@ class EmailMessages(EmailMessagesInterface):
                         <!-- DELETE -->
                         <tr>
                             <td style='padding-right:7px;  vertical-align:top;'>⤴️</td>
-                            <td><i>Title:</i></td>
+                            <td><i>Subject:</i></td>
                             <td><b>Delete</b></td>
                         </tr>
                         <tr>
@@ -160,7 +170,7 @@ class EmailMessages(EmailMessagesInterface):
                         <!-- UPDATE NEW VERSION -->
                         <tr>
                             <td style='padding-right:7px;  vertical-align:top;'>⚙️</td>
-                            <td><i>Title:</i></td>
+                            <td><i>Subject:</i></td>
                             <td><b>Update</b></td>
                         </tr>
                         <tr>
@@ -182,7 +192,7 @@ class EmailMessages(EmailMessagesInterface):
                         <!-- PROGRESS -->
                         <tr>
                             <td style='padding-right:7px;  vertical-align:top;'>📝</td>
-                            <td><i>Title:</i></td>
+                            <td><i>Subject:</i></td>
                             <td><b>Progress</b></td>
                         </tr>
                         <tr>
@@ -193,7 +203,7 @@ class EmailMessages(EmailMessagesInterface):
                         <!-- LINKS -->
                         <tr>
                             <td style='padding-right:7px;  vertical-align:top;'>📎</td>
-                            <td><i>Title:</i></td>
+                            <td><i>Subject:</i></td>
                             <td><b>Links</b></td>
                         </tr>
                         <tr>
@@ -204,7 +214,7 @@ class EmailMessages(EmailMessagesInterface):
                         <!-- UPDATE CREDENTIALS -->
                         <tr>
                             <td style='padding-right:7px;  vertical-align:top;'>🔐</td>
-                            <td><i>Title:</i></td>
+                            <td><i>Subject:</i></td>
                             <td><b>Credentials</b></td>
                         </tr>
                         <tr>
@@ -225,7 +235,31 @@ class EmailMessages(EmailMessagesInterface):
                         <tr>
                             <td></td>
                             <td style='width:60px;  vertical-align:top;'><i>Action:</i></td>
-                            <td>{action_credentials}<br></td>
+                            <td>{action_credentials}<br><br></td>
+                        </tr>
+                        
+                        <!-- ENABLE REMOTE ACCESS VIA TEAMVIEWER -->
+                        <tr>
+                            <td style='padding-right:7px;  vertical-align:top;'>▶️</td>
+                            <td><i>Subject:</i></td>
+                            <td><b>Start teamviewer</b></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td style='width:60px;  vertical-align:top;'><i>Action:</i></td>
+                            <td>{action_start_teamviewer}<br><br></td>
+                        </tr>
+                        
+                        <!-- DISABLES REMOTE ACCESS AND CLOSES TEAMVIEWER -->
+                        <tr>
+                            <td style='padding-right:7px;  vertical-align:top;'>⏹️</td>
+                            <td><i>Subject:</i></td>
+                            <td><b>Stop teamviewer</b></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td style='width:60px;  vertical-align:top;'><i>Action:</i></td>
+                            <td>{action_stop_teamviewer}<br></td>
                         </tr>
                     </table>
                     
@@ -249,7 +283,7 @@ class EmailMessages(EmailMessagesInterface):
         
         
         
-    def no_internet_title_message(self) -> str:
+    def no_internet_subject_message(self) -> str:
         return '🌐 Internet Restored'
     
     
@@ -280,12 +314,8 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
             <tr><br></tr>
             <tr>
-                <td colspan="2" align="center" style="padding-top:12px;">Connection was restored at<br></td>
+                <td colspan="2" align="center" style="padding-top:12px;">Connection was restored at {restored}<br><br></td>
             </tr>
-            <tr>
-                <td colspan="2" align="center">{restored}</td>
-            </tr>
-            <tr><br></tr>
             <tr>
                 <td>{self.built_with_python_and_copyright_message()}</td>
             </tr>
@@ -296,7 +326,7 @@ class EmailMessages(EmailMessagesInterface):
 
 
 
-    def daily_report_title_message(self) -> str:
+    def daily_report_subject_message(self) -> str:
         return '📊 Daily Report'
 
 
@@ -382,7 +412,7 @@ class EmailMessages(EmailMessagesInterface):
 
 
 
-    def new_version_started_title_message(self) -> str:
+    def new_version_started_subject_message(self) -> str:
         return '✅ Application Updated'
     
     
@@ -415,7 +445,7 @@ class EmailMessages(EmailMessagesInterface):
         
         
     
-    def credentails_update_title_message(self , cond_str: str) -> str:
+    def credentails_update_subject_message(self , cond_str: str) -> str:
         return '✅ Credentials Updated' if cond_str.lower() == 'ok' else '❌ Credentials Update Failed'
     
     
@@ -453,7 +483,7 @@ class EmailMessages(EmailMessagesInterface):
         
         
         
-    def progress_title_message(self) -> str:
+    def progress_subject_message(self) -> str:
         return '📝 Progress Update'
     
     
@@ -462,13 +492,25 @@ class EmailMessages(EmailMessagesInterface):
                               number_of_machines: int ,
                               current_updates: int ,
                               current_errors: int ,
+                              internet_errors: int ,
                               most_recent_error: str ,
                               added_machines: int ,
                               removed_machines: int ,
                               captcha_challenges: int ,
                               version: str
                               ) -> str:
-
+        
+        most_recent_error_row = ''
+        internet_errors_row = ''
+        
+        if(current_errors != 0):
+            most_recent_error_row = f'''
+                                     <tr>
+                                            <td><b>Most recent error</b></td>
+                                            <td align="right">{most_recent_error}</td>
+                                     </tr>
+                                     '''
+            
         return f'''
         <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed;">
             <tr>
@@ -477,7 +519,7 @@ class EmailMessages(EmailMessagesInterface):
                 </td>
             </tr>
             <tr><br></tr>
-            {f'''<tr>
+            <tr>
                 <td width="100%" style="padding:0; margin:0;">
                     <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:15px; border-radius:16px;">
                         <tr>
@@ -489,9 +531,14 @@ class EmailMessages(EmailMessagesInterface):
                             <td align="right">{current_updates}</td>
                         </tr>
                         <tr>
-                            <td><b>Current errors</b></td>
+                            <td><b>General errors</b></td>
                             <td align="right">{current_errors}</td>
                         </tr>
+                        <tr>
+                            <td><b>Internet errors</b></td>
+                            <td align="right">{internet_errors}</td>
+                        </tr>
+                        {most_recent_error_row}
                         <tr>
                             <td><b>Added machines</b></td>
                             <td align="right">{added_machines}</td>
@@ -510,45 +557,6 @@ class EmailMessages(EmailMessagesInterface):
                         </tr> 
                     </table>
                 </td>
-            ''' if(current_errors == 0) else
-            f'''
-                <td width="100%" style="padding:0; margin:0;">
-                    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:15px; border-radius:16px;">
-                        <tr>
-                            <td><b>Number of machines</b></td>
-                            <td align="right">{number_of_machines}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Current updates</b></td>
-                            <td align="right">{current_updates}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Current errors:</b></td>
-                            <td align="right">{current_errors}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Most recent error</b></td>
-                            <td align="right">{most_recent_error}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Added machines</b></td>
-                            <td align="right">{added_machines}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Removed machines</b></td>
-                            <td align="right">{removed_machines}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Captcha challenges</b></td>
-                            <td align="right">{captcha_challenges}</td>
-                        </tr>
-                        <tr>
-                            <td><b>App version</b></td>
-                            <td align="right">{version}</td>
-                        </tr>
-                    </table>
-                </td>
-            '''}
             <tr><br></tr>
             <tr>
                 <td width="100%" style="padding:0; margin:0;">
@@ -597,7 +605,7 @@ class EmailMessages(EmailMessagesInterface):
                 
 
 
-    def machine_inserted_title_message(self , number_of_inserted_machines: int , invalid_machines: list[str]) -> str:
+    def machine_inserted_subject_message(self , number_of_inserted_machines: int , invalid_machines: list[str]) -> str:
         if(number_of_inserted_machines == 1):
             if(len(invalid_machines) > 0):
                 return '⚠️ Partial Machine Insertion'
@@ -751,7 +759,7 @@ class EmailMessages(EmailMessagesInterface):
         
         
         
-    def machine_removed_title_message(self , number_of_removed_machines: int , not_existing_machines: list[str]) -> str:
+    def machine_removed_subject_message(self , number_of_removed_machines: int , not_existing_machines: list[str]) -> str:
         if(number_of_removed_machines == 1):
             if(len(not_existing_machines) > 0):
                 return '⚠️ Partial Machine Removal'
@@ -902,7 +910,7 @@ class EmailMessages(EmailMessagesInterface):
         
         
 
-    def error_installing_new_version_title_message(self) -> str:
+    def error_installing_new_version_subject_message(self) -> str:
         return '❌ New Version Failed To Install'
     
     
@@ -984,7 +992,7 @@ class EmailMessages(EmailMessagesInterface):
     
     
     
-    def see_all_available_links_title_message(self) -> str:
+    def see_all_available_links_subject_message(self) -> str:
         return '📎 All Available Links'
     
     
@@ -1020,7 +1028,7 @@ class EmailMessages(EmailMessagesInterface):
     
     
     
-    def unable_to_login_title_message(self) -> str:
+    def unable_to_login_subject_message(self) -> str:
         return '👤 Login Failed'
     
     
@@ -1049,12 +1057,12 @@ class EmailMessages(EmailMessagesInterface):
         
         
         
-    def captcha_failed_to_solve_title_message(self) -> str:
+    def captcha_failed_to_solve_subject_message(self) -> str:
         return '🚨 Captcha Manual Verification'
     
     
     
-    def captcha_failed_to_solve_body_message(self) -> str:
+    def captcha_failed_to_solve_in_login_body_message(self) -> str:
         captcha_attempts = 10
         msg = f'Login failed. A CAPTCHA challenge blocked the process after {captcha_attempts} attempts. \
                 TeamViewer has been launched and the system is now available for remote access to allow manual resolution of the issue.'
@@ -1078,16 +1086,42 @@ class EmailMessages(EmailMessagesInterface):
         '''
         
         
+    
+    def captcha_failed_to_solve_body_message(self) -> str:
+        captcha_attempts = 10
+        msg = f'A CAPTCHA challenge blocked the process after {captcha_attempts} attempts. \
+                TeamViewer has been launched and the system is now available for remote access to allow manual resolution of the issue.'
+               
+        return f'''
+        <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
+            <tr>
+                <td width="100%" style="padding:0; margin:0;">
+                    {self.time_message()}
+                </td>
+            </tr>
+            <tr><br></tr>
+            <tr>
+                <td colspan="2" align="center" style="padding-top:12px;">{msg}</td>
+            </tr>
+            <tr><br><br></tr>
+            <tr>
+                <td>{self.built_with_python_and_copyright_message()}</td>
+            </tr>
+        </table>
+        '''
         
         
-    def notify_every_10_errors_title_message(self) -> str:
+        
+        
+    def notify_every_10_errors_subject_message(self) -> str:
         return '⚠️ Error Status Update'
         
     
     
     def notify_every_10_errors_body_message(self , errors: int) -> str:
-        msg = f'The system has reached {errors} errors. An email with the title \'TeamViewer\' may be sent to enable \
-                TeamViewer access for further review.'
+        msg = f'The system has reached {errors} errors. An email with the subject \'start teamviewer\' may be sent to enable \
+                TeamViewer access for further review.<br>⚠️ Once the review is complete, access should be disabled by sending an \
+                email with the subject \'stop teamviewer\'.'
 
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
@@ -1110,15 +1144,128 @@ class EmailMessages(EmailMessagesInterface):
         
         
         
-    def connect_via_teamviewer_title_message(self) -> str:
-        return '🖥️ Connect Via TeamViewer'
+    def teamviewer_connected_subject_message(self) -> str:
+        return '🟢 TeamViewer Connected'
     
     
     
 
-    def connect_via_teamviewer_body_message(self) -> str:
-        msg = 'TeamViewer has been launched and the system is now available for remote access.'
+    def teamviewer_connected_body_message(self) -> str:
+        msg = 'TeamViewer has been launched and the system is now available for remote access.<br>\
+               ⚠️ Once the review is complete, access should be disabled by sending an \
+               email with the subject \'stop teamviewer\'.'
         
+        return f'''
+        <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
+            <tr>
+                <td width="100%" style="padding:0; margin:0;">
+                    {self.time_message()}
+                </td>
+            </tr>
+            <tr><br></tr>
+            <tr>
+                <td colspan="2" align="center" style="padding-top:12px;">{msg}</td>
+            </tr>
+            <tr><br><br></tr>
+            <tr>
+                <td>{self.built_with_python_and_copyright_message()}</td>
+            </tr>
+        </table>
+        '''
+    
+    
+    
+    def teamviewer_disconnected_subject_message(self) -> str:
+        return '🔴 TeamViewer Disconnected'
+    
+    
+    def teamviewer_disconnected_body_message(self) -> str:
+        msg = 'TeamViewer remote access has been successfully disabled.'
+        
+        return f'''
+        <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
+            <tr>
+                <td width="100%" style="padding:0; margin:0;">
+                    {self.time_message()}
+                </td>
+            </tr>
+            <tr><br></tr>
+            <tr>
+                <td colspan="2" align="center" style="padding-top:12px;">{msg}</td>
+            </tr>
+            <tr><br><br></tr>
+            <tr>
+                <td>{self.built_with_python_and_copyright_message()}</td>
+            </tr>
+        </table>
+        '''
+    
+    
+    
+    
+    
+    def teamviewer_connection_already_opened_subject_message(self) -> str:
+        return '⚠️ TeamViewer Already Opened'
+    
+    
+    def teamviewer_connection_already_opened_body_message(self) -> str:
+        msg = 'TeamViewer remote access is already enabled.'
+        
+        return f'''
+        <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
+            <tr>
+                <td width="100%" style="padding:0; margin:0;">
+                    {self.time_message()}
+                </td>
+            </tr>
+            <tr><br></tr>
+            <tr>
+                <td colspan="2" align="center" style="padding-top:12px;">{msg}</td>
+            </tr>
+            <tr><br><br></tr>
+            <tr>
+                <td>{self.built_with_python_and_copyright_message()}</td>
+            </tr>
+        </table>
+        '''
+    
+    
+    def teamviewer_connection_already_closed_subject_message(self) -> str:
+        return '⚠️ TeamViewer Already Closed'
+    
+    
+    def teamviewer_connection_already_closed_body_message(self) -> str:
+        msg = 'TeamViewer remote access is already disabled.'
+        
+        return f'''
+        <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
+            <tr>
+                <td width="100%" style="padding:0; margin:0;">
+                    {self.time_message()}
+                </td>
+            </tr>
+            <tr><br></tr>
+            <tr>
+                <td colspan="2" align="center" style="padding-top:12px;">{msg}</td>
+            </tr>
+            <tr><br><br></tr>
+            <tr>
+                <td>{self.built_with_python_and_copyright_message()}</td>
+            </tr>
+        </table>
+        '''
+    
+    
+    
+    
+    def failed_to_open_teamviewer_subject_message(self) -> str:
+        return '❌ TeamViewer Connection Failed'
+        
+        
+    
+    def failed_to_open_teamviewer_body_message(self) -> str:
+        msg = 'TeamViewer failed to start and remote access is currently unavailable. A retry may resolve the issue.'  
+              
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>

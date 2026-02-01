@@ -12,6 +12,18 @@ class ChromeBoot(ChromeBootInterface):
         
         
     def boot(self) -> None:
+        '''
+        Launches the Chrome browser with predefined configuration options.
+        Starts a Chrome instance with a fixed window size and position, enables
+        remote debugging on the specified port and uses a dedicated user data
+        directory.
+        In case of failure, the error is logged and the total error counter is
+        being increased.
+
+        :Parameters: None
+        :Returns: None
+        '''
+        
         try:
             subprocess.Popen(
                                 [

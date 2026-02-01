@@ -30,11 +30,6 @@ class CalculationInterface(ABC):
     
     
     @abstractmethod
-    def compute_time_of_new_version_installation(self) -> datetime.time:
-        pass
-    
-    
-    @abstractmethod
     def delay_between_updates(self) -> int:
         pass
     

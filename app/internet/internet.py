@@ -15,17 +15,25 @@ class Internet(InternetInterface):
         
         
     def check_for_internet_connection(self) -> bool:
+        '''
+        Checks internet connectivity by attempting socket connections to known DNS servers.
+        If connectivity is restored after an outage, a notification email is sent.
+        If all checks fail, internet error counters and timestamps are updated.
+
+        :Parameters: None
+        :Returns: bool
+        '''
         servers = [("1.1.1.1", 53) , ("8.8.8.8", 53)]
 
         for server in servers:
             try:
                 socket.create_connection(server, timeout=2)
-                occured = self.read_files.read_error_datetime()
+                occured = self.read_files.read_last_internet_error_time()
 
                 if(occured):
-                    restored = str(datetime.now().replace(microsecond=0).strftime('%b %d, %Y - %H:%M:%S'))
-                    self.write_files.write_internet_error_date('') # clear
-                    self.send_email.send_email_no_internet_connection(occured.strftime('%b %d, %Y - %H:%M:%S') , restored)
+                    restored = str(datetime.now().replace(microsecond=0).strftime('%H:%M:%S'))
+                    self.write_files.write_last_internet_error_time('') # clear
+                    self.send_email.send_email_no_internet_connection(occured.strftime('%H:%M:%S') , restored)
                 return True
             
             except Exception as e:
@@ -33,8 +41,9 @@ class Internet(InternetInterface):
                 continue
         
         self.write_files.write_total_errors()
-        internet_error_date = self.read_files.read_error_datetime()
+        self.write_files.write_internet_errors()
+        internet_error_date = self.read_files.read_last_internet_error_time()
         
         if(not internet_error_date):
-            self.write_files.write_internet_error_date(str(datetime.now().replace(microsecond=0).strftime('%b %d, %Y - %H:%M:%S')))
+            self.write_files.write_last_internet_error_time(str(datetime.now().replace(microsecond=0).strftime('%H:%M:%S')))
         return False

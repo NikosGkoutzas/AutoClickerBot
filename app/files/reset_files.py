@@ -13,7 +13,6 @@ class ResetFiles(ResetFilesInterface):
     def reset_all_files(self):
         try:
             self.write_files.write_number_in_file(progress_number_filename , 0)
-            self.write_files.write_number_in_file(internet_error_datetime_filename , '')
             self.write_files.write_number_in_file(number_of_captcha_challenges_filename , 0)
             self.write_files.write_number_in_file(number_of_github_updates_filename , 0)
             self.write_files.write_number_in_file(number_of_inserted_machines_filename , 0)
@@ -22,13 +21,48 @@ class ResetFiles(ResetFilesInterface):
             self.write_files.write_number_in_file(total_updates_filename , 0)
             self.write_files.write_number_in_file(url_current_pos_filename , 1)
             self.write_files.write_number_in_file(daily_report_sent_filename , 1)
+            self.write_files.write_number_in_file(internet_errors_filename , 0)
+            self.write_files.write_number_in_file(last_internet_error_time_filename , '')
+            self.write_files.write_number_in_file(last_error_time_filename , '')
             self.write_files.write_check_email_every_20_minutes('06:30:00')
             self.write_files.write_number_in_file(app_started_filename , 0)
             self.write_files.write_number_in_file(app_ended_filename , 0)
             self.write_files.write_number_in_file(delay_per_update_filename , 5)
             self.write_files.write_number_in_file(new_version_update_flag_filename , 0)
-            self.write_files.reset_all_updates_per_machine()
+            self.reset_all_updates_per_machine()
             
         except Exception as e:
             print(f'An error occured while trying to reset all files: {str(e)}')
             self.write_files.write_total_errors()
+            
+            
+            
+            
+            
+
+    def reset_all_updates_per_machine(self) -> None:
+        try:
+            with open(updates_per_machine_filename , 'r') as f:
+                lines = f.readlines()
+                
+            with open(updates_per_machine_filename , 'w') as f:
+                for i in range(len(lines)):
+                    if(i != len(lines) - 1):
+                        f.write('0\n')
+                    else:
+                        f.write('0')
+                
+        except FileNotFoundError:
+            raise ValueError(f'File \'{updates_per_machine_filename}\' not found.')
+        
+        except ValueError:
+            raise ValueError(f'File \'{updates_per_machine_filename}\' does not contain valid integers.')
+            
+        except Exception as e:
+            raise ValueError(f'An error occured: {str(e)}')
+        
+        
+        
+    
+    def reset_total_updates(self) -> None:
+        self.write_files.write_number_in_file(total_updates_filename , 0)

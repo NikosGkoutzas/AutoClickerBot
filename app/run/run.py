@@ -40,16 +40,22 @@ class Run(RunInterface):
         
         
         
-    def run(self):
+    def run(self) -> None:
+        '''
+        Runs the main application loop.
+        Handles application startup, login, scheduled updates,
+        email notifications, internet checks, and daily workflow
+        until the process completes or waits for the next cycle.
+
+        :Parameters: None
+        :Returns: None
+        '''
+
         if(not self.action.latest_version_available()):
             self.reset_files.reset_all_files()
-            print('All files have been reset!')
             
         self.chrome_boot.boot()
         self.driver.start_driver()
-        wait_for_captcha = 60 # sec.
-        print(f'Wait {wait_for_captcha} seconds to allow captcha detection...')
-        time.sleep(wait_for_captcha)
         print('System launched!')
         self.action.check_login()
         
@@ -59,12 +65,14 @@ class Run(RunInterface):
                     self.write_files.write_app_ended()
                     if(self.internet.check_for_internet_connection()):
                         self.send_email.send_email_daily_report()
-                        self.write_files.write_daily_report_sent(1)
-                        self.calculation.sleep_till_next_day()
+                        self.reset_files.reset_all_files()
                         
                     else:
                         self.write_files.write_daily_report_sent(0)
-                    
+                        self.reset_files.reset_total_updates()
+                        
+                    self.calculation.sleep_till_next_day()
+            
             
             else:
                 if(self.calculation.check_emails()):
@@ -77,18 +85,26 @@ class Run(RunInterface):
                             self.write_files.write_daily_report_sent(1)
                             
                         if(self.read_files.read_app_started() == 0):
-                            self.write_files.reset_all_files() # reset all files here, because if daily report is going to be sent
-                                                               # but internet connection has a problem and a few minutes later
-                                                               # restored, all data will be reset and we will gonna send these data
-                                                               # which are the wrong today's data. Also, if daily report was not sent,
-                                                               # this is going to be sent the next day, before 'launch' email and then
-                                                               # all data will be reset.
+                            '''
+                            Reset all files here to avoid sending incorrect daily data.
+                            If the daily report is scheduled to be sent but the internet
+                            connection fails and is restored a few minutes later partial
+                            data may be sent.
+                            Additionally, if the daily report is not sent on the intended day,
+                            it will be sent the next day before the 'launch' email.
+                            After the report is sent, all data will be reset.
+                            '''
+                            self.reset_files.reset_all_files()
                             self.send_email.send_email_launch()
                             self.write_files.write_app_started()
                             
                         self.action.update_machine_procedure()
                         delay = self.calculation.delay_between_updates()
                         self.write_files.write_delay_per_update(delay)
+                        
+                        if(self.read_files.check_errors_occurred_10()):
+                            self.send_email.send_email_every_10_errors_occured()
+                            
                         time.sleep(delay)
                         
                     else:

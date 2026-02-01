@@ -16,3 +16,13 @@ class ActionInterface(ABC):
     @abstractmethod
     def latest_version_available(self) -> bool:
         pass
+    
+    
+    @abstractmethod
+    def open_teamviewer(self) -> None:
+        pass
+    
+    
+    @abstractmethod
+    def close_teamviewer(self) -> None:
+        pass

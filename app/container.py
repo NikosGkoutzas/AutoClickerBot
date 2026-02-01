@@ -1,4 +1,12 @@
-def configure_dependencies(binder):
+def configure_dependencies(binder) -> None:
+    '''
+    Registers all application dependencies and connects interfaces
+    with their concrete implementations.
+    
+    :Parameters: binder: Dependency injection container.
+    :Returns: None
+    '''
+    
     # Files
     from .files.read_files_interface import ReadFilesInterface
     from .files.read_files import ReadFiles

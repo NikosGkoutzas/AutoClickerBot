@@ -1,20 +1,17 @@
 from .read_files_interface import ReadFilesInterface
 from .filenames import *
-import datetime
+from datetime import datetime , time
 
 
 
 class ReadFiles(ReadFilesInterface):
-    def can_app_run_at_current_time(self) -> bool:
-        start_time = self.read_start_time()
-        end_time = self.read_end_time()
-        now = datetime.datetime.now().time()
-
-        return now >= start_time and now < end_time
-
-
-
     def general_read_int(self , filename: str) -> int:
+        '''
+        Reads an integer value from the specified file.
+
+        :Parameters: filename (str): Path to the file containing an integer value.
+        :Returns: int
+        '''
         try:
             with open(filename , 'r') as f:
                 return int(f.read().strip())
@@ -31,6 +28,12 @@ class ReadFiles(ReadFilesInterface):
 
 
     def read_number_of_urls(self) -> int:
+        '''
+        Reads and returns the total number of stored URLs.
+
+        :Parameters: None
+        :Returns: int
+        '''
         try:
             with open(urls_filename , 'r') as f:
                 return len(f.readlines())
@@ -47,6 +50,12 @@ class ReadFiles(ReadFilesInterface):
 
 
     def read_app_version(self) -> str:
+        '''
+        Reads and returns the current application version.
+
+        :Parameters: None
+        :Returns: str
+        '''
         try:
             with open(app_version_filename , 'r') as f:
                 return f.read().strip()
@@ -63,10 +72,22 @@ class ReadFiles(ReadFilesInterface):
 
 
     def read_url_current_pos(self) -> int:
+        '''
+        Reads the current URL position index.
+
+        :Parameters: None
+        :Returns: int
+        '''
         return self.general_read_int(url_current_pos_filename)
     
 
     def read_url_from_current_pos(self) -> str:
+        '''
+        Reads and returns the URL corresponding to the current position index.
+
+        :Parameters: None
+        :Returns: str
+        '''
         try:
             with open(url_current_pos_filename , 'r') as f:
                 current_pos = int(f.read())
@@ -90,26 +111,62 @@ class ReadFiles(ReadFilesInterface):
 
 
     def read_delay_per_update(self) -> float:
+        '''
+        Reads the configured delay between updates.
+
+        :Parameters: None
+        :Returns: float
+        '''
         return self.general_read_int(delay_per_update_filename)
     
 
     def read_total_updates(self) -> int:
+        '''
+        Reads the total number of successful updates.
+
+        :Parameters: None
+        :Returns: int
+        '''
         return self.general_read_int(total_updates_filename)
     
 
     def read_total_errors(self) -> int:
+        '''
+        Reads the total number of recorded errors.
+
+        :Parameters: None
+        :Returns: int
+        '''
         return self.general_read_int(total_errors_filename)
     
 
     def read_number_of_removed_machines(self) -> int:
+        '''
+        Reads the total number of removed machines.
+
+        :Parameters: None
+        :Returns: int
+        '''
         return self.general_read_int(number_of_removed_machines_filename)
     
 
     def read_number_of_inserted_machines(self) -> int:
+        '''
+        Reads the total number of inserted machines.
+
+        :Parameters: None
+        :Returns: int
+        '''
         return self.general_read_int(number_of_inserted_machines_filename)
     
 
     def read_every_url(self) -> list[str]:
+        '''
+        Reads and returns all stored machine URLs.
+
+        :Parameters: None
+        :Returns: list[str]
+        '''
         try:
             with open(urls_filename , 'r') as f:
                 return list(line.strip('\n') for line in f.readlines())
@@ -125,6 +182,12 @@ class ReadFiles(ReadFilesInterface):
 
 
     def read_update_number_of_machine(self) -> list[int]:
+        '''
+        Reads the update count per machine and validates consistency with URLs.
+
+        :Parameters: None
+        :Returns: list[int]
+        '''
         try:
             with open(updates_per_machine_filename , 'r') as f1 , open(urls_filename , 'r') as f2:
                 lines = [line.strip('\n') for line in f1.readlines()]
@@ -147,31 +210,31 @@ class ReadFiles(ReadFilesInterface):
 
     
     def read_number_of_github_updates(self) -> int:
+        '''
+        Reads the number of GitHub update operations performed.
+
+        :Parameters: None
+        :Returns: int
+        '''
         return self.general_read_int(number_of_github_updates_filename)
     
 
-    def read_datetime_general(self , filename: str) -> datetime.datetime | None:
-        try:
-            with open(filename , 'r') as f:
-                value = f.read().strip()
-                    
-            return datetime.datetime.strptime(value , '%b %d, %Y - %H:%M:%S') if value else None
-
-        except FileNotFoundError:
-            raise ValueError(f'File {filename} not found.')
-        
-        except ValueError:
-            raise ValueError(f'File {filename} does not contain a valid datetime value.')
-            
-        except Exception as e:
-            raise ValueError(f'An error occured: {str(e)}')
-
-
     
-    def read_time_general(self , filename: str) -> datetime.time:
+    def read_time_general(self , filename: str) -> time | None:
+        '''
+        Reads a time value from the specified file.
+
+        :Parameters: filename (str): Path to the file containing a time value.
+        :Returns: time | None
+        '''
         try:        
             with open(filename , 'r') as f:
-                return datetime.datetime.strptime(f.read().strip() , '%H:%M:%S').time()
+                content = f.read().strip()
+                
+                if(not content):
+                    return None
+                
+                return datetime.strptime(content , '%H:%M:%S').time()
 
         except FileNotFoundError:
             raise ValueError(f'File {filename} not found.')
@@ -184,27 +247,83 @@ class ReadFiles(ReadFilesInterface):
         
         
 
-    def read_error_datetime(self) -> datetime.datetime | None:
-        return self.read_datetime_general(internet_error_datetime_filename)
+    def read_error_time(self) -> time | None:
+        '''
+        Reads the most recent application error time.
+
+        :Parameters: None
+        :Returns: time | None
+        '''
+        return self.read_time_general(last_error_time_filename)
         
 
+    def read_last_internet_error_time(self) -> time | None:
+        '''
+        Reads the most recent internet error time.
+
+        :Parameters: None
+        :Returns: time | None
+        '''
+        return self.read_time_general(last_internet_error_time_filename)
+    
+    
+    def read_internet_errors(self) -> int:
+        '''
+        Reads the total number of internet-related errors.
+
+        :Parameters: None
+        :Returns: int
+        '''
+        return self.general_read_int(internet_errors_filename)
+    
+    
     def check_errors_occurred_10(self) -> bool:
+        '''
+        Checks whether the total error count is a multiple of 10.
+
+        :Parameters: None
+        :Returns: bool
+        '''
         return self.read_total_errors() != 0 and self.general_read_int(total_errors_filename) % 10 == 0
         
     
     def read_progress_number(self) -> int:
+        '''
+        Reads the current progress counter.
+
+        :Parameters: None
+        :Returns: int
+        '''
         return self.general_read_int(progress_number_filename)
     
 
-    def read_start_time(self) -> datetime.datetime:
+    def read_start_time(self) -> time | None:
+        '''
+        Reads the application start time.
+
+        :Parameters: None
+        :Returns: time | None
+        '''
         return self.read_time_general(start_time_filename)
     
 
-    def read_end_time(self) -> datetime.datetime:
+    def read_end_time(self) -> time | None:
+        '''
+        Reads the application end time.
+
+        :Parameters: None
+        :Returns: time | None
+        '''
         return self.read_time_general(end_time_filename)
     
     
     def read_email_dates(self) -> list[str]:
+        '''
+        Reads all processed email timestamps.
+
+        :Parameters: None
+        :Returns: list[str]
+        '''
         try:
             with open(read_email_dates_filename , 'r') as f:
                 lines = [line.strip('\n') for line in f.readlines()]
@@ -223,29 +342,65 @@ class ReadFiles(ReadFilesInterface):
         
         
     def read_app_started(self) -> bool:
+        '''
+        Reads the application started flag.
+
+        :Parameters: None
+        :Returns: bool
+        '''
         return self.general_read_int(app_started_filename)
     
     
     
     def read_app_ended(self) -> bool:
+        '''
+        Reads the application ended flag.
+
+        :Parameters: None
+        :Returns: bool
+        '''
         return self.general_read_int(app_ended_filename)
         
         
     
     def read_number_of_captcha_challenges(self) -> int:
+        '''
+        Reads the total number of CAPTCHA challenges encountered.
+
+        :Parameters: None
+        :Returns: int
+        '''
         return self.general_read_int(number_of_captcha_challenges_filename)
     
     
     
-    def read_check_email_every_20_minutes(self) -> datetime.time:
+    def read_check_email_every_20_minutes(self) -> time | None:
+        '''
+        Reads the timestamp of the last email check interval.
+
+        :Parameters: None
+        :Returns: time | None
+        '''
         return self.read_time_general(check_email_every_20_minutes_filename)
     
     
     
     def read_daily_report_sent(self) -> int:
+        '''
+        Reads whether the daily report has been sent.
+
+        :Parameters: None
+        :Returns: int
+        '''
         return self.general_read_int(daily_report_sent_filename)
     
     
     
     def read_new_version_update_flag(self) -> bool:
+        '''
+        Reads the flag indicating a pending new version update.
+
+        :Parameters: None
+        :Returns: bool
+        '''
         return self.general_read_int(new_version_update_flag_filename)

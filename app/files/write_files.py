@@ -2,7 +2,6 @@ from .write_files_interface import WriteFilesInterface
 from .read_files_interface import ReadFilesInterface
 from .filenames import *
 from datetime import datetime
-from dotenv import load_dotenv
 import inject
 
 
@@ -11,28 +10,16 @@ class WriteFiles(WriteFilesInterface):
     @inject.autoparams()
     def __init__(self , read_files_interface: ReadFilesInterface):
         self.read_files = read_files_interface
-
-
-    def compute_delay_between_updates(self) -> None:
-        try:
-            load_dotenv(override=True)
-            total_required_updates = int(os.getenv('total_required_updates'))
-            current_time = datetime.now().replace(microsecond=0)
-            end_time_from_file = str(self.read_files.read_end_time())
-            end_time_hour = int(end_time_from_file.split(':')[0])
-            end_time_minute = int(end_time_from_file.split(':')[1])
-            end_time = datetime.now().replace(hour=end_time_hour , minute=end_time_minute , second=0 , microsecond=0)
-
-            minutes_difference = end_time - current_time
-            return round((minutes_difference.total_seconds() / 60) / total_required_updates , 1)          
-
-        except Exception as e:
-            raise ValueError(f'An error occured computing delay between updates: {str(e)}')
         
 
-
-
     def general_write_int(self , filename: str , number: int) -> None:
+        '''
+        Writes an incremented integer value to the specified file.
+
+        :Parameters: filename (str): Path to the target file.
+                    number (int): Current integer value to be incremented and written.
+        :Returns: None
+        '''
         try:
             with open(filename , 'w') as f:
                 f.write(str(number + 1))
@@ -49,6 +36,12 @@ class WriteFiles(WriteFilesInterface):
 
 
     def write_url_current_pos(self) -> None:
+        '''
+        Updates the current URL position, cycling back to the first URL if needed.
+
+        :Parameters: None
+        :Returns: None
+        '''
         current_pos = self.read_files.read_url_current_pos()
         total_number_of_urls = self.read_files.read_number_of_urls()
 
@@ -71,9 +64,14 @@ class WriteFiles(WriteFilesInterface):
 
     def write_app_version(self , semantic_versioning: str) -> None:
         '''
+        Updates the application version using semantic versioning rules.
+        
         PATCH: bug fix (0.0.1 -> 0.0.2)
         MINOR: add features (0.0.1 -> 0.1.0) ~> eliminate patch
         MAJOR: change function_name, arguments(add,remove), remove features (1.4.7 → 2.0.0) ~> eliminate patch & minor
+        
+        :Parameters: semantic_versioning (str): Version type ('patch', 'minor', or 'major').
+        :Returns: None
         '''
         version = self.read_files.read_app_version()
         
@@ -112,12 +110,24 @@ class WriteFiles(WriteFilesInterface):
     
 
     def write_new_version_update_flag(self , flag: int) -> None:
+        '''
+        Writes the new version update flag value.
+
+        :Parameters: flag (int): Flag indicating whether a new version update is pending.
+        :Returns: None
+        '''
         self.write_number_in_file(new_version_update_flag_filename , flag)
 
 
 
 
     def write_delay_per_update(self , delay: int) -> None:
+        '''
+        Writes the delay value used between update operations.
+
+        :Parameters: delay (int): Delay duration.
+        :Returns: None
+        '''
         try:
             with open(delay_per_update_filename , 'w') as f:
                 f.write(str(delay))
@@ -133,26 +143,78 @@ class WriteFiles(WriteFilesInterface):
 
 
     def write_total_updates(self) -> None:
+        '''
+        Increments and writes the total number of updates performed.
+
+        :Parameters: None
+        :Returns: None
+        '''
         number = self.read_files.read_total_updates()
         self.general_write_int(total_updates_filename , number)
 
 
     def write_total_errors(self) -> None:
+        '''
+        Increments the total error count and updates the last error timestamp.
+
+        :Parameters: None
+        :Returns: None
+        '''
         number = self.read_files.read_total_errors()
         self.general_write_int(total_errors_filename , number)
+        self.write_error_time(str(datetime.now().replace(microsecond=0).strftime('%H:%M:%S')))
+    
+    
+    def write_last_internet_error_time(self , dt: str) -> None:
+        '''
+        Writes the timestamp of the last internet-related error.
 
+        :Parameters: dt (str): Time value in HH:MM:SS format.
+        :Returns: None
+        '''
+        self.write_time_general(last_internet_error_time_filename , dt)
+        
+        
+    def write_internet_errors(self) -> None:
+        '''
+        Increments the total number of internet-related errors.
 
+        :Parameters: None
+        :Returns: None
+        '''
+        number = self.read_files.read_internet_errors()
+        self.general_write_int(internet_errors_filename , number)
+    
+    
     def write_number_of_removed_machines(self) -> None:
+        '''
+        Increments the count of removed machines.
+
+        :Parameters: None
+        :Returns: None
+        '''
         number = self.read_files.read_number_of_removed_machines()
         self.general_write_int(number_of_removed_machines_filename , number)
 
 
     def write_number_of_inserted_machines(self) -> None:
+        '''
+        Increments the count of inserted machines.
+
+        :Parameters: None
+        :Returns: None
+        '''
         number = self.read_files.read_number_of_inserted_machines()
         self.general_write_int(number_of_inserted_machines_filename , number)
 
 
     def write_update_number_of_machine(self , line: int) -> None:
+        '''
+        Increments the update count for a specific machine.
+
+        :Parameters: line (int): Line index corresponding to the machine.
+        :Returns: None
+        '''
         with open(updates_per_machine_filename , 'r') as f1 , open(urls_filename , 'r') as f2:
             lines = f1.readlines()
             url_lines = f2.readlines()
@@ -173,11 +235,24 @@ class WriteFiles(WriteFilesInterface):
 
 
     def write_number_of_github_updates(self) -> None:
+        '''
+        Increments the number of GitHub update operations.
+
+        :Parameters: None
+        :Returns: None
+        '''
         number = self.read_files.read_number_of_github_updates()
         self.general_write_int(number_of_github_updates_filename , number)
     
     
     def write_time_general(self , filename: str , dt: str) -> None:
+        '''
+        Writes a time value to the specified file.
+
+        :Parameters: filename (str): Path to the target file.
+                    dt (str): Time value in HH:MM:SS format.
+        :Returns: None
+        '''
         try:
             with open(filename , 'w') as f:
                 f.write(dt)
@@ -192,18 +267,37 @@ class WriteFiles(WriteFilesInterface):
             raise ValueError(f'An error occured: {str(e)}')
 
 
-    def write_internet_error_date(self , dt: str) -> None:
-        self.write_time_general(internet_error_datetime_filename , dt)
+    def write_error_time(self , dt: str) -> None:
+        '''
+        Writes the timestamp of the most recent application error.
+
+        :Parameters: dt (str): Time value in HH:MM:SS format.
+        :Returns: None
+        '''
+        self.write_time_general(last_error_time_filename , dt)
 
 
     def write_progress_number(self) -> None:
+        '''
+        Increments and writes the application progress counter.
+
+        :Parameters: None
+        :Returns: None
+        '''
         number = self.read_files.read_progress_number()
         self.general_write_int(progress_number_filename , number)
 
 
     def add_machine(self , url_link: str) -> None:
-        # add url link to the bottom of 'urls.txt' file
-        # add a new line with '0' updates to the bottom of 'updates_per_machine' file
+        '''
+        Adds a new machine URL and initializes its update counter.
+
+        add url link to the bottom of 'urls.txt' file
+        add a new line with '0' updates to the bottom of 'updates_per_machine' file
+        
+        :Parameters: url_link (str): URL of the machine to be added.
+        :Returns: None
+        '''
         try:                
             is_empty_f1  = False
             is_empty_f2 = False
@@ -228,6 +322,12 @@ class WriteFiles(WriteFilesInterface):
 
 
     def remove_machine(self , url_link: str) -> None:
+        '''
+        Removes a machine URL and its corresponding update counter.
+
+        :Parameters: url_link (str): URL of the machine to be removed.
+        :Returns: None
+        '''
         try:
             with open(urls_filename , 'r') as f1 , open(updates_per_machine_filename , 'r') as f2:
                 f1_lines = f1.read().splitlines()
@@ -253,6 +353,12 @@ class WriteFiles(WriteFilesInterface):
         
         
     def write_email_dates(self , dt: str) -> None:
+        '''
+        Stores a processed email timestamp to prevent duplicate handling.
+
+        :Parameters: dt (str): Email timestamp.
+        :Returns: None
+        '''
         try:
             is_empty = False
             
@@ -276,6 +382,13 @@ class WriteFiles(WriteFilesInterface):
     
     
     def write_number_in_file(self , filename , number) -> None:
+        '''
+        Writes a numeric value directly to the specified file.
+
+        :Parameters: filename (str): Path to the target file.
+                    number (int): Numeric value to write.
+        :Returns: None
+        '''
         try:
             with open(filename , 'w') as f:
                 f.write(str(number))
@@ -293,6 +406,12 @@ class WriteFiles(WriteFilesInterface):
         
         
     def write_app_started(self) -> None:
+        '''
+        Marks the application as started and resets the ended flag if necessary.
+
+        :Parameters: None
+        :Returns: None
+        '''
         self.write_number_in_file(app_started_filename , 1)
         
         app_ended_number = self.read_files.read_app_ended()
@@ -303,6 +422,12 @@ class WriteFiles(WriteFilesInterface):
         
         
     def write_app_ended(self) -> None:
+        '''
+        Marks the application as ended and resets the started flag if necessary.
+
+        :Parameters: None
+        :Returns: None
+        '''
         number = self.read_files.read_app_ended()
         self.general_write_int(app_ended_filename , number)
         
@@ -314,63 +439,38 @@ class WriteFiles(WriteFilesInterface):
         
         
     def write_number_of_captcha_challenge(self) -> None:
+        '''
+        Increments the number of CAPTCHA challenges encountered.
+
+        :Parameters: None
+        :Returns: None
+        '''
         number = self.read_files.read_number_of_captcha_challenges()
         self.general_write_int(number_of_captcha_challenges_filename , number)
         
         
         
+        
     def write_check_email_every_20_minutes(self , time_: str) -> None:
+        '''
+        Writes the timestamp of the last email check operation.
+
+        :Parameters: time_ (str): Time value in HH:MM:SS format.
+        :Returns: None
+        '''
         self.write_time_general(check_email_every_20_minutes_filename , time_)
         
         
-    
-    def reset_all_updates_per_machine(self) -> None:
-        try:
-            with open(updates_per_machine_filename , 'r') as f:
-                lines = f.readlines()
-                
-            with open(updates_per_machine_filename , 'w') as f:
-                for i in range(len(lines)):
-                    if(i != len(lines) - 1):
-                        f.write('0\n')
-                    else:
-                        f.write('0')
-                
-        except FileNotFoundError:
-            raise ValueError(f'File \'{updates_per_machine_filename}\' not found.')
-        
-        except ValueError:
-            raise ValueError(f'File \'{updates_per_machine_filename}\' does not contain valid integers.')
-            
-        except Exception as e:
-            raise ValueError(f'An error occured: {str(e)}')
         
         
-        
-    def reset_all_files(self) -> None:
-        try:
-            self.write_number_in_file(progress_number_filename , 0)
-            self.write_number_in_file(internet_error_datetime_filename , '')
-            self.write_number_in_file(number_of_captcha_challenges_filename , 0)
-            self.write_number_in_file(number_of_github_updates_filename , 0)
-            self.write_number_in_file(number_of_inserted_machines_filename , 0)
-            self.write_number_in_file(number_of_removed_machines_filename , 0)
-            self.write_number_in_file(total_errors_filename , 0)
-            self.write_number_in_file(total_updates_filename , 0)
-            self.write_number_in_file(url_current_pos_filename , 1)
-            self.write_number_in_file(daily_report_sent_filename , 1)
-            self.write_number_in_file(new_version_update_flag_filename , 0)
-            self.write_check_email_every_20_minutes('06:30:00')
-            self.reset_all_updates_per_machine()
-            
-        except Exception as e:
-            print(f'An error occured while trying to reset some files: {str(e)}')
-            self.write_files.write_total_errors()
-        
-        
-    
-    
     def update_credentials_from_env(self , new_username: str | None , new_password: str | None) -> None:
+        '''
+        Updates stored login credentials in the environment file.
+
+        :Parameters: new_username (str | None): New username value.
+                    new_password (str | None): New password value.
+        :Returns: None
+        '''
         try:
             with open(env_filename , 'r') as f:
                 lines = f.readlines()
@@ -402,4 +502,10 @@ class WriteFiles(WriteFilesInterface):
         
         
     def write_daily_report_sent(self , value: int) -> None:
+        '''
+        Writes the daily report sent flag value.
+
+        :Parameters: value (int): Flag indicating whether the daily report was sent.
+        :Returns: None
+        '''
         self.write_number_in_file(daily_report_sent_filename , value)

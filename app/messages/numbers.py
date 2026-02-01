@@ -1,4 +1,9 @@
 def number(from_: int , to_: int , one_choice: int | None) -> list[str]:
+    '''
+    Returns circled number symbols based on a given range or a single selection.
+    Supports values from 1 to 40 using predefined Unicode circled numbers.
+    Raises ValueError for invalid ranges or missing/incorrect parameters.
+    '''
     number_list = [
                     '①' , '②' , '③' , '④' , '⑤' , '⑥' , '⑦' , '⑧' , '⑨' , '⑩' , 
                     '⑪' , '⑫' , '⑬' , '⑭' , '⑮' , '⑯' , '⑰' , '⑱' , '⑲' , '⑳' , 

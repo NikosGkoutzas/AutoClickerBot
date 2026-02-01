@@ -4,11 +4,6 @@ from abc import ABC , abstractmethod
 
 class WriteFilesInterface(ABC):
     @abstractmethod
-    def compute_delay_between_updates(self) -> None:
-        pass
-
-
-    @abstractmethod
     def general_write_int(self , filename: str) -> None:
         pass
 
@@ -27,6 +22,7 @@ class WriteFilesInterface(ABC):
     def write_new_version_update_flag(self , flag: int) -> None:
         pass
 
+
     @abstractmethod
     def write_delay_per_update(self , delay: int) -> None:
         pass
@@ -41,6 +37,16 @@ class WriteFilesInterface(ABC):
     def write_total_errors(self) -> None:
         pass
 
+
+    @abstractmethod
+    def write_last_internet_error_time(self , dt: str) -> None:
+        pass
+    
+    
+    @abstractmethod
+    def write_internet_errors(self) -> None:
+        pass
+    
 
     @abstractmethod
     def write_number_of_removed_machines(self) -> None:
@@ -68,7 +74,12 @@ class WriteFilesInterface(ABC):
 
 
     @abstractmethod
-    def write_internet_error_date(self , dt: str) -> None:
+    def write_error_time(self , dt: str) -> None:
+        pass
+    
+    
+    @abstractmethod
+    def write_last_internet_error_time(self , dt: str) -> None:
         pass
 
 
@@ -114,16 +125,6 @@ class WriteFilesInterface(ABC):
     
     @abstractmethod
     def write_check_email_every_20_minutes(self) -> None:
-        pass
-    
-    
-    @abstractmethod
-    def reset_all_updates_per_machine(self) -> None:
-        pass
-    
-    
-    @abstractmethod
-    def reset_all_files(self) -> None:
         pass
     
     

@@ -14,7 +14,7 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def launch_app_title_message(self) -> str:
+    def launch_app_subject_message(self) -> str:
         pass
     
     
@@ -24,7 +24,7 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def no_internet_title_message(self) -> str:
+    def no_internet_subject_message(self) -> str:
         pass
     
     
@@ -33,7 +33,7 @@ class EmailMessagesInterface(ABC):
         pass
     
     @abstractmethod
-    def daily_report_title_message(self) -> str:
+    def daily_report_subject_message(self) -> str:
         pass
 
 
@@ -49,7 +49,7 @@ class EmailMessagesInterface(ABC):
 
 
     @abstractmethod
-    def new_version_started_title_message(self) -> str:
+    def new_version_started_subject_message(self) -> str:
         pass
     
     
@@ -59,7 +59,7 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def credentails_update_title_message(self , cond_str: str) -> str:
+    def credentails_update_subject_message(self , cond_str: str) -> str:
         pass
     
     
@@ -69,7 +69,7 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def progress_title_message(self) -> str:
+    def progress_subject_message(self) -> str:
         pass
     
     
@@ -78,6 +78,7 @@ class EmailMessagesInterface(ABC):
                               number_of_machines: int ,
                               current_updates: int ,
                               current_errors: int ,
+                              internet_errors: int ,
                               most_recent_error: str ,
                               added_machines: int ,
                               removed_machines: int ,
@@ -88,7 +89,7 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def machine_inserted_title_message(self , number_of_inserted_machines: int , invalid_machines: list[str]) -> str:
+    def machine_inserted_subject_message(self , number_of_inserted_machines: int , invalid_machines: list[str]) -> str:
         pass
     
     
@@ -98,7 +99,7 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def machine_removed_title_message(self , number_of_removed_machines: int , not_existing_machines: list[str]) -> str:
+    def machine_removed_subject_message(self , number_of_removed_machines: int , not_existing_machines: list[str]) -> str:
         pass
     
     
@@ -108,7 +109,7 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def error_installing_new_version_title_message(self) -> str:
+    def error_installing_new_version_subject_message(self) -> str:
         pass
     
     
@@ -123,7 +124,7 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def see_all_available_links_title_message(self) -> str:
+    def see_all_available_links_subject_message(self) -> str:
         pass
     
     
@@ -133,7 +134,7 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def unable_to_login_title_message(self) -> str:
+    def unable_to_login_subject_message(self) -> str:
         pass
     
     
@@ -143,7 +144,12 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def captcha_failed_to_solve_title_message(self) -> str:
+    def captcha_failed_to_solve_subject_message(self) -> str:
+        pass
+    
+    
+    @abstractmethod
+    def captcha_failed_to_solve_in_login_body_message(self) -> str:
         pass
     
     
@@ -153,7 +159,7 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def notify_every_10_errors_title_message(self) -> str:
+    def notify_every_10_errors_subject_message(self) -> str:
         pass
     
     
@@ -163,10 +169,50 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def connect_via_teamviewer_title_message(self) -> str:
+    def teamviewer_connected_subject_message(self) -> str:
         pass
     
     
     @abstractmethod
-    def connect_via_teamviewer_body_message(self) -> str:
+    def teamviewer_connected_body_message(self) -> str:
+        pass
+    
+    
+    @abstractmethod
+    def teamviewer_disconnected_subject_message(self) -> str:
+        pass
+    
+    
+    @abstractmethod
+    def teamviewer_disconnected_body_message(self) -> str:
+        pass
+    
+    
+    @abstractmethod
+    def failed_to_open_teamviewer_subject_message(self) -> str:
+        pass
+        
+        
+    @abstractmethod
+    def teamviewer_connection_already_opened_subject_message(self) -> str:
+        pass
+    
+    
+    @abstractmethod
+    def teamviewer_connection_already_opened_body_message(self) -> str:
+        pass
+    
+    
+    @abstractmethod
+    def teamviewer_connection_already_closed_subject_message(self) -> str:
+        pass
+    
+    
+    @abstractmethod
+    def teamviewer_connection_already_closed_body_message(self) -> str:
+        pass
+    
+    
+    @abstractmethod
+    def failed_to_open_teamviewer_body_message(self) -> str:
         pass

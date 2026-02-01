@@ -25,6 +25,14 @@ class Calculations(CalculationInterface):
 
 
     def app_in_time(self) -> bool:
+        '''
+        Checks if the current time is within the allowed time range (07:00 - 23:55).
+
+        :Parameters: None
+        :Returns: bool: True if the current time is between the configured
+                        start and end time, otherwise False.
+        '''
+        
         end_time_from_file = str(self.read_files.read_end_time())
         end_time_hour = int(end_time_from_file.split(':')[0])
         end_time_minute = int(end_time_from_file.split(':')[1])
@@ -43,6 +51,14 @@ class Calculations(CalculationInterface):
 
 
     def updates_completed(self) -> bool:
+        '''
+        Checks whether all required updates have been completed.
+
+        :Parameters: None
+        :Returns: bool: True if the number of completed updates matches
+                        the required total updates, otherwise False.
+        '''
+        
         current_updates = self.read_files.read_total_updates()
         load_dotenv(override=True)
         total_updates = int(os.getenv('total_required_updates'))
@@ -52,6 +68,14 @@ class Calculations(CalculationInterface):
 
 
     def extract_update_results(self) -> str:
+        '''
+        Builds a HTML summary table with update results per URL.
+
+        :Parameters: None
+        :Returns: str: A HTML string containing the update count and clickable
+                        links for each processed URL.
+        '''
+        
         urls_list = self.read_files.read_every_url()
         slug_list = []
         pretty_links = []
@@ -106,14 +130,22 @@ class Calculations(CalculationInterface):
 
 
     def sleep_till_next_day(self) -> None:
+        '''
+        Pauses the execution from 23:55 until the next
+        scheduled start time (next morning at 07:00).
+
+        :Parameters: None
+        :Returns: None
+        '''
+        
         try:
+            print(f'Sleeping until {self.read_files.read_start_time()} ...')
             time.sleep(10*60) # wait 10 minutes, until 00:05
             start_time_from_file = str(self.read_files.read_start_time())
             start_time_hour = int(start_time_from_file.split(':')[0])
             current_time = datetime.now()
             time_of_sleep_minus_10_sec = datetime.now().replace(hour=start_time_hour - 1 , minute=59 , second=50 , microsecond=0)
             seconds_difference = (time_of_sleep_minus_10_sec - current_time).total_seconds()
-            print(f'Sleeping until {self.read_files.read_start_time()} ...')
             time.sleep(seconds_difference)
 
         except Exception as e:
@@ -126,6 +158,13 @@ class Calculations(CalculationInterface):
             
     
     def list_of_all_machines(self) -> str:
+        '''
+        Builds a HTML list containing all machine URLs.
+
+        :Parameters: None
+        :Returns: str: A HTML string listing all machines with numbering.
+        '''
+        
         urls_list = self.read_files.read_every_url()
         number_list = number(1 , len(urls_list) , None)
         returned_list = []
@@ -155,16 +194,17 @@ class Calculations(CalculationInterface):
             
             
             
-            
-    def compute_time_of_new_version_installation(self) -> datetime.time:
-        import datetime
-        return (datetime.datetime.now() + datetime.timedelta(minutes=7 , microseconds=0)).time().strftime('%H:%M:%S')
-    
-    
-    
-    
+
     
     def delay_between_updates(self) -> int:
+        '''
+        Calculates the delay time between updates.
+
+        :Parameters: None
+        :Returns: int: The delay in seconds between updates
+                       with a minimum value of 1 second.
+        '''
+        
         load_dotenv(override=True)
         total_required_updates = int(os.getenv('total_required_updates')) 
         total_current_updates = self.read_files.read_total_updates()
@@ -186,6 +226,14 @@ class Calculations(CalculationInterface):
     
     
     def check_emails(self) -> bool:
+        '''
+        Checks whether it is time to perform emails check.
+
+        :Parameters: None
+        :Returns: bool: True if at least 20 minutes have passed since the last emails check,
+                  otherwise False.
+        '''
+        
         dif_minutes = 20
         last_time_check_emails = self.read_files.read_check_email_every_20_minutes()
         current_time = datetime.now().time().replace(microsecond=0)
@@ -202,6 +250,13 @@ class Calculations(CalculationInterface):
     
     
     def updates_completed_earlier_wait(self) -> None:
+        '''
+        Waits until the scheduled end time, if all updates finish early.
+
+        :Parameters: None
+        :Returns: None
+        '''
+        
         current_time = datetime.now().time().replace(microsecond=0)
         current_time_in_seconds = current_time.hour * 3600 + current_time.minute * 60 + current_time.second
         end_time = datetime.now().replace(hour=23 , minute=54 , second=58 , microsecond=0)

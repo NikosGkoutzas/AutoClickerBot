@@ -13,6 +13,11 @@ class DriverInterface(ABC):
     
     
     @abstractmethod
+    def open_url(self , url: str) -> None:
+        pass
+    
+    
+    @abstractmethod
     def login(self) -> int:
         pass
     
@@ -23,7 +28,7 @@ class DriverInterface(ABC):
     
 
     @abstractmethod
-    def update_machine(self , url_link: str) -> bool:
+    def update_machine(self , url_link: str) -> int:
         pass
     
     

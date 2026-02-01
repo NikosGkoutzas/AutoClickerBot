@@ -1,13 +1,8 @@
 from abc import ABC , abstractmethod
-import datetime
+from datetime import datetime , time
 
 
 class ReadFilesInterface(ABC):
-    @abstractmethod
-    def can_app_run_at_current_time(self) -> bool:
-        pass
-
-
     @abstractmethod
     def general_read_int(self , filename: str) -> int:
         pass
@@ -74,7 +69,17 @@ class ReadFilesInterface(ABC):
 
 
     @abstractmethod
-    def read_error_datetime(self) -> datetime.datetime | None:
+    def read_error_time(self) -> time | None:
+        pass
+    
+    
+    @abstractmethod
+    def read_last_internet_error_time(self) -> time | None:
+        pass
+    
+    
+    @abstractmethod
+    def read_internet_errors(self) -> int:
         pass
 
 
@@ -89,22 +94,17 @@ class ReadFilesInterface(ABC):
 
 
     @abstractmethod
-    def read_start_time(self) -> datetime.datetime:
+    def read_start_time(self) -> time | None:
         pass
 
 
     @abstractmethod
-    def read_end_time(self) -> datetime.datetime:
+    def read_end_time(self) -> time | None:
         pass
         
-        
-    @abstractmethod
-    def read_datetime_general(self , filename: str) -> datetime.datetime:
-        pass
-    
     
     @abstractmethod
-    def read_time_general(self , filename: str) -> datetime.time:
+    def read_time_general(self , filename: str) -> time | None:
         pass
     
     
@@ -129,7 +129,7 @@ class ReadFilesInterface(ABC):
     
     
     @abstractmethod
-    def read_check_email_every_20_minutes(self) -> datetime.time:
+    def read_check_email_every_20_minutes(self) -> time | None:
         pass
     
     

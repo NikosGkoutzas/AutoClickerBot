@@ -63,15 +63,40 @@ class SendEmailInterface(ABC):
     
     
     @abstractmethod
-    def send_email_captcha_failed_to_solve(self) -> None:
+    def send_email_captcha_failed_to_solve_in_login(self) -> None:
         pass
     
+    
+    @abstractmethod
+    def send_email_captcha_failed_to_solve(self) -> None:
+        pass
+
     
     @abstractmethod
     def send_email_every_10_errors_occured(self , errors: int) -> None:
         pass
     
+        
+    @abstractmethod
+    def send_email_teamviewer_connected(self) -> None:
+        pass
+    
     
     @abstractmethod
-    def send_email_connect_via_teamviewer(self) -> None:
+    def send_email_teamviewer_disconnected(self) -> None:
+        pass
+    
+    
+    @abstractmethod
+    def send_email_teamviewer_connection_already_opened(self) -> None:
+        pass
+    
+    
+    @abstractmethod
+    def send_email_teamviewer_connection_already_closed(self) -> None:
+        pass
+    
+    
+    @abstractmethod
+    def send_email_failed_to_open_teamviewer(self) -> None:
         pass

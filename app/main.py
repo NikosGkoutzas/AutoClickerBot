@@ -1,13 +1,15 @@
 from .container import configure_dependencies
 from .run.run_interface import RunInterface
-from .files.reset_files_interface import ResetFilesInterface
 import inject
 
 
 def main():
+    '''
+    Configures dependency injection and starts the main application flow.
+    '''
     inject.configure_once(configure_dependencies)
-    #inject.instance(ResetFilesInterface).reset_all_files()
     inject.instance(RunInterface).run()
+
     
 
 if(__name__ == '__main__'):

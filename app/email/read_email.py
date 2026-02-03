@@ -78,7 +78,11 @@ class ReadEmail(ReadEmailInterface):
         emails_stop_teamviewer_found = False
         
         for i in range(len(first_x_recent_ids)):    
-            _ ,email_data = mail.fetch(first_x_recent_ids[i] , '(RFC822)')
+            status , email_data = mail.fetch(first_x_recent_ids[i] , '(RFC822)')
+            
+            if(status != 'OK'):
+                continue
+            
             for response_part in email_data:
                 if isinstance(response_part , tuple):
                     msg = email.message_from_bytes(response_part[1])

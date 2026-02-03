@@ -135,10 +135,10 @@ class EmailMessages(EmailMessagesInterface):
                         <tr><br></tr>
                                                             
                         <!-- ADD -->
-                        <tr>
+                        <tr> 
                             <td style='padding-right:7px;  vertical-align:top;'>⤵️</td>
-                            <td><i>Subject:</i></td>
-                            <td><b>Add</b></td>
+                            <td style='padding-right:4px;'><i>Subject:</i></td>
+                            <td style='padding-right:4px;'><b>Add</b></td>
                         </tr>
                         <tr>
                             <td></td>
@@ -154,8 +154,8 @@ class EmailMessages(EmailMessagesInterface):
                         <!-- DELETE -->
                         <tr>
                             <td style='padding-right:7px;  vertical-align:top;'>⤴️</td>
-                            <td><i>Subject:</i></td>
-                            <td><b>Delete</b></td>
+                            <td style='padding-right:4px;'><i>Subject:</i></td>
+                            <td style='padding-right:4px;'><b>Delete</b></td>
                         </tr>
                         <tr>
                             <td></td>
@@ -170,8 +170,8 @@ class EmailMessages(EmailMessagesInterface):
                         <!-- UPDATE NEW VERSION -->
                         <tr>
                             <td style='padding-right:7px;  vertical-align:top;'>⚙️</td>
-                            <td><i>Subject:</i></td>
-                            <td><b>Update</b></td>
+                            <td style='padding-right:4px;'><i>Subject:</i></td>
+                            <td style='padding-right:4px;'><b>Update</b></td>
                         </tr>
                         <tr>
                             <td></td>
@@ -192,8 +192,8 @@ class EmailMessages(EmailMessagesInterface):
                         <!-- PROGRESS -->
                         <tr>
                             <td style='padding-right:7px;  vertical-align:top;'>📝</td>
-                            <td><i>Subject:</i></td>
-                            <td><b>Progress</b></td>
+                            <td style='padding-right:4px;'><i>Subject:</i></td>
+                            <td style='padding-right:4px;'><b>Progress</b></td>
                         </tr>
                         <tr>
                             <td></td>
@@ -203,8 +203,8 @@ class EmailMessages(EmailMessagesInterface):
                         <!-- LINKS -->
                         <tr>
                             <td style='padding-right:7px;  vertical-align:top;'>📎</td>
-                            <td><i>Subject:</i></td>
-                            <td><b>Links</b></td>
+                            <td style='padding-right:4px;'><i>Subject:</i></td>
+                            <td style='padding-right:4px;'><b>Links</b></td>
                         </tr>
                         <tr>
                             <td></td>
@@ -214,8 +214,8 @@ class EmailMessages(EmailMessagesInterface):
                         <!-- UPDATE CREDENTIALS -->
                         <tr>
                             <td style='padding-right:7px;  vertical-align:top;'>🔐</td>
-                            <td><i>Subject:</i></td>
-                            <td><b>Credentials</b></td>
+                            <td style='padding-right:4px;'><i>Subject:</i></td>
+                            <td style='padding-right:4px;'><b>Credentials</b></td>
                         </tr>
                         <tr>
                             <td></td>
@@ -241,8 +241,8 @@ class EmailMessages(EmailMessagesInterface):
                         <!-- ENABLE REMOTE ACCESS VIA TEAMVIEWER -->
                         <tr>
                             <td style='padding-right:7px;  vertical-align:top;'>▶️</td>
-                            <td><i>Subject:</i></td>
-                            <td><b>Start teamviewer</b></td>
+                            <td style='padding-right:4px;'><i>Subject:</i></td>
+                            <td style='padding-right:4px;'><b>Start teamviewer</b></td>
                         </tr>
                         <tr>
                             <td></td>
@@ -253,8 +253,8 @@ class EmailMessages(EmailMessagesInterface):
                         <!-- DISABLES REMOTE ACCESS AND CLOSES TEAMVIEWER -->
                         <tr>
                             <td style='padding-right:7px;  vertical-align:top;'>⏹️</td>
-                            <td><i>Subject:</i></td>
-                            <td><b>Stop teamviewer</b></td>
+                            <td style='padding-right:4px;'><i>Subject:</i></td>
+                            <td style='padding-right:4px;'><b>Stop teamviewer</b></td>
                         </tr>
                         <tr>
                             <td></td>

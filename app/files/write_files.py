@@ -66,7 +66,7 @@ class WriteFiles(WriteFilesInterface):
         '''
         Updates the application version using semantic versioning rules.
         
-        PATCH: bug fix (0.0.1 -> 0.0.2)
+        PATCH: bug fix, better-looking (0.0.1 -> 0.0.2)
         MINOR: add features (0.0.1 -> 0.1.0) ~> eliminate patch
         MAJOR: change function_name, arguments(add,remove), remove features (1.4.7 → 2.0.0) ~> eliminate patch & minor
         

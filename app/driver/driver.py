@@ -387,8 +387,8 @@ class Driver(DriverInterface):
             # y = -45
             
             # Coordinates for other laptop.
-            x = -100
-            y = 15
+            x = -300
+            y = -130
             
             pyautogui.FAILSAFE = False
             pyautogui.moveTo(width / 2 + x , height / 2 + y , duration=1)

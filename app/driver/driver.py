@@ -383,12 +383,12 @@ class Driver(DriverInterface):
             width , height = pyautogui.size()
             
             # Coordinates for my laptop (Dell). These may vary for other laptops.
-            x = -395
-            y = -45
+            # x = -395
+            # y = -45
             
             # Coordinates for other laptop.
-            # x = -100
-            # y = 15
+            x = -100
+            y = 15
             
             pyautogui.FAILSAFE = False
             pyautogui.moveTo(width / 2 + x , height / 2 + y , duration=1)
@@ -429,12 +429,12 @@ class Driver(DriverInterface):
             width , height = pyautogui.size()
             
             # Coordinates for my laptop (Dell). These may vary for other laptops.
-            x = -100
-            y = 110
+            # x = -100
+            # y = 110
             
             # Coordinates for other laptop.
-            # x = -100
-            # y = 15
+            x = -100
+            y = 15
 
             # Sleep untill CAPTCHA challenge pops up
             while(1):

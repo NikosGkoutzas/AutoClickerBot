@@ -144,7 +144,7 @@ class Calculations(CalculationInterface):
             start_time_from_file = str(self.read_files.read_start_time())
             start_time_hour = int(start_time_from_file.split(':')[0])
             current_time = datetime.now()
-            time_of_sleep_minus_10_sec = datetime.now().replace(hour=start_time_hour - 1 , minute=59 , second=50 , microsecond=0)
+            time_of_sleep_minus_10_sec = datetime.now().replace(hour=start_time_hour , minute=0 , second=1 , microsecond=0)
             seconds_difference = (time_of_sleep_minus_10_sec - current_time).total_seconds()
             time.sleep(seconds_difference)
 

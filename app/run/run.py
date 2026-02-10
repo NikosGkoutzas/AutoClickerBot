@@ -63,6 +63,8 @@ class Run(RunInterface):
             if(not self.calculation.app_in_time()):
                 if(self.read_files.read_app_ended() == 0):
                     self.write_files.write_app_ended()
+                    self.reset_files.reset_app_started()
+                    
                     if(self.internet.check_for_internet_connection()):
                         self.send_email.send_email_daily_report()
                         self.reset_files.reset_all_files()
@@ -97,6 +99,7 @@ class Run(RunInterface):
                             self.reset_files.reset_all_files()
                             self.send_email.send_email_launch()
                             self.write_files.write_app_started()
+                            self.reset_files.reset_app_ended()
                             
                         self.action.update_machine_procedure()
                         delay = self.calculation.delay_between_updates()

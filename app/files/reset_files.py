@@ -10,7 +10,13 @@ class ResetFiles(ResetFilesInterface):
         self.write_files = write_files_interface
         
         
-    def reset_all_files(self):
+    def reset_all_files(self) -> None:
+        '''
+        Resets all files.
+        
+        :Parameters: None
+        :Returns: None
+        '''
         try:
             self.write_files.write_number_in_file(progress_number_filename , 0)
             self.write_files.write_number_in_file(number_of_captcha_challenges_filename , 0)
@@ -41,6 +47,12 @@ class ResetFiles(ResetFilesInterface):
             
 
     def reset_all_updates_per_machine(self) -> None:
+        '''
+        Resets all machine numbers of updates.
+        
+        :Parameters: None
+        :Returns: None
+        '''
         try:
             with open(updates_per_machine_filename , 'r') as f:
                 lines = f.readlines()
@@ -65,4 +77,33 @@ class ResetFiles(ResetFilesInterface):
         
     
     def reset_total_updates(self) -> None:
+        '''
+        Resets total updates number.
+        
+        :Parameters: None
+        :Returns: None
+        '''
         self.write_files.write_number_in_file(total_updates_filename , 0)
+
+
+
+
+    def reset_app_started(self) -> None:
+        '''
+        Resets app_started file.
+        
+        :Parameters: None
+        :Returns: None
+        '''
+        self.write_files.write_number_in_file(app_started_filename , 0)
+        
+        
+    
+    def reset_app_ended(self) -> None:
+        '''
+        Resets ended_started file.
+        
+        :Parameters: None
+        :Returns: None
+        '''
+        self.write_files.write_number_in_file(app_ended_filename , 0)

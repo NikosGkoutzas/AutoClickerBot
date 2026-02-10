@@ -407,33 +407,24 @@ class WriteFiles(WriteFilesInterface):
         
     def write_app_started(self) -> None:
         '''
-        Marks the application as started and resets the ended flag if necessary.
+        Marks the application as started.
 
         :Parameters: None
         :Returns: None
         '''
         self.write_number_in_file(app_started_filename , 1)
         
-        app_ended_number = self.read_files.read_app_ended()
-        if(app_ended_number != 0):
-            self.write_number_in_file(app_ended_filename , 0)
-        
         
         
         
     def write_app_ended(self) -> None:
         '''
-        Marks the application as ended and resets the started flag if necessary.
+        Marks the application as ended.
 
         :Parameters: None
         :Returns: None
         '''
-        number = self.read_files.read_app_ended()
-        self.general_write_int(app_ended_filename , number)
-        
-        app_started_number = self.read_files.read_app_started()
-        if(app_started_number != 0):
-            self.write_number_in_file(app_started_filename , 0)
+        self.general_write_int(app_ended_filename , 1)
         
     
         

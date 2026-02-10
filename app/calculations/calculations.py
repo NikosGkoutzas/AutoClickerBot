@@ -2,7 +2,7 @@ from .calculations_interface import CalculationInterface
 from ..driver.driver_interface import DriverInterface
 from ..files.read_files_interface import ReadFilesInterface
 from ..files.write_files_interface import WriteFilesInterface
-from datetime import datetime
+from datetime import datetime , timedelta
 from ..messages.numbers import number
 from dotenv import load_dotenv
 import os , time , inject
@@ -26,7 +26,7 @@ class Calculations(CalculationInterface):
 
     def app_in_time(self) -> bool:
         '''
-        Checks if the current time is within the allowed time range (07:00 - 23:55).
+        Checks if the current time is within the allowed time range (start time till end time).
 
         :Parameters: None
         :Returns: bool: True if the current time is between the configured
@@ -131,8 +131,8 @@ class Calculations(CalculationInterface):
 
     def sleep_till_next_day(self) -> None:
         '''
-        Pauses the execution from 23:55 until the next
-        scheduled start time (next morning at 07:00).
+        Pauses the execution from scheduled end
+        time until the next scheduled start time.
 
         :Parameters: None
         :Returns: None
@@ -140,13 +140,12 @@ class Calculations(CalculationInterface):
         
         try:
             print(f'Sleeping until {self.read_files.read_start_time()} ...')
-            time.sleep(10*60) # wait 10 minutes, until 00:05
             start_time_from_file = str(self.read_files.read_start_time())
             start_time_hour = int(start_time_from_file.split(':')[0])
+            start_time = (datetime.now() + timedelta(days=1)).replace(hour=start_time_hour , minute=0 , second=1 , microsecond=0)
             current_time = datetime.now()
-            time_of_sleep_minus_10_sec = datetime.now().replace(hour=start_time_hour , minute=0 , second=1 , microsecond=0)
-            seconds_difference = (time_of_sleep_minus_10_sec - current_time).total_seconds()
-            time.sleep(seconds_difference)
+            total_seconds_of_sleep = (start_time - current_time).total_seconds()
+            time.sleep(total_seconds_of_sleep)
 
         except Exception as e:
             print(f'An error occured while trying to sleep till next day: {str(e)}')
@@ -259,9 +258,12 @@ class Calculations(CalculationInterface):
         
         current_time = datetime.now().time().replace(microsecond=0)
         current_time_in_seconds = current_time.hour * 3600 + current_time.minute * 60 + current_time.second
-        end_time = datetime.now().replace(hour=23 , minute=54 , second=58 , microsecond=0)
+        end_time = self.read_files.read_end_time()
+        end_time_hour = int(str(end_time).split(':')[0])
+        end_time_min = int(str(end_time).split(':')[1])
+        end_time = datetime.now().replace(hour=end_time_hour , minute=end_time_min , second=0 , microsecond=0)
         end_time_in_seconds = end_time.hour * 3600 + end_time.minute * 60 + end_time.second
         
         if(current_time_in_seconds < end_time_in_seconds):
-            print(f'Updates were completed earlier than expected. Waiting until 23:55...')
+            print(f'Updates were completed earlier than expected. Waiting until {end_time_in_seconds}:{end_time_min}...')
             time.sleep(end_time_in_seconds - current_time_in_seconds)

@@ -113,6 +113,14 @@ class EmailMessages(EmailMessagesInterface):
                             <td><i>Version</i></td>
                             <td align="right">{self.read_files.read_app_version()}</td>
                         </tr>
+                        <tr>
+                            <td><i>Daily Updates</i></td>
+                            <td align="right">{int(os.getenv('total_required_updates'))}</td>
+                        </tr>
+                        <tr>
+                            <td><i>Operating Hours</i></td>
+                            <td align="right">{':'.join(str(self.read_files.read_start_time()).split(':')[:-1])} - {':'.join(str(self.read_files.read_end_time()).split(':')[:-1])}</td>
+                        </tr>
                     </table>
                 </td>
                 <tr><br></tr>

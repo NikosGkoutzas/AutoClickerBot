@@ -106,7 +106,7 @@ class Run(RunInterface):
                         self.write_files.write_delay_per_update(delay)
                         
                         if(self.read_files.check_errors_occurred_10()):
-                            self.send_email.send_email_every_10_errors_occured()
+                            self.send_email.send_email_every_10_errors_occured(self.read_files.read_total_errors())
                             
                         time.sleep(delay)
                         

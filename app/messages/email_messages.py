@@ -76,7 +76,7 @@ class EmailMessages(EmailMessagesInterface):
         action_stop_teamviewer = 'Disables remote access and closes TeamViewer.'
         email = os.getenv('email_sender')
         perform_email = f'To perform an action, send an email to {email}.'
-        summary_email = 'A summary email is sent every day at 23:55.'
+        summary_email = f'A summary email is sent every day at {':'.join(str(self.read_files.read_end_time()).split(':')[:-1])}'
         confirmation_email = 'A confirmation email will be sent.'
                 
         return f'''

@@ -4,7 +4,7 @@ from ..files.read_files_interface import ReadFilesInterface
 from ..files.write_files_interface import WriteFilesInterface
 from ..email.send_email_interface import SendEmailInterface
 from dotenv import load_dotenv
-import inject , os , subprocess , time
+import inject , os , subprocess
 
 
 
@@ -105,37 +105,6 @@ class Action(ActionInterface):
     
     
 
-    def is_teamviewer_gui_enable(self) -> bool:
-        '''
-        Check if GUI of TeamViewer in the system is enabled.
-        
-        :Parameters: None
-        :Returns: bool: True if the TeamViewer GUI is enabled, otherwise False.
-        '''
-        result = subprocess.run(['pgrep' , '-af' , 'teamviewer'] , stdout=subprocess.PIPE , stderr=subprocess.DEVNULL , text=True)
-
-        if result.returncode != 0:
-            return False
-
-        for line in result.stdout.splitlines():
-            if('teamviewerd' not in line):
-                return True
-
-        return False
-
-
-
-
-    def is_teamviewer_daemon_active(self) -> bool:
-        '''
-        Check if DAEMON of TeamViewer in the system is enabled.
-        
-        :Parameters: None
-        :Returns: bool: True if the TeamViewer DAEMON is enabled, otherwise False.
-        '''
-        return subprocess.run(['systemctl' , 'is-active' , '--quiet' , 'teamviewerd']).returncode == 0
-
-
 
     
     def open_teamviewer(self) -> None:
@@ -151,7 +120,7 @@ class Action(ActionInterface):
         '''
         
         try:
-            if(self.is_teamviewer_daemon_active() and self.is_teamviewer_gui_enable()):
+            if(self._is_teamviewer_daemon_active() and self._is_teamviewer_gui_enable()):
                 print('TeamViewer remote access is already enabled.')
                 self.send_email.send_email_teamviewer_connection_already_opened()
                 return
@@ -182,7 +151,7 @@ class Action(ActionInterface):
         '''
         
         try:
-            if(not self.is_teamviewer_daemon_active() and not self.is_teamviewer_gui_enable()):
+            if(not self._is_teamviewer_daemon_active() and not self._is_teamviewer_gui_enable()):
                 print('TeamViewer remote access is already disabled.')
                 self.send_email.send_email_teamviewer_connection_already_closed()
                 return
@@ -197,3 +166,38 @@ class Action(ActionInterface):
             print(f'An error occured while trying to close teamviewer: {str(e)}')
             self.write_files.write_total_errors()
             self.send_email.send_email_failed_to_close_teamviewer()
+            
+            
+            
+            
+    
+    def _is_teamviewer_gui_enable(self) -> bool:
+        '''
+        Check if GUI of TeamViewer in the system is enabled.
+        
+        :Parameters: None
+        :Returns: bool: True if the TeamViewer GUI is enabled, otherwise False.
+        '''
+        result = subprocess.run(['pgrep' , '-af' , 'teamviewer'] , stdout=subprocess.PIPE , stderr=subprocess.DEVNULL , text=True)
+
+        if result.returncode != 0:
+            return False
+
+        for line in result.stdout.splitlines():
+            if('teamviewerd' not in line):
+                return True
+
+        return False
+
+
+
+
+    def _is_teamviewer_daemon_active(self) -> bool:
+        '''
+        Check if DAEMON of TeamViewer in the system is enabled.
+        
+        :Parameters: None
+        :Returns: bool: True if the TeamViewer DAEMON is enabled, otherwise False.
+        '''
+        return subprocess.run(['systemctl' , 'is-active' , '--quiet' , 'teamviewerd']).returncode == 0
+

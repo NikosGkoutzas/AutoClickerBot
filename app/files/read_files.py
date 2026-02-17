@@ -1,5 +1,6 @@
 from .read_files_interface import ReadFilesInterface
 from .filenames import *
+from ..messages.numbers import number
 from datetime import datetime , time
 
 
@@ -317,16 +318,16 @@ class ReadFiles(ReadFilesInterface):
         return self.read_time_general(end_time_filename)
     
     
-    def read_email_dates(self) -> list[str]:
+    def read_email_uids(self) -> list[bytes]:
         '''
-        Reads all processed email timestamps.
+        Reads all processed email uids.
 
         :Parameters: None
-        :Returns: list[str]
+        :Returns: list[bytes]
         '''
         try:
-            with open(read_email_dates_filename , 'r') as f:
-                lines = [line.strip('\n') for line in f.readlines()]
+            with open(read_email_uids_filename , 'rb') as f:
+                lines = [line.strip(b'\n') for line in f.readlines()]
                 
             return lines
         
@@ -334,7 +335,7 @@ class ReadFiles(ReadFilesInterface):
             raise ValueError(f'File {url_current_pos_filename} not found.')
         
         except ValueError:
-            raise ValueError(f'File {url_current_pos_filename} does not contain a valid integer.')
+            raise ValueError(f'File {url_current_pos_filename} does not contain a valid byte.')
             
         except Exception as e:
             raise ValueError(f'An error occured: {str(e)}')
@@ -404,3 +405,40 @@ class ReadFiles(ReadFilesInterface):
         :Returns: bool
         '''
         return self.general_read_int(new_version_update_flag_filename)
+    
+    
+    
+    def retrieve_all_machines(self) -> str:
+        '''
+        Builds a HTML list containing all machine URLs.
+
+        :Parameters: None
+        :Returns: str: A HTML string listing all machines with numbering.
+        '''
+        
+        urls_list = self.read_every_url()
+        number_list = number(1 , len(urls_list) , None)
+        returned_list = []
+        
+        for i in range(len(urls_list)):
+            returned_list.append(urls_list[i])
+        
+        return f'''
+                <tr>
+                    <td width="100%" style="padding:0; margin:0;">
+                        <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:5px; border-radius:16px;">
+                            {' '.join(f'''
+                                <tr>
+                                <td style="width:25px; text-align:left; vertical-align:top;">{number_list[i]}</td>
+                                <td style="width:40px; text-align:left; vertical-align:top; padding-right:8px;">{returned_list[i]}</td>
+                                </tr>
+                                <tr>
+                                    {'<br>' if i < len(number_list)-1  else ''}
+                                </tr>
+                              '''
+                              for i in range(len(number_list)))
+                            }
+                        </table>
+                    </td>
+                </tr>
+                '''

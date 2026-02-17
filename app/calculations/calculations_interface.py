@@ -22,11 +22,6 @@ class CalculationInterface(ABC):
     @abstractmethod
     def sleep_till_next_day(self) -> None:
         pass
-
-    
-    @abstractmethod
-    def list_of_all_machines(self) -> str:
-        pass
     
     
     @abstractmethod

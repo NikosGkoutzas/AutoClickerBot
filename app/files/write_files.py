@@ -352,28 +352,28 @@ class WriteFiles(WriteFilesInterface):
         
         
         
-    def write_email_dates(self , dt: str) -> None:
+    def write_email_uids(self , email_uid: bytes) -> None:
         '''
-        Stores a processed email timestamp to prevent duplicate handling.
+        Stores a processed email id to prevent duplicate handling.
 
-        :Parameters: dt (str): Email timestamp.
+        :Parameters: email_uid (bytes): Unique email id.
         :Returns: None
         '''
         try:
             is_empty = False
             
-            with open(read_email_dates_filename , 'r') as f:
-                if(f.read(1) == ''):
+            with open(read_email_uids_filename , 'rb') as f:
+                if(f.read(1) == b''):
                     is_empty = True
                     
-            with open(read_email_dates_filename , 'a') as f:
-                f.write('\n' + dt if not is_empty else dt)
+            with open(read_email_uids_filename , 'ab') as f:
+                f.write(b'\n' + email_uid if not is_empty else email_uid)
                 
         except FileNotFoundError:
-            raise ValueError(f'File \'{read_email_dates_filename}\' not found.')
+            raise ValueError(f'File \'{read_email_uids_filename}\' not found.')
         
         except ValueError:
-            raise ValueError(f'File \'{read_email_dates_filename}\' does not contain a valid time value.')
+            raise ValueError(f'File \'{read_email_uids_filename}\' does not contain a valid uid value.')
             
         except Exception as e:
             raise ValueError(f'An error occured: {str(e)}')

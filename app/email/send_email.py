@@ -195,7 +195,7 @@ class SendEmail(SendEmailInterface):
         :Parameters: None
         :Returns: None
         '''
-        self.send_email_to_all_receivers(self.email_message.see_all_available_links_subject_message() , self.email_message.see_all_available_links_body_message(self.calculations.list_of_all_machines()))
+        self.send_email_to_all_receivers(self.email_message.see_all_available_links_subject_message() , self.email_message.see_all_available_links_body_message(self.read_files.retrieve_all_machines()))
         
         
     def send_email_unable_to_login(self) -> None:

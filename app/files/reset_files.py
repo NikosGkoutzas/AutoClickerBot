@@ -1,12 +1,17 @@
 from .reset_files_interface import ResetFilesInterface
 from .write_files_interface import WriteFilesInterface
+from .read_files_interface import ReadFilesInterface
 from .filenames import *
 import inject
 
 
 class ResetFiles(ResetFilesInterface):
     @inject.autoparams()
-    def __init__(self , write_files_interface: WriteFilesInterface):
+    def __init__(self ,
+                 write_files_interface: WriteFilesInterface ,
+                 read_files_interface: ReadFilesInterface):
+        
+        self.read_files = read_files_interface
         self.write_files = write_files_interface
         
         
@@ -30,7 +35,7 @@ class ResetFiles(ResetFilesInterface):
             self.write_files.write_number_in_file(internet_errors_filename , 0)
             self.write_files.write_number_in_file(last_internet_error_time_filename , '')
             self.write_files.write_number_in_file(last_error_time_filename , '')
-            self.write_files.write_check_email_every_20_minutes('06:30:00')
+            self.write_files.write_check_email_every_20_minutes(self._reset_check_email_every_20_minutes_filename())
             self.write_files.write_number_in_file(app_started_filename , 0)
             self.write_files.write_number_in_file(app_ended_filename , 0)
             self.write_files.write_number_in_file(delay_per_update_filename , 5)
@@ -107,3 +112,14 @@ class ResetFiles(ResetFilesInterface):
         :Returns: None
         '''
         self.write_files.write_number_in_file(app_ended_filename , 0)
+        
+        
+        
+    def _reset_check_email_every_20_minutes_filename(self) -> str:
+        start_time = str(self.read_files.read_start_time())
+        start_time_split = start_time.split(':')
+        start_time_hour = str(int(start_time_split[0]) - 1)
+        start_time_hour = '0' + start_time_hour if(len(str(int(start_time_split[0]) - 1)) == 1) else start_time_hour
+        start_time_min = '30'
+        start_time_sec = start_time_split[2]
+        return start_time_hour + ':' + start_time_min + ':' + start_time_sec

@@ -13,11 +13,6 @@ class DriverInterface(ABC):
     
     
     @abstractmethod
-    def open_url(self , url: str) -> None:
-        pass
-    
-    
-    @abstractmethod
     def login(self) -> int:
         pass
     

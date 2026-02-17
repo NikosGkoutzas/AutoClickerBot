@@ -109,7 +109,7 @@ class ReadFilesInterface(ABC):
     
     
     @abstractmethod
-    def read_email_dates(self) -> list[str]:
+    def read_email_uids(self) -> list[bytes]:
         pass
     
     
@@ -140,4 +140,9 @@ class ReadFilesInterface(ABC):
     
     @abstractmethod
     def read_new_version_update_flag(self) -> bool:
+        pass
+    
+    
+    @abstractmethod
+    def retrieve_all_machines(self) -> str:
         pass

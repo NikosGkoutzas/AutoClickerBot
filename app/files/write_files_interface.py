@@ -99,7 +99,7 @@ class WriteFilesInterface(ABC):
     
     
     @abstractmethod
-    def write_email_dates(self , dt: str) -> None:
+    def write_email_uids(self , email_uid: bytes) -> None:
         pass
     
     

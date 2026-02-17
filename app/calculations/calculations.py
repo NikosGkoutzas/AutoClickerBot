@@ -155,43 +155,6 @@ class Calculations(CalculationInterface):
             
             
             
-    
-    def list_of_all_machines(self) -> str:
-        '''
-        Builds a HTML list containing all machine URLs.
-
-        :Parameters: None
-        :Returns: str: A HTML string listing all machines with numbering.
-        '''
-        
-        urls_list = self.read_files.read_every_url()
-        number_list = number(1 , len(urls_list) , None)
-        returned_list = []
-        
-        for i in range(len(urls_list)):
-            returned_list.append(urls_list[i])
-        
-        return f'''
-                <tr>
-                    <td width="100%" style="padding:0; margin:0;">
-                        <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:5px; border-radius:16px;">
-                            {' '.join(f'''
-                                <tr>
-                                <td style="width:25px; text-align:left; vertical-align:top;">{number_list[i]}</td>
-                                <td style="width:40px; text-align:left; vertical-align:top; padding-right:8px;">{returned_list[i]}</td>
-                                </tr>
-                                <tr>
-                                    {'<br>' if i < len(number_list)-1  else ''}
-                                </tr>
-                              '''
-                              for i in range(len(number_list)))
-                            }
-                        </table>
-                    </td>
-                </tr>
-                '''
-            
-            
             
 
     

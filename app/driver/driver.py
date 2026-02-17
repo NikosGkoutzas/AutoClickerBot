@@ -166,14 +166,14 @@ class Driver(DriverInterface):
                        1: No captcha challenge detected.
                        2: Captcha challenge detected but failed to solve after all attempts.
         '''
-        
-        if("needs to review the security" in self.driver.page_source.lower()):
+
+        if("Performing security verification".lower() in self.driver.page_source.lower()):
             self.write_files.write_number_of_captcha_challenge()
             width , height = pyautogui.size()
             
             # Coordinates for my laptop (Dell). These may vary for other laptops.
-            # x = -395
-            # y = -45
+            #x = -395
+            #y = -45
             
             # Coordinates for other laptop.
             x = -300
@@ -212,14 +212,14 @@ class Driver(DriverInterface):
                        2: Captcha challenge detected but failed to solve.
                        3: Login failed due to wrong credentials.
         '''
-        
+
         if(self._captcha_challenge_after_login_credentials()):
             self.write_files.write_number_of_captcha_challenge()
             width , height = pyautogui.size()
             
             # Coordinates for my laptop (Dell). These may vary for other laptops.
-            # x = -100
-            # y = 110
+            #x = -105
+            #y = 55
             
             # Coordinates for other laptop.
             x = -100
@@ -349,7 +349,7 @@ class Driver(DriverInterface):
             
             xpath = ".//span[contains(@class,'tw-max-w-full') and (normalize-space(text())='Ανανέωση' or normalize-space(text())='Ανανεώθηκε')]"
             state_span = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath)))
-            button = state_span.find_elements(By.XPATH, "./ancestor::button")
+            button = state_span.find_element(By.XPATH, "./ancestor::button")
 
             if(state_span.text.strip() == 'Ανανέωση'):
                 self.driver.execute_script("arguments[0].click();", button)
@@ -436,7 +436,6 @@ class Driver(DriverInterface):
         '''
     
         elements = self.driver.find_elements(By.CSS_SELECTOR , 'a[href="/account"] img')
-        
         return len(elements) > 0
     
     

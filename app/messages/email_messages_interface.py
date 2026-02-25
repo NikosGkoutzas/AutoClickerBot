@@ -40,10 +40,13 @@ class EmailMessagesInterface(ABC):
     @abstractmethod
     def daily_report_body_message(self ,
                                   total_updates_of_day: int ,
-                                  total_issues: int ,
                                   total_machines: int ,
+                                  general_issues: int ,
+                                  internet_issues: int ,
+                                  captcha_challenges: int ,                  
                                   inserted_machines: int ,
                                   removed_machines: int ,
+                                  app_version: int ,
                                   updated_result: str) -> str:
         pass
 

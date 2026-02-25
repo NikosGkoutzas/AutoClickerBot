@@ -345,10 +345,13 @@ class EmailMessages(EmailMessagesInterface):
 
     def daily_report_body_message(self ,
                                   total_updates_of_day: int ,
-                                  total_issues: int ,
                                   total_machines: int ,
+                                  general_issues: int ,
+                                  internet_issues: int ,
+                                  captcha_challenges: int ,                  
                                   inserted_machines: int ,
                                   removed_machines: int ,
+                                  app_version: int ,
                                   updated_result: str) -> str:
         
         load_dotenv(override=True)
@@ -358,35 +361,50 @@ class EmailMessages(EmailMessagesInterface):
 
         total_updates_message = f'{total_updates_of_day}/{os.getenv('total_required_updates')}'
         total_machines_message = f'{total_machines}'
-        total_issues_message = f'{total_issues}'
+        general_issues_message = f'{general_issues}'
+        internet_issues_message = f'{internet_issues}'
+        captcha_challenges_message = f'{captcha_challenges}'
         inserted_machines_message = f'{inserted_machines}'
         removed_machines_message = f'{removed_machines}'
+        app_version_message = f'{app_version}'
         view_analytics = f'View today\'s update {analytics}.'
         
         final = f'''
         <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
-                <td colspan="2" align="center"><u><b><br>Summary</b></u></td>
+                <td colspan="2" align="center"><u><b><br>Summary of the day</b></u></td>
             </tr>
             <tr>
-                <td><b><br>Total updates</b></td>
+                <td><b><br>Total Updates</b></td>
                 <td align="right"><br>{total_updates_message}</td>
             </tr>
             <tr>
-                <td><b>Total machines</b></td>
+                <td><b>Total Machines</b></td>
                 <td align="right">{total_machines_message}</td>
             </tr>
             <tr>
-                <td><b>Total issues</b></td>
-                <td align="right">{total_issues_message}</td>
+                <td><b>General Issues</b></td>
+                <td align="right">{general_issues_message}</td>
+            </tr>
+            <tr>
+                <td><b>Internet Issues</b></td>
+                <td align="right">{internet_issues_message}</td>
+            </tr>
+            <tr>
+                <td><b>Captcha Challenges</b></td>
+                <td align="right">{captcha_challenges_message}</td>
             </tr>
             <tr>
                 <td><b>Inserted machines</b></td>
                 <td align="right">{inserted_machines_message}</td>
             </tr>
             <tr>
-                <td><b>Removed machines</b></td>
+                <td><b>Removed Machines</b></td>
                 <td align="right">{removed_machines_message}</td>
+            </tr>
+            <tr>
+                <td><b>App Version</b></td>
+                <td align="right">{app_version_message}</td>
             </tr>
             <tr><br></tr>
         </table>

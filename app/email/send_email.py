@@ -96,14 +96,18 @@ class SendEmail(SendEmailInterface):
         :Returns: None
         '''
         self.send_email_to_all_receivers(self.email_message.daily_report_subject_message() , self.email_message.daily_report_body_message(total_updates_of_day=self.read_files.read_total_updates() ,
-                                                                                                                                        total_issues=self.read_files.read_total_errors() ,
-                                                                                                                                        total_machines=self.read_files.read_number_of_urls() ,
-                                                                                                                                        inserted_machines=self.read_files.read_number_of_inserted_machines() ,
-                                                                                                                                        removed_machines=self.read_files.read_number_of_removed_machines() ,
-                                                                                                                                        updated_result=self.calculations.extract_update_results())
-                                                                                                                                        )
+                                                                                                                                          total_machines=self.read_files.read_number_of_urls() ,
+                                                                                                                                          general_issues=self.read_files.read_total_errors() ,
+                                                                                                                                          internet_issues=self.read_files.read_internet_errors() ,
+                                                                                                                                          captcha_challenges=self.read_files.read_number_of_captcha_challenges() ,
+                                                                                                                                          inserted_machines=self.read_files.read_number_of_inserted_machines() ,
+                                                                                                                                          removed_machines=self.read_files.read_number_of_removed_machines() ,
+                                                                                                                                          app_version = self.read_files.read_app_version() ,
+                                                                                                                                          updated_result=self.calculations.extract_update_results())
+                                                                                                                                          )
 
 
+        
     def send_email_new_version_updated(self) -> None:
         '''
         Sends a notification email indicating that a new application

@@ -143,7 +143,8 @@ class ReadEmail(ReadEmailInterface):
         if(email_subject.lower().strip() == 'add'):
             self.write_files.write_email_uids(email_uid)
             list_added_links = self._read_email_body(msg)
-            valid_links , invalid_added_links = self.process_emails.process_add_link_email(list_added_links)            
+            valid_links , invalid_added_links = self.process_emails.process_add_link_email(list_added_links)    
+            self.write_files.write_number_of_inserted_machines(len(valid_links))        
             self.send_email.send_email_link_inserted(valid_links , invalid_added_links)
                 
                 
@@ -175,6 +176,7 @@ class ReadEmail(ReadEmailInterface):
             self.write_files.write_email_uids(email_uid)
             list_removed_links = self._read_email_body(msg)            
             valid_links , invalid_removed_links = self.process_emails.process_remove_link_email(list_removed_links)
+            self.write_files.write_number_of_removed_machines(len(valid_links))
             self.send_email.send_email_link_removed(valid_links , invalid_removed_links)
     
         

@@ -118,6 +118,10 @@ class EmailMessages(EmailMessagesInterface):
                             <td align="right">{int(os.getenv('total_required_updates'))}</td>
                         </tr>
                         <tr>
+                            <td><i>Totl Machines</i></td>
+                            <td align="right">{self.read_files.read_number_of_urls()}</td>
+                        </tr>
+                        <tr>
                             <td><i>Operating Hours</i></td>
                             <td align="right">{':'.join(str(self.read_files.read_start_time()).split(':')[:-1])} - {':'.join(str(self.read_files.read_end_time()).split(':')[:-1])}</td>
                         </tr>

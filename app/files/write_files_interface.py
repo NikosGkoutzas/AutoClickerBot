@@ -49,12 +49,12 @@ class WriteFilesInterface(ABC):
     
 
     @abstractmethod
-    def write_number_of_removed_machines(self) -> None:
+    def write_number_of_removed_machines(self , number: int) -> None:
         pass
 
 
     @abstractmethod
-    def write_number_of_inserted_machines(self) -> None:
+    def write_number_of_inserted_machines(self , number: int) -> None:
         pass
 
 

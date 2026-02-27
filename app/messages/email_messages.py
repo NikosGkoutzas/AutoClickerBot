@@ -118,7 +118,7 @@ class EmailMessages(EmailMessagesInterface):
                             <td align="right">{int(os.getenv('total_required_updates'))}</td>
                         </tr>
                         <tr>
-                            <td><i>Totl Machines</i></td>
+                            <td><i>Total Machines</i></td>
                             <td align="right">{self.read_files.read_number_of_urls()}</td>
                         </tr>
                         <tr>
@@ -570,7 +570,7 @@ class EmailMessages(EmailMessagesInterface):
                         </tr>
                         {most_recent_error_row}
                         <tr>
-                            <td><b>Added machines</b></td>
+                            <td><b>Added Machines</b></td>
                             <td align="right">{added_machines}</td>
                         </tr>
                         <tr>

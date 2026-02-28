@@ -147,17 +147,27 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
-    def captcha_failed_to_solve_subject_message(self) -> str:
+    def login_error_body_message(self) -> str:
         pass
     
     
     @abstractmethod
-    def captcha_failed_to_solve_in_login_body_message(self) -> str:
+    def login_error_subject_message(self) -> str:
         pass
     
     
     @abstractmethod
-    def captcha_failed_to_solve_body_message(self) -> str:
+    def captcha_failed_to_be_solved_subject_message(self) -> str:
+        pass
+    
+    
+    @abstractmethod
+    def captcha_failed_to_be_solved_in_login_body_message(self) -> str:
+        pass
+    
+    
+    @abstractmethod
+    def captcha_failed_to_be_solved_body_message(self) -> str:
         pass
     
     
@@ -189,11 +199,6 @@ class EmailMessagesInterface(ABC):
     @abstractmethod
     def teamviewer_disconnected_body_message(self) -> str:
         pass
-    
-    
-    @abstractmethod
-    def failed_to_open_teamviewer_subject_message(self) -> str:
-        pass
         
         
     @abstractmethod
@@ -217,5 +222,20 @@ class EmailMessagesInterface(ABC):
     
     
     @abstractmethod
+    def failed_to_open_teamviewer_subject_message(self) -> str:
+        pass
+    
+    
+    @abstractmethod
     def failed_to_open_teamviewer_body_message(self) -> str:
+        pass
+    
+    
+    @abstractmethod
+    def failed_to_close_teamviewer_subject_message(self) -> str:
+        pass
+    
+    
+    @abstractmethod
+    def failed_to_close_teamviewer_body_message(self) -> str:
         pass

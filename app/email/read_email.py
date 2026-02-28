@@ -240,7 +240,10 @@ class ReadEmail(ReadEmailInterface):
             if(success):                   
                 if(not self.process_emails.process_download_new_version_from_github(semantic_input)):
                     self.send_email.send_email_new_version_failed_to_update()
-                    self.action.open_teamviewer()
+                    
+                    if(not self.action.check_if_teamviewer_is_already_connected()):
+                        self.action.open_teamviewer()
+                    
 
             else:
                 self.send_email.send_email_error_installing_new_version_missing_type()
@@ -308,8 +311,10 @@ class ReadEmail(ReadEmailInterface):
         '''
         if(email_subject.lower().strip() == 'start teamviewer'):
             self.write_files.write_email_uids(email_uid)
-            self.action.open_teamviewer()
-                
+            
+            if(not self.action.check_if_teamviewer_is_already_connected()):
+                self.action.open_teamviewer()
+                    
             
             
             
@@ -333,7 +338,8 @@ class ReadEmail(ReadEmailInterface):
         '''
         if(email_subject.lower().strip() == 'stop teamviewer'):
             self.write_files.write_email_uids(email_uid)
-            self.action.close_teamviewer()
+            if(not self.action.check_if_teamviewer_is_already_disconnected()):
+                self.action.close_teamviewer()
             
             
             

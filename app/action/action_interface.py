@@ -26,3 +26,13 @@ class ActionInterface(ABC):
     @abstractmethod
     def close_teamviewer(self) -> None:
         pass
+    
+    
+    @abstractmethod
+    def check_if_teamviewer_is_already_connected(self) -> bool:
+        pass
+    
+    
+    @abstractmethod
+    def check_if_teamviewer_is_already_disconnected(self) -> bool:
+        pass

@@ -211,9 +211,19 @@ class SendEmail(SendEmailInterface):
         :Returns: None
         '''
         self.send_email_to_all_receivers(self.email_message.unable_to_login_subject_message() , self.email_message.unable_to_login_body_message())
+    
+    
+    def send_email_login_error(self) -> None:
+        '''
+        Sends a notification email indicating that application is unabled to login due to unexpected error.
+
+        :Parameters: None
+        :Returns: None
+        '''
+        self.send_email_to_all_receivers(self.email_message.login_error_subject_message() , self.email_message.login_error_body_message())
         
         
-    def send_email_captcha_failed_to_solve_in_login(self) -> None:
+    def send_email_captcha_failed_to_be_solved_in_login(self) -> None:
         '''
         Sends a notification email indicating that a CAPTCHA
         challenge failed during login.
@@ -221,10 +231,10 @@ class SendEmail(SendEmailInterface):
         :Parameters: None
         :Returns: None
         '''
-        self.send_email_to_all_receivers(self.email_message.captcha_failed_to_solve_subject_message() , self.email_message.captcha_failed_to_solve_in_login_body_message())
+        self.send_email_to_all_receivers(self.email_message.captcha_failed_to_be_solved_subject_message() , self.email_message.captcha_failed_to_be_solved_in_login_body_message())
         
     
-    def send_email_captcha_failed_to_solve(self) -> None:
+    def send_email_captcha_failed_to_be_solved(self) -> None:
         '''
         Sends a notification email indicating that a CAPTCHA
         challenge failed to be solved.
@@ -232,7 +242,7 @@ class SendEmail(SendEmailInterface):
         :Parameters: None
         :Returns: None
         '''
-        self.send_email_to_all_receivers(self.email_message.captcha_failed_to_solve_subject_message() , self.email_message.captcha_failed_to_solve_body_message())
+        self.send_email_to_all_receivers(self.email_message.captcha_failed_to_be_solved_subject_message() , self.email_message.captcha_failed_to_be_solved_body_message())
         
     
     def send_email_every_10_errors_occured(self , errors: int) -> None:
@@ -298,3 +308,15 @@ class SendEmail(SendEmailInterface):
         :Returns: None
         '''
         self.send_email_to_all_receivers(self.email_message.failed_to_open_teamviewer_subject_message() , self.email_message.failed_to_open_teamviewer_body_message())
+        
+     
+    def send_email_failed_to_close_teamviewer(self) -> None:
+        '''
+        Sends a notification email indicating that the application
+        failed to close TeamViewer.
+
+        :Parameters: None
+        :Returns: None
+        '''
+        self.send_email_to_all_receivers(self.email_message.failed_to_close_teamviewer_subject_message() , self.email_message.failed_to_close_teamviewer_body_message())
+        

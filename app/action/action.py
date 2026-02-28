@@ -3,8 +3,9 @@ from ..driver.driver_interface import DriverInterface
 from ..files.read_files_interface import ReadFilesInterface
 from ..files.write_files_interface import WriteFilesInterface
 from ..email.send_email_interface import SendEmailInterface
+from ..files.reset_files_interface import ResetFilesInterface
 from dotenv import load_dotenv
-import inject , os , subprocess
+import inject , os , subprocess , sys
 
 
 
@@ -14,13 +15,15 @@ class Action(ActionInterface):
                  driver_interface: DriverInterface ,
                  read_files_interface: ReadFilesInterface ,
                  write_files_interface: WriteFilesInterface ,
-                 send_email_interface: SendEmailInterface
+                 send_email_interface: SendEmailInterface,
+                 reset_files_interface: ResetFilesInterface
                 ):        
         
         self.driver = driver_interface
         self.read_files = read_files_interface
         self.write_files = write_files_interface
         self.send_email = send_email_interface
+        self.reset_files = reset_files_interface
         
         
 
@@ -49,8 +52,10 @@ class Action(ActionInterface):
             print(f'{self.read_files.read_total_updates()}/{os.getenv('total_required_updates')} machines updated.')
         
         elif(updated == -1):
-            self.send_email.send_email_captcha_failed_to_solve()
-            self.open_teamviewer()
+            self.send_email.send_email_captcha_failed_to_be_solved()
+            
+            if(not self.check_if_teamviewer_is_already_connected()):
+                self.open_teamviewer()
             
         self.write_files.write_url_current_pos()
         
@@ -70,15 +75,41 @@ class Action(ActionInterface):
         :Returns: None
         '''
         
-        flag = self.driver.login()
+        i = 0
+        
+        while(1):
+            flag = self.driver.login()
             
-        if(flag == 2):
-            self.send_email.send_email_captcha_failed_to_solve_in_login()
-            self.open_teamviewer()
+            if(i == 10):
+                self.driver.quit_driver()
+                
+                if(not self.check_if_teamviewer_is_already_connected()):
+                    self.open_teamviewer()
+                    
+                self.reset_files.reset_all_files()
+                self.send_email.send_email_login_error()
+                os.execv(sys.executable , [sys.executable, "-m", "app.main"])    
+                   
+            if(flag == 2):
+                self.driver.quit_driver()
+                
+                if(not self.check_if_teamviewer_is_already_connected()):
+                    self.open_teamviewer()
+                    
+                self.send_email.send_email_captcha_failed_to_be_solved_in_login()
+                
+            elif(flag == 3):
+                self.driver.quit_driver()
+                
+                if(not self.check_if_teamviewer_is_already_connected()):
+                    self.open_teamviewer()
+                    
+                self.send_email.send_email_unable_to_login()          
             
-        elif(flag == 3):
-            self.send_email.send_email_unable_to_login()
-            self.open_teamviewer()
+            elif(flag == 0 or flag == 1):
+                break
+            
+            i += 1
             
 
     
@@ -105,14 +136,10 @@ class Action(ActionInterface):
     
     
 
-
     
     def open_teamviewer(self) -> None:
         '''
         Starts the TeamViewer service and application if not already running.
-        If a TeamViewer connection is already active, an informational email is sent
-        and no further action is taken. Otherwise, the TeamViewer service is started,
-        the TeamViewer application is launched and a notification email is sent.
         In case of failure, an error is logged and a failure notification email is sent.
 
         :Parameters: None
@@ -120,11 +147,6 @@ class Action(ActionInterface):
         '''
         
         try:
-            if(self._is_teamviewer_daemon_active() and self._is_teamviewer_gui_enable()):
-                print('TeamViewer remote access is already enabled.')
-                self.send_email.send_email_teamviewer_connection_already_opened()
-                return
-            
             print('Launching TeamViewer...')
             subprocess.run(['sudo' , 'systemctl' , 'start' , 'teamviewerd'] , check=False)
             subprocess.Popen(['teamviewer'] , stdout=subprocess.DEVNULL , stderr=subprocess.DEVNULL)
@@ -141,9 +163,6 @@ class Action(ActionInterface):
     def close_teamviewer(self) -> None:
         '''
         Stops the TeamViewer application and service if currently running.
-        If no active TeamViewer connection is detected, an informational email is sent
-        and no further action is taken. Otherwise, the TeamViewer application process
-        is terminated, the TeamViewer service is stopped and a notification email is sent.
         In case of failure, an error is logged and a failure notification email is sent.
 
         :Parameters: None
@@ -151,11 +170,6 @@ class Action(ActionInterface):
         '''
         
         try:
-            if(not self._is_teamviewer_daemon_active() and not self._is_teamviewer_gui_enable()):
-                print('TeamViewer remote access is already disabled.')
-                self.send_email.send_email_teamviewer_connection_already_closed()
-                return
-            
             print('Closing TeamViewer...')
             subprocess.run(['pkill' , 'teamviewer'] , check=False , stdout=subprocess.DEVNULL , stderr=subprocess.DEVNULL)
             subprocess.run(['sudo' , 'systemctl' , 'stop' , 'teamviewerd'] , check=False)
@@ -168,7 +182,39 @@ class Action(ActionInterface):
             self.send_email.send_email_failed_to_close_teamviewer()
             
             
-            
+    
+    def check_if_teamviewer_is_already_connected(self) -> bool:
+        '''
+        Checks if TeamViewer application and service is currently running.
+        If an active TeamViewer connection is detected, an informational email.
+
+        :Parameters: None
+        :Returns: bool: True if is already connected, False otherwise
+        '''
+        
+        if(self._is_teamviewer_daemon_active() and self._is_teamviewer_gui_enable()):
+            print('TeamViewer remote access is already enabled.')
+            self.send_email.send_email_teamviewer_connection_already_opened()
+            return True
+        
+        return False
+    
+    
+    def check_if_teamviewer_is_already_disconnected(self) -> bool:
+        '''
+        Checks if TeamViewer application and service is currently running.
+        If no active TeamViewer connection is detected, an informational email.
+
+        :Parameters: None
+        :Returns: bool: True if is already disconnected, False otherwise
+        '''
+        
+        if(not self._is_teamviewer_daemon_active() and not self._is_teamviewer_gui_enable()):
+            print('TeamViewer remote access is already disabled.')
+            self.send_email.send_email_teamviewer_connection_already_closed()
+            return True
+        
+        return False
             
     
     def _is_teamviewer_gui_enable(self) -> bool:

@@ -531,8 +531,7 @@ class EmailMessages(EmailMessagesInterface):
                               ) -> str:
         
         most_recent_error_row = ''
-        internet_errors_row = ''
-        
+    
         if(current_errors != 0):
             most_recent_error_row = f'''
                                      <tr>
@@ -553,19 +552,19 @@ class EmailMessages(EmailMessagesInterface):
                 <td width="100%" style="padding:0; margin:0;">
                     <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:15px; border-radius:16px;">
                         <tr>
-                            <td><b>Number of machines</b></td>
+                            <td><b>Number Of Machines</b></td>
                             <td align="right">{number_of_machines}</td>
                         </tr>
                         <tr>
-                            <td><b>Current updates</b></td>
+                            <td><b>Current Updates</b></td>
                             <td align="right">{current_updates}</td>
                         </tr>
                         <tr>
-                            <td><b>General errors</b></td>
+                            <td><b>General Errors</b></td>
                             <td align="right">{current_errors}</td>
                         </tr>
                         <tr>
-                            <td><b>Internet errors</b></td>
+                            <td><b>Internet Errors</b></td>
                             <td align="right">{internet_errors}</td>
                         </tr>
                         {most_recent_error_row}
@@ -574,15 +573,15 @@ class EmailMessages(EmailMessagesInterface):
                             <td align="right">{added_machines}</td>
                         </tr>
                         <tr>
-                            <td><b>Removed machines</b></td>
+                            <td><b>Removed Machines</b></td>
                             <td align="right">{removed_machines}</td>
                         </tr>
                         <tr>
-                            <td><b>Captcha challenges</b></td>
+                            <td><b>Captcha Challenges</b></td>
                             <td align="right">{captcha_challenges}</td>
                         </tr>
                         <tr>
-                            <td><b>App version</b></td>
+                            <td><b>App Version</b></td>
                             <td align="right">{version}</td>
                         </tr> 
                     </table>
@@ -1064,7 +1063,7 @@ class EmailMessages(EmailMessagesInterface):
     
 
     def unable_to_login_body_message(self) -> str:
-        msg = 'Sign-in failed after 3 unsuccessful authentication attempts due to invalid credentials.\
+        msg = 'Sign-in failed after 3 unsuccessful authentication attempts due to invalid credentials. The system is attempting the operation again.\
                TeamViewer has been launched and the system is now available for remote access to allow manual resolution of the issue.'
                
         return f'''
@@ -1087,14 +1086,44 @@ class EmailMessages(EmailMessagesInterface):
         
         
         
-    def captcha_failed_to_solve_subject_message(self) -> str:
+        
+    def login_error_subject_message(self) -> str:
+        return '👤 Unexpected Login Errors'
+    
+    
+    def login_error_body_message(self) -> str:
+        unexpected_errors = 10
+        msg = f'{unexpected_errors} unexpected login errors occured. A full system reset was performed.\
+               TeamViewer has been launched and the system is now available for remote access to allow manual resolution of the issue.'
+               
+        return f'''
+        <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
+            <tr>
+                <td width="100%" style="padding:0; margin:0;">
+                    {self.time_message()}
+                </td>
+            </tr>
+            <tr><br></tr>
+            <tr>
+                <td colspan="2" align="center" style="padding-top:12px;">{msg}</td>
+            </tr>
+            <tr><br><br></tr>
+            <tr>
+                <td>{self.built_with_python_and_copyright_message()}</td>
+            </tr>
+        </table>
+        '''
+        
+        
+        
+    def captcha_failed_to_be_solved_subject_message(self) -> str:
         return '🚨 Captcha Manual Verification'
     
     
     
-    def captcha_failed_to_solve_in_login_body_message(self) -> str:
+    def captcha_failed_to_be_solved_in_login_body_message(self) -> str:
         captcha_attempts = 10
-        msg = f'Login failed. A CAPTCHA challenge blocked the process after {captcha_attempts} attempts. \
+        msg = f'Login failed. A CAPTCHA challenge blocked the process after {captcha_attempts} attempts. The system is attempting the operation again.\
                 TeamViewer has been launched and the system is now available for remote access to allow manual resolution of the issue.'
                
         return f'''
@@ -1117,7 +1146,7 @@ class EmailMessages(EmailMessagesInterface):
         
         
     
-    def captcha_failed_to_solve_body_message(self) -> str:
+    def captcha_failed_to_be_solved_body_message(self) -> str:
         captcha_attempts = 10
         msg = f'A CAPTCHA challenge blocked the process after {captcha_attempts} attempts. \
                 TeamViewer has been launched and the system is now available for remote access to allow manual resolution of the issue.'
@@ -1289,12 +1318,39 @@ class EmailMessages(EmailMessagesInterface):
     
     
     def failed_to_open_teamviewer_subject_message(self) -> str:
-        return '❌ TeamViewer Connection Failed'
+        return '❌ TeamViewer Failed To Start'
         
         
     
     def failed_to_open_teamviewer_body_message(self) -> str:
         msg = 'TeamViewer failed to start and remote access is currently unavailable. A retry may resolve the issue.'  
+              
+        return f'''
+        <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
+            <tr>
+                <td width="100%" style="padding:0; margin:0;">
+                    {self.time_message()}
+                </td>
+            </tr>
+            <tr><br></tr>
+            <tr>
+                <td colspan="2" align="center" style="padding-top:12px;">{msg}</td>
+            </tr>
+            <tr><br><br></tr>
+            <tr>
+                <td>{self.built_with_python_and_copyright_message()}</td>
+            </tr>
+        </table>
+        '''
+        
+        
+    def failed_to_close_teamviewer_subject_message(self) -> str:
+        return '❌ TeamViewer Failed To Close'
+        
+        
+    
+    def failed_to_close_teamviewer_body_message(self) -> str:
+        msg = 'TeamViewer failed to close. A retry may resolve the issue.'  
               
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">

@@ -84,11 +84,6 @@ class WriteFilesInterface(ABC):
 
 
     @abstractmethod
-    def write_progress_number(self) -> None:
-        pass
-
-
-    @abstractmethod
     def add_machine(self , url_link: str) -> None:
         pass
 

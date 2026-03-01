@@ -286,16 +286,6 @@ class ReadFiles(ReadFilesInterface):
         :Returns: bool
         '''
         return self.read_total_errors() != 0 and self.general_read_int(total_errors_filename) % 10 == 0
-        
-    
-    def read_progress_number(self) -> int:
-        '''
-        Reads the current progress counter.
-
-        :Parameters: None
-        :Returns: int
-        '''
-        return self.general_read_int(progress_number_filename)
     
 
     def read_start_time(self) -> time | None:

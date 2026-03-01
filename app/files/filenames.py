@@ -14,7 +14,6 @@ number_of_github_updates_filename = os.path.join(f'{os.getcwd()}/app/files/all_f
 last_error_time_filename = os.path.join(f'{os.getcwd()}/app/files/all_files/' , 'last_error_time.txt')
 last_internet_error_time_filename = os.path.join(f'{os.getcwd()}/app/files/all_files/' , 'last_internet_error_time.txt')
 internet_errors_filename = os.path.join(f'{os.getcwd()}/app/files/all_files/' , 'internet_errors.txt')
-progress_number_filename = os.path.join(f'{os.getcwd()}/app/files/all_files/' , 'progress_number.txt')
 start_time_filename = os.path.join(f'{os.getcwd()}/app/files/all_files/' , 'start_time.txt')
 end_time_filename = os.path.join(f'{os.getcwd()}/app/files/all_files/' , 'end_time.txt')
 read_email_uids_filename = os.path.join(f'{os.getcwd()}/app/files/all_files/' , 'read_email_uids.txt')

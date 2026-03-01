@@ -23,7 +23,6 @@ class ResetFiles(ResetFilesInterface):
         :Returns: None
         '''
         try:
-            self.write_files.write_number_in_file(progress_number_filename , 0)
             self.write_files.write_number_in_file(number_of_captcha_challenges_filename , 0)
             self.write_files.write_number_in_file(number_of_github_updates_filename , 0)
             self.write_files.write_number_in_file(number_of_inserted_machines_filename , 0)

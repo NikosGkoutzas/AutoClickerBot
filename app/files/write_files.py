@@ -275,16 +275,6 @@ class WriteFiles(WriteFilesInterface):
         self.write_time_general(last_error_time_filename , dt)
 
 
-    def write_progress_number(self) -> None:
-        '''
-        Increments and writes the application progress counter.
-
-        :Parameters: None
-        :Returns: None
-        '''
-        number = self.read_files.read_progress_number()
-        self.general_write_int(progress_number_filename , number)
-
 
     def add_machine(self , url_link: str) -> None:
         '''

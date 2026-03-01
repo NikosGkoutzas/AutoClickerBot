@@ -89,11 +89,6 @@ class ReadFilesInterface(ABC):
 
 
     @abstractmethod
-    def read_progress_number(self) -> int:
-        pass
-
-
-    @abstractmethod
     def read_start_time(self) -> time | None:
         pass
 

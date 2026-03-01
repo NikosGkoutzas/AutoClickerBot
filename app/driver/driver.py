@@ -292,9 +292,7 @@ class Driver(DriverInterface):
         :Returns: True if the cookies popup was found and declined,
                   otherwise False.
         '''
-        
-        self._open_url('https://www.car.gr/login/')
-        
+                
         if not self._has_cookies_popup():
             return False
 

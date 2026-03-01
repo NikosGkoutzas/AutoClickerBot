@@ -31,7 +31,8 @@ class ChromeBoot(ChromeBootInterface):
                                     '--window-size=1920,1080',
                                     '--window-position=0,0',
                                     f'--remote-debugging-port={port}',
-                                    f'--user-data-dir={user_data_dir}'
+                                    f'--user-data-dir={user_data_dir}',
+                                    'https://www.car.gr/login/'
                                 ] ,
                                 stdout=subprocess.DEVNULL,
                                 stderr=subprocess.DEVNULL,

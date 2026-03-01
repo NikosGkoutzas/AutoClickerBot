@@ -58,7 +58,7 @@ class ReadEmail(ReadEmailInterface):
         mail.select('inbox')                                                        # select inbox
         number_of_recent_emails = int(os.getenv('read_number_of_recent_emails'))    # get the last X recent emails
         _ , data = mail.uid('search', None, 'ALL')
-        uids = data[0].split()[:number_of_recent_emails:]                           # first 20 recent unique email ids
+        uids = data[0].split()[-number_of_recent_emails:]                           # first 20 recent unique email ids
         
         for email_uid in uids:
             status, email_data = mail.uid('fetch', email_uid, '(RFC822)')

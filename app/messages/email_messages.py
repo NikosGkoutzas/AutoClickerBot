@@ -395,7 +395,7 @@ class EmailMessages(EmailMessagesInterface):
                 <td align="right">{captcha_challenges_message}</td>
             </tr>
             <tr>
-                <td><b>Inserted machines</b></td>
+                <td><b>Inserted Machines</b></td>
                 <td align="right">{inserted_machines_message}</td>
             </tr>
             <tr>

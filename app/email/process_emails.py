@@ -265,7 +265,6 @@ class ProcessEmails(ProcessEmailsInterface):
                             if(os.path.isdir(inner_item) and inner_item == 'all_files'):
                                 shutil.rmtree(inner_item)
                         
-                        
                         for inner_item in os.listdir(files_path):
                             shutil.move(os.path.join(os.getcwd() , inner_item) , files_destination_path)
                             

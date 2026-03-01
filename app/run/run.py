@@ -96,7 +96,7 @@ class Run(RunInterface):
                             it will be sent the next day before the 'launch' email.
                             After the report is sent, all data will be reset.
                             '''
-                            #self.reset_files.reset_all_files()
+                            self.reset_files.reset_all_files()
                             self.send_email.send_email_launch()
                             self.write_files.write_app_started()
                             self.reset_files.reset_app_ended()

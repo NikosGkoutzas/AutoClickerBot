@@ -188,22 +188,22 @@ class WriteFiles(WriteFilesInterface):
     
     def write_number_of_removed_machines(self , number: int) -> None:
         '''
-        Writes the number of removed machines.
+        Writes/increases the number of removed machines.
 
         :Parameters: None
         :Returns: None
         '''
-        self.write_number_in_file(number_of_removed_machines_filename , number)
+        self.general_write_int(number_of_removed_machines_filename , number)
 
 
     def write_number_of_inserted_machines(self , number: int) -> None:
         '''
-        Writes the number of inserted machines.
+        Writes/increases the number of inserted machines.
 
         :Parameters: None
         :Returns: None
         '''
-        self.write_number_in_file(number_of_inserted_machines_filename , number)
+        self.general_write_int(number_of_inserted_machines_filename , number)
 
 
     def write_update_number_of_machine(self , line: int) -> None:

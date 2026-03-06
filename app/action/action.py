@@ -81,26 +81,21 @@ class Action(ActionInterface):
             flag = self.driver.login()
             
             if(i == 10):
-                self.driver.quit_driver()
-                
                 if(not self.check_if_teamviewer_is_already_connected()):
                     self.open_teamviewer()
                     
                 self.reset_files.reset_all_files()
                 self.send_email.send_email_login_error()
+                self.driver.quit_driver()
                 os.execv(sys.executable , [sys.executable, "-m", "app.main"])    
                    
             if(flag == 2):
-                self.driver.quit_driver()
-                
                 if(not self.check_if_teamviewer_is_already_connected()):
                     self.open_teamviewer()
-                    
+                
                 self.send_email.send_email_captcha_failed_to_be_solved_in_login()
                 
             elif(flag == 3):
-                self.driver.quit_driver()
-                
                 if(not self.check_if_teamviewer_is_already_connected()):
                     self.open_teamviewer()
                     

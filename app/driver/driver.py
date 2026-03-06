@@ -119,7 +119,6 @@ class Driver(DriverInterface):
             return
 
         try:
-            WebDriverWait(self.driver , 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR ,"a[href='/account']"))).click()
             WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "a[href='/logout/']"))).click()
         
         except Exception as e:

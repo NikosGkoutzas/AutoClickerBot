@@ -54,7 +54,7 @@ class WriteFilesInterface(ABC):
 
 
     @abstractmethod
-    def write_number_of_inserted_machines(self , number: int, geiaaaaaaaaaaaa:str) -> None:
+    def write_number_of_inserted_machines(self , number: int) -> None:
         pass
 
 

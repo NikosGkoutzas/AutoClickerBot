@@ -25,9 +25,8 @@ class ProcessEmails(ProcessEmailsInterface):
         into valid and invalid links.
 
         A link is considered invalid if: - it already exists in the stored URLs, or
-                                         - it does not start with the expected car.gr base URL, or
-                                         - it does not end with the expected vendor identifier ('electronord-gr').
-
+                                         - it does not start with the expected car.gr base URL.
+                                         
         Valid links are stored and returned separately.
 
         :Parameters: list_added_links (list[str]): A list of links extracted from the email.
@@ -38,7 +37,7 @@ class ProcessEmails(ProcessEmailsInterface):
         valid_links = []
 
         for link in list_added_links:
-            if(link in self.read_files.read_every_url() or (not link.startswith('https://www.car.gr/xyma/view/') or not link.endswith('electronord-gr'))):
+            if(link in self.read_files.read_every_url() or (not link.startswith('https://www.car.gr/xyma/view/'))):
                 invalid_links.append(link)
             
             else:
@@ -58,9 +57,8 @@ class ProcessEmails(ProcessEmailsInterface):
         into removable (valid) and invalid links.
 
         A link is considered invalid if: - it does not exist in the stored URLs, or
-                                         - it does not start with the expected car.gr base URL, or
-                                         - it does not end with the expected vendor identifier ('electronord-gr').
-
+                                         - it does not start with the expected car.gr base URL.
+                                         
         Valid links are removed from storage and returned separately.
 
         :Parameters: list_removed_links (list[str]): A list of links extracted from the email that
@@ -73,7 +71,7 @@ class ProcessEmails(ProcessEmailsInterface):
 
         for link in list_removed_links:
             if(link not in self.read_files.read_every_url() or (
-                not link.startswith('https://www.car.gr/xyma/view/') or not link.endswith('electronord-gr'))):
+                not link.startswith('https://www.car.gr/xyma/view/'))):
                     invalid_links.append(link)
             
             else:

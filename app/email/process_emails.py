@@ -227,6 +227,8 @@ class ProcessEmails(ProcessEmailsInterface):
                                                '.env' , '__pycache__' , 'requirements.txt']
             
             os.chdir('AutoClickerBot/app/')
+            
+            # my folder
             for item in os.listdir(app_destination_dir):
                 if(item not in excluded_files_and_folders_list):
                     deleted_file_folder_dir = os.path.join(app_destination_dir , item)  
@@ -252,7 +254,7 @@ class ProcessEmails(ProcessEmailsInterface):
                         elif(os.path.isdir(deleted_file_folder_dir)):
                             shutil.rmtree(deleted_file_folder_dir)
                     
-                         
+            # temporary folder     
             for item in os.listdir(source_dir):
                 if(item not in excluded_files_and_folders_list):
                     if(item == 'files'):
@@ -263,8 +265,8 @@ class ProcessEmails(ProcessEmailsInterface):
                             if(os.path.isdir(inner_item) and inner_item == 'all_files'):
                                 shutil.rmtree(inner_item)
                         
-                        for inner_item in os.listdir(files_path):
-                            shutil.move(os.path.join(os.getcwd() , inner_item) , files_destination_path)
+                            else:
+                                shutil.move(os.path.join(os.getcwd() , inner_item) , files_destination_path)
                             
                         os.chdir('..')
                     

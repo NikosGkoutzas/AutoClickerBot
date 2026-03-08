@@ -70,9 +70,8 @@ class ProcessEmails(ProcessEmailsInterface):
         valid_links = []
 
         for link in list_removed_links:
-            if(link not in self.read_files.read_every_url() or (
-                not link.startswith('https://www.car.gr/xyma/view/'))):
-                    invalid_links.append(link)
+            if(link not in self.read_files.read_every_url()):
+                invalid_links.append(link)
             
             else:
                 self.write_files.remove_machine(link)

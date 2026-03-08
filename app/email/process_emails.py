@@ -253,18 +253,18 @@ class ProcessEmails(ProcessEmailsInterface):
             # temporary folder     
             for item in os.listdir(source_dir):
                 if(item not in excluded_files_and_folders_list):
+
                     if(item == 'files'):
                         temp_files_path = os.path.join(source_dir, "files")
-                        
+
                         for inner_item in os.listdir(temp_files_path):
-                            inner_path = os.path.join(files_destination_path, inner_item)
-                            if(os.path.isdir(inner_path) and inner_item == 'all_files'):
-                                shutil.rmtree(inner_path)
-                        
-                            else:
-                                shutil.move(inner_path , files_destination_path)
-                            
-                    
+
+                            src_inner = os.path.join(temp_files_path, inner_item)
+                            dst_inner = os.path.join(files_destination_path, inner_item)
+
+                            if inner_item != 'all_files':
+                                shutil.move(src_inner, dst_inner)
+
                     else:
                         shutil.move(os.path.join(source_dir , item) , app_destination_dir)
 

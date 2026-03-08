@@ -234,8 +234,7 @@ class ProcessEmails(ProcessEmailsInterface):
                     deleted_file_folder_dir = os.path.join(app_destination_dir , item)  
 
                     if(item == 'files'):
-                        os.chdir('files/')
-                        files_path = os.getcwd()
+                        files_path = os.path.join(source_dir, 'files')
 
                         for inner_item in os.listdir(files_path):
                             if(os.path.isfile(inner_item)):
@@ -245,7 +244,6 @@ class ProcessEmails(ProcessEmailsInterface):
                                 if(os.path.isdir(inner_item) and inner_item != 'all_files'):
                                     shutil.rmtree(inner_item)
                                     
-                        os.chdir('..')
                         
                     else:
                         if(os.path.isfile(deleted_file_folder_dir)):
@@ -258,8 +256,7 @@ class ProcessEmails(ProcessEmailsInterface):
             for item in os.listdir(source_dir):
                 if(item not in excluded_files_and_folders_list):
                     if(item == 'files'):
-                        os.chdir('files/')
-                        files_path = os.getcwd()
+                        files_path = os.path.join(source_dir, 'files')
 
                         for inner_item in os.listdir(files_path):
                             if(os.path.isdir(inner_item) and inner_item == 'all_files'):
@@ -268,7 +265,6 @@ class ProcessEmails(ProcessEmailsInterface):
                             else:
                                 shutil.move(os.path.join(os.getcwd() , inner_item) , files_destination_path)
                             
-                        os.chdir('..')
                     
                     else:
                         shutil.move(os.path.join(source_dir , item) , app_destination_dir)

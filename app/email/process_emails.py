@@ -234,15 +234,14 @@ class ProcessEmails(ProcessEmailsInterface):
                     deleted_file_folder_dir = os.path.join(app_destination_dir , item)  
 
                     if(item == 'files'):
-                        files_path = os.path.join(source_dir, 'files')
-
-                        for inner_item in os.listdir(files_path):
-                            if(os.path.isfile(inner_item)):
-                                os.remove(inner_item)
+                        for inner_item in os.listdir(files_destination_path):
+                            inner_path = os.path.join(files_destination_path, inner_item)
+                            if(os.path.isfile(inner_path)):
+                                os.remove(inner_path)
                                 
                             else:
-                                if(os.path.isdir(inner_item) and inner_item != 'all_files'):
-                                    shutil.rmtree(inner_item)
+                                if(os.path.isdir(inner_path) and inner_path != 'all_files'):
+                                    shutil.rmtree(inner_path)
                                     
                         
                     else:
@@ -256,14 +255,13 @@ class ProcessEmails(ProcessEmailsInterface):
             for item in os.listdir(source_dir):
                 if(item not in excluded_files_and_folders_list):
                     if(item == 'files'):
-                        files_path = os.path.join(source_dir, 'files')
-
-                        for inner_item in os.listdir(files_path):
-                            if(os.path.isdir(inner_item) and inner_item == 'all_files'):
-                                shutil.rmtree(inner_item)
+                        for inner_item in os.listdir(files_destination_path):
+                            inner_path = os.path.join(files_destination_path, inner_item)
+                            if(os.path.isdir(inner_path) and inner_path == 'all_files'):
+                                shutil.rmtree(inner_path)
                         
                             else:
-                                shutil.move(os.path.join(os.getcwd() , inner_item) , files_destination_path)
+                                shutil.move(os.path.join(os.getcwd() , inner_path) , files_destination_path)
                             
                     
                     else:

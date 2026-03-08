@@ -64,7 +64,7 @@ class SendEmail(SendEmailInterface):
         '''
         load_dotenv(override=True)
         self.send_email_general(subject=subject , body_message=message , email_receiver=os.getenv('email_receiver_1'))
-        #self.send_email_general(subject=subject , body_message=message , email_receiver=os.getenv('email_receiver_2'))
+        self.send_email_general(subject=subject , body_message=message , email_receiver=os.getenv('email_receiver_2'))
 
 
     def send_email_launch(self) -> None:

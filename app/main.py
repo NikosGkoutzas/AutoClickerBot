@@ -10,7 +10,6 @@ def main():
     inject.configure_once(configure_dependencies)
     inject.instance(RunInterface).run()
 
-    
 
-if(__name__ == '__main__'):
+if (__name__ == '__main__'):
     main()

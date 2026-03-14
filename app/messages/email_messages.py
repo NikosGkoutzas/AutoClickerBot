@@ -2,7 +2,8 @@ from .email_messages_interface import EmailMessagesInterface
 from ..files.read_files_interface import ReadFilesInterface
 from datetime import datetime
 from dotenv import load_dotenv
-import os , inject
+import os
+import inject
 
 
 class EmailMessages(EmailMessagesInterface):
@@ -13,13 +14,12 @@ class EmailMessages(EmailMessagesInterface):
     '''
 
     @inject.autoparams()
-    def __init__(self , read_files_interface: ReadFilesInterface):
+    def __init__(self, read_files_interface: ReadFilesInterface):
         self.read_files = read_files_interface
-        
-        
-        
+
     def time_message(self) -> str:
-        time_message = datetime.now().replace(microsecond=0).strftime('%b %d, %Y - %H:%M:%S')
+        time_message = datetime.now().replace(
+            microsecond=0).strftime('%b %d, %Y - %H:%M:%S')
         return f'''
         <table align='center' cellpadding="0" cellspacing="0" style="background-color:#007BFF; padding:7px; border-radius:12px; width:100%;">
             <tr>
@@ -27,15 +27,12 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-        
-        
-        
+
     def built_with_python_and_copyright_message(self) -> str:
         copyright = f'<b>© {datetime.now().year} Nikos Gkoutzas.<br><b>All Rights Reserved.</b>'
 
-
         built_with_python = '<i>Built with Python</i>'
-        
+
         return f'''
                 <table align="center" width="100%" cellpadding="0" cellspacing="0" style="background-color:#007BFF; padding:7px; border-radius:12px;">
                     <tr>
@@ -47,14 +44,9 @@ class EmailMessages(EmailMessagesInterface):
                 </table>
                 '''
 
-        
-        
-        
     def launch_app_subject_message(self) -> str:
         return '✅ Application Launch'
-        
-        
-        
+
     def launch_app_body_message(self) -> str:
         load_dotenv(override=True)
         developer = 'Nikos Gkoutzas'
@@ -78,7 +70,7 @@ class EmailMessages(EmailMessagesInterface):
         perform_email = f'To perform an action, send an email to {email}.'
         summary_email = f'A summary email is sent every day at {':'.join(str(self.read_files.read_end_time()).split(':')[:-1])}'
         confirmation_email = 'A confirmation email will be sent.'
-                
+
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>
@@ -287,20 +279,11 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>    
         '''
-        
-        
-        
-        
-        
-        
-        
-        
+
     def no_internet_subject_message(self) -> str:
         return '🌐 Internet Restored'
-    
-    
-    
-    def no_internet_body_message(self , occured: str , restored: str):
+
+    def no_internet_body_message(self, occured: str, restored: str):
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>
@@ -333,27 +316,21 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-        
-        
-
-
 
     def daily_report_subject_message(self) -> str:
         return '📊 Daily Report'
 
-
-
-    def daily_report_body_message(self ,
-                                  total_updates_of_day: int ,
-                                  total_machines: int ,
-                                  general_issues: int ,
-                                  internet_issues: int ,
-                                  captcha_challenges: int ,                  
-                                  inserted_machines: int ,
-                                  removed_machines: int ,
-                                  app_version: int ,
+    def daily_report_body_message(self,
+                                  total_updates_of_day: int,
+                                  total_machines: int,
+                                  general_issues: int,
+                                  internet_issues: int,
+                                  captcha_challenges: int,
+                                  inserted_machines: int,
+                                  removed_machines: int,
+                                  app_version: int,
                                   updated_result: str) -> str:
-        
+
         load_dotenv(override=True)
         analytics_link = 'https://www.car.gr/analytics/overview?fbclid=IwAR0PP4jRq9XOQROeGJIRON7gSMOO4RPUDBAEiJXrPPhg44pTBiZNRsS6vz4&date-preset=lastDay'
         analytics_display_name = 'analytics'
@@ -368,7 +345,7 @@ class EmailMessages(EmailMessagesInterface):
         removed_machines_message = f'{removed_machines}'
         app_version_message = f'{app_version}'
         view_analytics = f'View today\'s update {analytics}.'
-        
+
         final = f'''
         <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
@@ -437,17 +414,10 @@ class EmailMessages(EmailMessagesInterface):
         </table>
         '''
 
-
-
-
-
-
     def new_version_started_subject_message(self) -> str:
         return '✅ Application Updated'
-    
-    
-    
-    def new_version_started_body_message(self , app_version) -> str:        
+
+    def new_version_started_body_message(self, app_version) -> str:
         return f'''
         <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed;">
             <tr>
@@ -472,22 +442,18 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-        
-        
-    
-    def credentails_update_subject_message(self , cond_str: str) -> str:
+
+    def credentails_update_subject_message(self, cond_str: str) -> str:
         return '✅ Credentials Updated' if cond_str.lower() == 'ok' else '❌ Credentials Update Failed'
-    
-    
-    
-    def credentials_update_body_message(self , cond_str: str) -> str:
-        if(cond_str.lower() == 'ok'):
+
+    def credentials_update_body_message(self, cond_str: str) -> str:
+        if (cond_str.lower() == 'ok'):
             msg = 'Your account credentials have been updated successfully. The application logged out, signed back in \
                 with new credentials, and is now running normally.'
-                
+
         else:
             msg = cond_str
-            
+
         return f'''
         <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed;">
             <tr>
@@ -509,37 +475,32 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-        
-        
-        
-        
+
     def progress_subject_message(self) -> str:
         return '📝 Progress Update'
-    
-    
-    
-    def progress_body_message(self ,
-                              number_of_machines: int ,
-                              current_updates: int ,
-                              current_errors: int ,
-                              internet_errors: int ,
-                              most_recent_error: str ,
-                              added_machines: int ,
-                              removed_machines: int ,
-                              captcha_challenges: int ,
+
+    def progress_body_message(self,
+                              number_of_machines: int,
+                              current_updates: int,
+                              current_errors: int,
+                              internet_errors: int,
+                              most_recent_error: str,
+                              added_machines: int,
+                              removed_machines: int,
+                              captcha_challenges: int,
                               version: str
                               ) -> str:
-        
+
         most_recent_error_row = ''
-    
-        if(current_errors != 0):
+
+        if (current_errors != 0):
             most_recent_error_row = f'''
                                      <tr>
                                             <td><b>Most recent error</b></td>
                                             <td align="right">{most_recent_error}</td>
                                      </tr>
                                      '''
-            
+
         return f'''
         <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed;">
             <tr>
@@ -594,14 +555,7 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-        
 
-            
-            
-    
-    
-    
-    
     def empty_body(self):
         return f'''
                 <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:7px; border-radius:16px; table-layout:fixed;">
@@ -630,29 +584,21 @@ class EmailMessages(EmailMessagesInterface):
                     </table>
                     '''
 
-                
-                
-
-
-    def machine_inserted_subject_message(self , number_of_inserted_machines: int , invalid_machines: list[str]) -> str:
-        if(number_of_inserted_machines == 1):
-            if(len(invalid_machines) > 0):
+    def machine_inserted_subject_message(self, number_of_inserted_machines: int, invalid_machines: list[str]) -> str:
+        if (number_of_inserted_machines == 1):
+            if (len(invalid_machines) > 0):
                 return '⚠️ Partial Machine Insertion'
-            
+
             return f'⤵️ {number_of_inserted_machines} Machine Added'
-        
-        if(number_of_inserted_machines > 1):
-            if(len(invalid_machines) > 0):
+
+        if (number_of_inserted_machines > 1):
+            if (len(invalid_machines) > 0):
                 return '⚠️ Partial Machine Insertion'
             return f'⤵️ {number_of_inserted_machines} Machines Added'
-        
+
         return f'❌ Machine Insertion Failed'
 
-
-
-
-
-    def machine_inserted_body_message(self , list_of_added_machines: list[str] , invalid_machines: list[str] , number_of_machines: int) -> str:
+    def machine_inserted_body_message(self, list_of_added_machines: list[str], invalid_machines: list[str], number_of_machines: int) -> str:
         s = 's' if len(list_of_added_machines) > 1 else ''
         s_invalid = 's' if len(invalid_machines) > 1 else ''
 
@@ -678,11 +624,11 @@ class EmailMessages(EmailMessagesInterface):
                                                             </tr>
                                                             <tr>
                                                                 <td></td>
-                                                                {'<br>' if i < len(list_of_added_machines)-1  else ''}
+                                                                {'<br>' if i < len(list_of_added_machines)-1 else ''}
                                                             </tr>
                                                         '''
-                                                        for i in range(len(list_of_added_machines)))
-                                            }
+                                                      for i in range(len(list_of_added_machines)))
+                                             }
                                         </table>
                                     </td>
                                 </tr>
@@ -703,22 +649,22 @@ class EmailMessages(EmailMessagesInterface):
                                                                 </tr>
                                                                 <tr>
                                                                     <td></td>
-                                                                    {'<br>' if i < len(invalid_machines)-1  else ''}
+                                                                    {'<br>' if i < len(invalid_machines)-1 else ''}
                                                                 </tr>
                                                             '''
-                                                            for i in range(len(invalid_machines)))
-                                                }
+                                                         for i in range(len(invalid_machines)))
+                                                 }
                                             </table>
                                         </td>
                                     </tr>
                                     '''
-                                    if len(invalid_machines) > 0 else ''
-                                }
+                                 if len(invalid_machines) > 0 else ''
+                                 }
                                 <tr><br></tr>
                                 <tr>
                                     {f'''
                                         <td align="center">Machines have been updated to {number_of_machines}.</td>''' if (len(list_of_added_machines)) > 0 else ''
-                                    }
+                                     }
                                 </tr>
                                 <tr><br></tr>
                                 <tr><br></tr>
@@ -729,8 +675,7 @@ class EmailMessages(EmailMessagesInterface):
                                 </tr>
                             </table>
                             '''
-                            
-                            
+
         machines_insertion_failed = f'''
                                     <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:7px; border-radius:16px; table-layout:fixed;">
                                             <tr>
@@ -753,11 +698,11 @@ class EmailMessages(EmailMessagesInterface):
                                                                         </tr>
                                                                         <tr>
                                                                             <td></td>
-                                                                            {'<br>' if i < len(invalid_machines)-1  else ''}
+                                                                            {'<br>' if i < len(invalid_machines)-1 else ''}
                                                                         </tr>
                                                                     '''
-                                                                    for i in range(len(invalid_machines)))
-                                                        }
+                                                                  for i in range(len(invalid_machines)))
+                                                         }
                                                     </table>
                                                 </td>
                                             </tr>
@@ -769,48 +714,34 @@ class EmailMessages(EmailMessagesInterface):
                                             </tr>
                                         </table>
                                         '''
-                                        
-        
-        
-        if(len(list_of_added_machines) > 0):
+
+        if (len(list_of_added_machines) > 0):
             return machines_inserted
-        
-        if(len(invalid_machines) > 0):
+
+        if (len(invalid_machines) > 0):
             return machines_insertion_failed
 
         return self.empty_body()
-        
-    
-    
-    
-        
-        
-        
-        
-        
-    def machine_removed_subject_message(self , number_of_removed_machines: int , not_existing_machines: list[str]) -> str:
-        if(number_of_removed_machines == 1):
-            if(len(not_existing_machines) > 0):
+
+    def machine_removed_subject_message(self, number_of_removed_machines: int, not_existing_machines: list[str]) -> str:
+        if (number_of_removed_machines == 1):
+            if (len(not_existing_machines) > 0):
                 return '⚠️ Partial Machine Removal'
-            
+
             return f'⤴️ {number_of_removed_machines} Machine Removed'
-        
-        if(number_of_removed_machines > 1):
-            if(len(not_existing_machines) > 0):
+
+        if (number_of_removed_machines > 1):
+            if (len(not_existing_machines) > 0):
                 return '⚠️ Partial Machine Removal'
-            
+
             return f'⤴️ {number_of_removed_machines} Machines Removed'
-        
+
         return f'❌ Machine Removal Failed'
 
-
-
-
-
-    def machine_removed_body_message(self , list_of_removed_machines: list[str] , not_existing_machines: list[str] , number_of_machines: int) -> str:
+    def machine_removed_body_message(self, list_of_removed_machines: list[str], not_existing_machines: list[str], number_of_machines: int) -> str:
         s_removed = 's' if len(list_of_removed_machines) > 1 else ''
         s_not_existing = 's' if len(not_existing_machines) > 1 else ''
-        
+
         machines_removed = f'''
                             <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed;">
                                 <tr>
@@ -832,11 +763,11 @@ class EmailMessages(EmailMessagesInterface):
                                                                 <td style="vertical-align:top; padding:7px;" align="left">{list_of_removed_machines[i]}</td>
                                                             </tr>
                                                             <tr>
-                                                                {'<br>' if i < len(list_of_removed_machines)-1  else ''}
+                                                                {'<br>' if i < len(list_of_removed_machines)-1 else ''}
                                                             </tr>
                                                         '''
-                                                        for i in range(len(list_of_removed_machines)))
-                                            }
+                                                      for i in range(len(list_of_removed_machines)))
+                                             }
                                         </table>
                                     </td>
                                 </tr>
@@ -857,22 +788,22 @@ class EmailMessages(EmailMessagesInterface):
                                                                 </tr>
                                                                 <tr>
                                                                     <td></td>
-                                                                    {'<br>' if i < len(not_existing_machines)-1  else ''}
+                                                                    {'<br>' if i < len(not_existing_machines)-1 else ''}
                                                                 </tr>
                                                             '''
-                                                            for i in range(len(not_existing_machines)))
-                                                }
+                                                         for i in range(len(not_existing_machines)))
+                                                 }
                                             </table>
                                         </td>
                                     </tr>
                                     '''
-                                    if len(not_existing_machines) > 0 else ''
-                                }
+                                 if len(not_existing_machines) > 0 else ''
+                                 }
                                 <tr><br></tr>
                                 <tr>
                                     {f'''
                                             <td align="center">Machines have been updated to {number_of_machines}.</td>''' if len(list_of_removed_machines) > 0 else ''
-                                    }
+                                     }
                                 </tr>
                                 <tr><br></tr>
                                 <tr>
@@ -882,8 +813,7 @@ class EmailMessages(EmailMessagesInterface):
                                 </tr>
                             </table>
                             '''
-                            
-                            
+
         machines_removal_failed = f'''
                                    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed;">
                                         <tr>
@@ -906,11 +836,11 @@ class EmailMessages(EmailMessagesInterface):
                                                                     </tr>
                                                                     <tr>
                                                                         <td></td>
-                                                                        {'<br>' if i < len(not_existing_machines)-1  else ''}
+                                                                        {'<br>' if i < len(not_existing_machines)-1 else ''}
                                                                     </tr>
                                                                 '''
-                                                                for i in range(len(not_existing_machines)))
-                                                    }
+                                                              for i in range(len(not_existing_machines)))
+                                                     }
                                                 </table>
                                             </td>
                                         </tr>
@@ -922,32 +852,22 @@ class EmailMessages(EmailMessagesInterface):
                                         </tr>
                                     </table>
                                     '''
-        
-        if(len(list_of_removed_machines) > 0):
+
+        if (len(list_of_removed_machines) > 0):
             return machines_removed
-        
-        if(len(not_existing_machines) > 0):
+
+        if (len(not_existing_machines) > 0):
             return machines_removal_failed
 
         return self.empty_body()
-    
-    
-
-
-        
-        
-        
-        
 
     def error_installing_new_version_subject_message(self) -> str:
         return '❌ New Version Failed To Install'
-    
-    
-    
+
     def general_error_installing_new_version_body_message(self) -> str:
         error_msg = 'An unexpected error occurred while attempting to install the latest version from GitHub. \
                      TeamViewer has been launched and the system is now available for remote access to allow manual resolution of the issue.'
-        
+
         return f'''
         <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed;">
             <tr>
@@ -974,14 +894,12 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-    
-    
+
     def error_installing_new_version_body_message_missing_type(self) -> str:
         error_msg1 = 'The new version will not be installed due to an invalid or missing version type.'
         error_msg2 = 'Please specify one of the following:'
         error_msg3 = 'major, minor or patch.'
 
-        
         return f'''
         <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed;">
             <tr>
@@ -1014,21 +932,11 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-        
-        
-    
-    
-    
-    
-    
+
     def see_all_available_links_subject_message(self) -> str:
         return '📎 All Available Links'
-    
-    
-    
-    
-    
-    def see_all_available_links_body_message(self , list_of_all_machines: str) -> str:
+
+    def see_all_available_links_body_message(self, list_of_all_machines: str) -> str:
         return f'''
                 <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed;">
                     <tr>
@@ -1050,22 +958,14 @@ class EmailMessages(EmailMessagesInterface):
                     </tr>
                 </table>
                 '''
-                
-                
-                
-    
-    
-    
-    
+
     def unable_to_login_subject_message(self) -> str:
         return '👤 Login Failed'
-    
-    
 
     def unable_to_login_body_message(self) -> str:
         msg = 'Sign-in failed after 3 unsuccessful authentication attempts due to invalid credentials. The system is attempting the operation again.\
                TeamViewer has been launched and the system is now available for remote access to allow manual resolution of the issue.'
-               
+
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>
@@ -1083,19 +983,15 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-        
-        
-        
-        
+
     def login_error_subject_message(self) -> str:
         return '👤 Unexpected Login Errors'
-    
-    
+
     def login_error_body_message(self) -> str:
         unexpected_errors = 10
         msg = f'{unexpected_errors} unexpected login errors occured. A full system reset was performed.\
                TeamViewer has been launched and the system is now available for remote access to allow manual resolution of the issue.'
-               
+
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>
@@ -1113,19 +1009,15 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-        
-        
-        
+
     def captcha_failed_to_be_solved_subject_message(self) -> str:
         return '🚨 Captcha Manual Verification'
-    
-    
-    
+
     def captcha_failed_to_be_solved_in_login_body_message(self) -> str:
         captcha_attempts = 10
         msg = f'Login failed. A CAPTCHA challenge blocked the process after {captcha_attempts} attempts. The system is attempting the operation again.\
                 TeamViewer has been launched and the system is now available for remote access to allow manual resolution of the issue.'
-               
+
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>
@@ -1143,14 +1035,12 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-        
-        
-    
+
     def captcha_failed_to_be_solved_body_message(self) -> str:
         captcha_attempts = 10
         msg = f'A CAPTCHA challenge blocked the process after {captcha_attempts} attempts. \
                 TeamViewer has been launched and the system is now available for remote access to allow manual resolution of the issue.'
-               
+
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>
@@ -1168,16 +1058,11 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-        
-        
-        
-        
+
     def notify_every_10_errors_subject_message(self) -> str:
         return '⚠️ Error Status Update'
-        
-    
-    
-    def notify_every_10_errors_body_message(self , errors: int) -> str:
+
+    def notify_every_10_errors_body_message(self, errors: int) -> str:
         msg = f'The system has reached {errors} errors. An email with the subject \'start teamviewer\' may be sent to enable \
                 TeamViewer access for further review.<br>⚠️ Once the review is complete, access should be disabled by sending an \
                 email with the subject \'stop teamviewer\'.'
@@ -1199,21 +1084,15 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-        
-        
-        
-        
+
     def teamviewer_connected_subject_message(self) -> str:
         return '🟢 TeamViewer Connected'
-    
-    
-    
 
     def teamviewer_connected_body_message(self) -> str:
         msg = 'TeamViewer has been launched and the system is now available for remote access.<br>\
                ⚠️ Once the review is complete, access should be disabled by sending an \
                email with the subject \'stop teamviewer\'.'
-        
+
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>
@@ -1231,16 +1110,13 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-    
-    
-    
+
     def teamviewer_disconnected_subject_message(self) -> str:
         return '🔴 TeamViewer Disconnected'
-    
-    
+
     def teamviewer_disconnected_body_message(self) -> str:
         msg = 'TeamViewer remote access has been successfully disabled.'
-        
+
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>
@@ -1258,18 +1134,13 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-    
-    
-    
-    
-    
+
     def teamviewer_connection_already_opened_subject_message(self) -> str:
         return '⚠️ TeamViewer Already Opened'
-    
-    
+
     def teamviewer_connection_already_opened_body_message(self) -> str:
         msg = 'TeamViewer remote access is already enabled.'
-        
+
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>
@@ -1287,15 +1158,13 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-    
-    
+
     def teamviewer_connection_already_closed_subject_message(self) -> str:
         return '⚠️ TeamViewer Already Closed'
-    
-    
+
     def teamviewer_connection_already_closed_body_message(self) -> str:
         msg = 'TeamViewer remote access is already disabled.'
-        
+
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>
@@ -1313,18 +1182,13 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-    
-    
-    
-    
+
     def failed_to_open_teamviewer_subject_message(self) -> str:
         return '❌ TeamViewer Failed To Start'
-        
-        
-    
+
     def failed_to_open_teamviewer_body_message(self) -> str:
-        msg = 'TeamViewer failed to start and remote access is currently unavailable. A retry may resolve the issue.'  
-              
+        msg = 'TeamViewer failed to start and remote access is currently unavailable. A retry may resolve the issue.'
+
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>
@@ -1342,16 +1206,13 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
-        
-        
+
     def failed_to_close_teamviewer_subject_message(self) -> str:
         return '❌ TeamViewer Failed To Close'
-        
-        
-    
+
     def failed_to_close_teamviewer_body_message(self) -> str:
-        msg = 'TeamViewer failed to close. A retry may resolve the issue.'  
-              
+        msg = 'TeamViewer failed to close. A retry may resolve the issue.'
+
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
             <tr>

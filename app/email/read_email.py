@@ -1,5 +1,4 @@
 from .read_email_interface import ReadEmailInterface
-import imaplib , os , email
 from .process_emails_interface import ProcessEmailsInterface
 from .send_email_interface import SendEmailInterface
 from ..files.read_files_interface import ReadFilesInterface
@@ -7,30 +6,30 @@ from ..files.write_files_interface import WriteFilesInterface
 from ..driver.driver_interface import DriverInterface
 from ..action.action_interface import ActionInterface
 from dotenv import load_dotenv
-import email.message , inject
-
-
+import email.message
+import inject
+import imaplib
+import os
+import email
 
 
 class ReadEmail(ReadEmailInterface):
     @inject.autoparams()
-    def __init__(self ,
-                 process_emails_interface: ProcessEmailsInterface ,
-                 send_email_interface: SendEmailInterface ,
-                 read_files_interface: ReadFilesInterface ,
-                 write_files_interface: WriteFilesInterface ,
-                 driver_interface: DriverInterface ,
+    def __init__(self,
+                 process_emails_interface: ProcessEmailsInterface,
+                 send_email_interface: SendEmailInterface,
+                 read_files_interface: ReadFilesInterface,
+                 write_files_interface: WriteFilesInterface,
+                 driver_interface: DriverInterface,
                  action_interface: ActionInterface):
-        
+
         self.process_emails = process_emails_interface
         self.send_email = send_email_interface
         self.read_files = read_files_interface
         self.write_files = write_files_interface
         self.driver = driver_interface
         self.action = action_interface
-    
-    
-    
+
     def fetch_last_emails(self) -> None:
         '''
         Connects to the configured Gmail inbox and processes the most recent emails.
@@ -52,36 +51,51 @@ class ReadEmail(ReadEmailInterface):
         '''
         self.SMTP_SERVER = 'imap.gmail.com'                                         # server domain
         self.SMTP_PORT = 993                                                        # port
-        mail = imaplib.IMAP4_SSL(self.SMTP_SERVER)                                  # connect to gmail server
+        # connect to gmail server
+        mail = imaplib.IMAP4_SSL(self.SMTP_SERVER)
         load_dotenv(override=True)
-        mail.login(os.getenv('email_sender') , os.getenv('email_sender_password'))  # login to gmail with credentials
-        mail.select('inbox')                                                        # select inbox
-        number_of_recent_emails = int(os.getenv('read_number_of_recent_emails'))    # get the last X recent emails
-        _ , data = mail.uid('search', None, 'ALL')
-        uids = data[0].split()[-number_of_recent_emails:]                           # first 20 recent unique email ids
-        
+        mail.login(os.getenv('email_sender'), os.getenv(
+            'email_sender_password'))  # login to gmail with credentials
+        # select inbox
+        mail.select('inbox')
+        # get the last X recent emails
+        number_of_recent_emails = int(
+            os.getenv('read_number_of_recent_emails'))
+        _, data = mail.uid('search', None, 'ALL')
+        # first 20 recent unique email ids
+        uids = data[0].split()[-number_of_recent_emails:]
+
         for email_uid in uids:
             status, email_data = mail.uid('fetch', email_uid, '(RFC822)')
 
-            if(status == 'OK'):
+            if (status == 'OK'):
                 msg = email.message_from_bytes(email_data[0][1])
-                email_subject = msg['subject'].lower().strip() if msg['subject'] else 'No subject'
-            
-                if(email_uid not in self.read_files.read_email_uids()):
-                    self._read_add_subject(email_subject , msg , email_uid)     
-                    self._read_remove_subject(email_subject , msg , email_uid)
-                    self._read_connect_via_teamviewer_email(email_subject , email_uid)
-                    self._read_disconnect_from_teamviewer_email(email_subject , email_uid)
-                    self._read_new_version_email(email_subject , msg , email_uid)
-                    self._read_progress_email(email_subject , email_uid)
-                    self._read_credentials_subject(email_subject , msg , email_uid)
-                    self._read_all_links_email(email_subject , email_uid)
-                    
+                email_subject = msg['subject'].lower(
+                ).strip() if msg['subject'] else 'No subject'
 
+                if (email_uid not in self.read_files.read_email_uids()):
+                    self._read_add_subject(email_subject,
+                                           msg,
+                                           email_uid)
+                    self._read_remove_subject(email_subject,
+                                              msg,
+                                              email_uid)
+                    self._read_connect_via_teamviewer_email(email_subject,
+                                                            email_uid)
+                    self._read_disconnect_from_teamviewer_email(email_subject,
+                                                                email_uid)
+                    self._read_new_version_email(email_subject,
+                                                 msg,
+                                                 email_uid)
+                    self._read_progress_email(email_subject,
+                                              email_uid)
+                    self._read_credentials_subject(email_subject,
+                                                   msg,
+                                                   email_uid)
+                    self._read_all_links_email(email_subject,
+                                               email_uid)
 
-    
-
-    def _read_email_body(self ,
+    def _read_email_body(self,
                          msg: email.message.Message
                          ) -> list[str]:
         '''
@@ -95,34 +109,27 @@ class ReadEmail(ReadEmailInterface):
 
         :Returns: list[str]: A list of non-empty lines extracted from the email body.
         '''
-        try:        
-            body_list = []        
-            if(msg is not None):
+        try:
+            body_list = []
+            if (msg is not None):
                 for part in msg.walk():
                     content_type = part.get_content_type()
-                    if(content_type == 'text/plain'):
-                        body = part.get_payload(decode=True).decode('utf-8', errors='ignore')
+                    if (content_type == 'text/plain'):
+                        body = part.get_payload(decode=True).decode(
+                            'utf-8', errors='ignore')
                         lines = body.splitlines()
                         body = [line.strip() for line in lines if line.strip()]
                         body_list.extend(body)
-                
+
             return body_list
-                        
+
         except Exception as e:
             print(f'An error occured: {str(e)}')
             self.write_files.write_total_errors()
-        
 
-            
-        
-
-
-
-        
-            
-    def _read_add_subject(self ,
-                          email_subject: str ,
-                          msg: email.message.Message ,
+    def _read_add_subject(self,
+                          email_subject: str,
+                          msg: email.message.Message,
                           email_uid: int
                           ) -> None:
         '''
@@ -140,25 +147,22 @@ class ReadEmail(ReadEmailInterface):
 
         :Returns: None
         '''
-        if(email_subject.lower().strip() == 'add'):
+        if (email_subject.lower().strip() == 'add'):
             self.write_files.write_email_uids(email_uid)
             list_added_links = self._read_email_body(msg)
-            valid_links , invalid_added_links = self.process_emails.process_add_link_email(list_added_links)    
-            
+            valid_links, invalid_added_links = self.process_emails.process_add_link_email(
+                list_added_links)
+
             for _ in range(len(valid_links)):
-                self.write_files.write_number_of_inserted_machines(self.read_files.read_number_of_inserted_machines())  
-                
-            self.send_email.send_email_link_inserted(valid_links , invalid_added_links)
-                
-                
+                self.write_files.write_number_of_inserted_machines(
+                    self.read_files.read_number_of_inserted_machines())
 
+            self.send_email.send_email_link_inserted(valid_links,
+                                                     invalid_added_links)
 
-                
-                
-    
-    def _read_remove_subject(self ,
-                             email_subject: str ,
-                             msg: email.message.Message ,
+    def _read_remove_subject(self,
+                             email_subject: str,
+                             msg: email.message.Message,
                              email_uid: int
                              ) -> None:
         '''
@@ -175,23 +179,22 @@ class ReadEmail(ReadEmailInterface):
 
         :Returns: None
         '''
-        if(email_subject.lower().strip() == 'delete'):
+        if (email_subject.lower().strip() == 'delete'):
             self.write_files.write_email_uids(email_uid)
-            list_removed_links = self._read_email_body(msg)            
-            valid_links , invalid_removed_links = self.process_emails.process_remove_link_email(list_removed_links)
-            
+            list_removed_links = self._read_email_body(msg)
+            valid_links, invalid_removed_links = self.process_emails.process_remove_link_email(
+                list_removed_links)
+
             for _ in range(len(valid_links)):
-                self.write_files.write_number_of_removed_machines(self.read_files.read_number_of_removed_machines())        
-                
-            self.send_email.send_email_link_removed(valid_links , invalid_removed_links)
-    
-        
-        
-        
-        
-    def _read_progress_email(self ,
-                             email_subject: str ,
-                             email_uid: int ,
+                self.write_files.write_number_of_removed_machines(
+                    self.read_files.read_number_of_removed_machines())
+
+            self.send_email.send_email_link_removed(valid_links,
+                                                    invalid_removed_links)
+
+    def _read_progress_email(self,
+                             email_subject: str,
+                             email_uid: int,
                              ) -> None:
         '''
         Handles emails with the subject "progress" and sends a progress status email.
@@ -205,18 +208,14 @@ class ReadEmail(ReadEmailInterface):
 
         :Returns: None
         '''
-        if(email_subject.lower().strip() == 'progress'):
+        if (email_subject.lower().strip() == 'progress'):
             self.write_files.write_email_uids(email_uid)
             self.send_email.send_email_progress()
-                    
-                
-                
-                
-                
-    def _read_new_version_email(self ,
-                                email_subject: str ,
-                                msg: email.message.Message ,
-                                email_uid: int ,
+
+    def _read_new_version_email(self,
+                                email_subject: str,
+                                msg: email.message.Message,
+                                email_uid: int,
                                 ) -> None:
         '''
         Handles emails with the subject "update" and triggers the application update process.
@@ -238,32 +237,26 @@ class ReadEmail(ReadEmailInterface):
 
         :Returns: None
         '''
-        if(email_subject.lower().strip() == 'update'):
+        if (email_subject.lower().strip() == 'update'):
             self.write_files.write_email_uids(email_uid)
             semantic_versioning = self._read_email_body(msg)
-            success , semantic_input = self.process_emails.process_new_version_email(semantic_versioning)
-                            
-            if(success):                   
-                if(not self.process_emails.process_download_new_version_from_github(semantic_input)):
+            success, semantic_input = self.process_emails.process_new_version_email(
+                semantic_versioning)
+
+            if (success):
+                if (not self.process_emails.process_download_new_version_from_github(semantic_input)):
                     self.send_email.send_email_new_version_failed_to_update()
-                    
-                    if(not self.action.check_if_teamviewer_is_already_connected()):
+
+                    if (not self.action.check_if_teamviewer_is_already_connected()):
                         self.action.open_teamviewer()
-                    
 
             else:
                 self.send_email.send_email_error_installing_new_version_missing_type()
 
-    
-    
-        
-        
-        
-    
-    def _read_credentials_subject(self ,
-                                  email_subject: str ,
-                                  msg: email.message.Message ,
-                                  email_uid: int ,
+    def _read_credentials_subject(self,
+                                  email_subject: str,
+                                  msg: email.message.Message,
+                                  email_uid: int,
                                   ) -> None:
         '''
         Handles emails with the subject "credentials" and processes credential update requests.
@@ -282,25 +275,21 @@ class ReadEmail(ReadEmailInterface):
 
         :Returns: None
         '''
-        if(email_subject.lower().strip() == 'credentials'):
+        if (email_subject.lower().strip() == 'credentials'):
             self.write_files.write_email_uids(email_uid)
             list_changed_credentials = self._read_email_body(msg)
-            credential_messages = self.process_emails.process_change_credentials_email(list_changed_credentials)
-            
-            if(credential_messages.strip().lower() == 'ok'):
+            credential_messages = self.process_emails.process_change_credentials_email(
+                list_changed_credentials)
+
+            if (credential_messages.strip().lower() == 'ok'):
                 self.driver.logout()
                 self.action.check_login()
-                
+
             self.send_email.send_email_credentials_updated(credential_messages)
-            
-                
-            
-            
-            
-    
-    def _read_connect_via_teamviewer_email(self ,
-                                           email_subject: str ,
-                                           email_uid: int ,
+
+    def _read_connect_via_teamviewer_email(self,
+                                           email_subject: str,
+                                           email_uid: int,
                                            ) -> None:
         '''
         Handles emails with the subject "start teamviewer" and initiates
@@ -315,19 +304,15 @@ class ReadEmail(ReadEmailInterface):
 
         :Returns: None
         '''
-        if(email_subject.lower().strip() == 'start teamviewer'):
+        if (email_subject.lower().strip() == 'start teamviewer'):
             self.write_files.write_email_uids(email_uid)
-            
-            if(not self.action.check_if_teamviewer_is_already_connected()):
+
+            if (not self.action.check_if_teamviewer_is_already_connected()):
                 self.action.open_teamviewer()
-                    
-            
-            
-            
-            
-    def _read_disconnect_from_teamviewer_email(self ,
-                                               email_subject: str ,
-                                               email_uid: int ,
+
+    def _read_disconnect_from_teamviewer_email(self,
+                                               email_subject: str,
+                                               email_uid: int,
                                                ) -> None:
         '''
         Handles emails with the subject "stop teamviewer" and terminates
@@ -342,19 +327,14 @@ class ReadEmail(ReadEmailInterface):
 
         :Returns: None
         '''
-        if(email_subject.lower().strip() == 'stop teamviewer'):
+        if (email_subject.lower().strip() == 'stop teamviewer'):
             self.write_files.write_email_uids(email_uid)
-            if(not self.action.check_if_teamviewer_is_already_disconnected()):
+            if (not self.action.check_if_teamviewer_is_already_disconnected()):
                 self.action.close_teamviewer()
-            
-            
-            
-            
-            
-            
-    def _read_all_links_email(self ,
-                              email_subject: str ,
-                              email_uid: int ,
+
+    def _read_all_links_email(self,
+                              email_subject: str,
+                              email_uid: int,
                               ) -> None:
         '''
         Handles emails with the subject "links" and sends back all stored links.
@@ -368,6 +348,6 @@ class ReadEmail(ReadEmailInterface):
 
         :Returns: None
         '''
-        if(email_subject.lower().strip() == 'links'):
+        if (email_subject.lower().strip() == 'links'):
             self.write_files.write_email_uids(email_uid)
             self.send_email.send_email_all_links()

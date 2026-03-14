@@ -5,3 +5,4 @@ venv/
 selenium-profile/
 .gitattributes
 NewVersionTmpFolder/AutoClickerBot/
+*.json

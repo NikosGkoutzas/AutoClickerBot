@@ -5,14 +5,12 @@ from datetime import datetime
 import inject
 
 
-
 class WriteFiles(WriteFilesInterface):
     @inject.autoparams()
-    def __init__(self , read_files_interface: ReadFilesInterface):
+    def __init__(self, read_files_interface: ReadFilesInterface):
         self.read_files = read_files_interface
-        
 
-    def general_write_int(self , filename: str , number: int) -> None:
+    def general_write_int(self, filename: str, number: int) -> None:
         '''
         Writes an incremented integer value to the specified file.
 
@@ -21,19 +19,18 @@ class WriteFiles(WriteFilesInterface):
         :Returns: None
         '''
         try:
-            with open(filename , 'w') as f:
+            with open(filename, 'w') as f:
                 f.write(str(number + 1))
 
         except FileNotFoundError:
             raise ValueError(f'File \'{filename}\' not found.')
-        
+
         except ValueError:
-            raise ValueError(f'File \'{filename}\' does not contain a valid integer.')
-            
+            raise ValueError(
+                f'File \'{filename}\' does not contain a valid integer.')
+
         except Exception as e:
             raise ValueError(f'An error occured: {str(e)}')
-        
-
 
     def write_url_current_pos(self) -> None:
         '''
@@ -46,82 +43,69 @@ class WriteFiles(WriteFilesInterface):
         total_number_of_urls = self.read_files.read_number_of_urls()
 
         try:
-            with open(url_current_pos_filename , 'w') as f:
-                if(current_pos < total_number_of_urls):
+            with open(url_current_pos_filename, 'w') as f:
+                if (current_pos < total_number_of_urls):
                     f.write(str(current_pos + 1))
                 else:
                     f.write(str(1))
 
         except FileNotFoundError:
             raise ValueError(f'File \'{url_current_pos_filename}\' not found.')
-        
+
         except ValueError:
-            raise ValueError(f'File \'{url_current_pos_filename}\' does not contain a valid integer.')
-            
+            raise ValueError(
+                f'File \'{url_current_pos_filename}\' does not contain a valid integer.')
+
         except Exception as e:
             raise ValueError(f'An error occured: {str(e)}')
-        
 
-    def write_app_version(self , semantic_versioning: str) -> None:
+    def write_app_version(self, semantic_versioning: str) -> None:
         '''
         Updates the application version using semantic versioning rules.
-        
+
         PATCH: bug fix, better-looking (0.0.1 -> 0.0.2)
         MINOR: add features (0.0.1 -> 0.1.0) ~> eliminate patch
         MAJOR: change function_name, arguments(add,remove), remove features (1.4.7 → 2.0.0) ~> eliminate patch & minor
-        
+
         :Parameters: semantic_versioning (str): Version type ('patch', 'minor', or 'major').
         :Returns: None
         '''
         version = self.read_files.read_app_version()
-        
+
         try:
-            with open(app_version_filename , 'w') as f:
+            with open(app_version_filename, 'w') as f:
                 patch = int(version.split('.')[2])
                 minor = int(version.split('.')[1])
                 major = int(version.split('.')[0])
-                
-                if(semantic_versioning not in ['patch' , 'minor' , 'major']):
-                    raise ValueError('Semantic versioning must be \'patch\', \'minor\' or \'major\' in function \'write_app_version\'.')                
-                
-                if(semantic_versioning == 'major'):
+
+                if (semantic_versioning not in ['patch', 'minor', 'major']):
+                    raise ValueError(
+                        'Semantic versioning must be \'patch\', \'minor\' or \'major\' in function \'write_app_version\'.')
+
+                if (semantic_versioning == 'major'):
                     minor = 0
                     patch = 0
                     major += 1
-                elif(semantic_versioning == 'minor'):
+                elif (semantic_versioning == 'minor'):
                     patch = 0
                     minor += 1
                 else:
                     patch += 1
-                
+
                 new_version = str(major) + '.' + str(minor) + '.' + str(patch)
                 f.write(new_version)
-                
+
         except FileNotFoundError:
             raise ValueError(f'File \'{url_current_pos_filename}\' not found.')
-        
+
         except ValueError:
-            raise ValueError(f'File \'{url_current_pos_filename}\' does not contain a valid string.')
-            
+            raise ValueError(
+                f'File \'{url_current_pos_filename}\' does not contain a valid string.')
+
         except Exception as e:
             raise ValueError(f'An error occured: {str(e)}')
-        
-        
-    
 
-    def write_new_version_update_flag(self , flag: int) -> None:
-        '''
-        Writes the new version update flag value.
-
-        :Parameters: flag (int): Flag indicating whether a new version update is pending.
-        :Returns: None
-        '''
-        self.write_number_in_file(new_version_update_flag_filename , flag)
-
-
-
-
-    def write_delay_per_update(self , delay: int) -> None:
+    def write_delay_per_update(self, delay: int) -> None:
         '''
         Writes the delay value used between update operations.
 
@@ -129,18 +113,19 @@ class WriteFiles(WriteFilesInterface):
         :Returns: None
         '''
         try:
-            with open(delay_per_update_filename , 'w') as f:
+            with open(delay_per_update_filename, 'w') as f:
                 f.write(str(delay))
 
         except FileNotFoundError:
-            raise ValueError(f'File \'{delay_per_update_filename}\' not found.')
-        
+            raise ValueError(
+                f'File \'{delay_per_update_filename}\' not found.')
+
         except ValueError:
-            raise ValueError(f'File \'{delay_per_update_filename}\' does not contain a valid integer.')
-            
+            raise ValueError(
+                f'File \'{delay_per_update_filename}\' does not contain a valid integer.')
+
         except Exception as e:
             raise ValueError(f'An error occured: {str(e)}')
-
 
     def write_total_updates(self) -> None:
         '''
@@ -150,8 +135,7 @@ class WriteFiles(WriteFilesInterface):
         :Returns: None
         '''
         number = self.read_files.read_total_updates()
-        self.general_write_int(total_updates_filename , number)
-
+        self.general_write_int(total_updates_filename, number)
 
     def write_total_errors(self) -> None:
         '''
@@ -161,20 +145,19 @@ class WriteFiles(WriteFilesInterface):
         :Returns: None
         '''
         number = self.read_files.read_total_errors()
-        self.general_write_int(total_errors_filename , number)
-        self.write_error_time(str(datetime.now().replace(microsecond=0).strftime('%H:%M:%S')))
-    
-    
-    def write_last_internet_error_time(self , dt: str) -> None:
+        self.general_write_int(total_errors_filename, number)
+        self.write_error_time(
+            str(datetime.now().replace(microsecond=0).strftime('%H:%M:%S')))
+
+    def write_last_internet_error_time(self, dt: str) -> None:
         '''
         Writes the timestamp of the last internet-related error.
 
         :Parameters: dt (str): Time value in HH:MM:SS format.
         :Returns: None
         '''
-        self.write_time_general(last_internet_error_time_filename , dt)
-        
-        
+        self.write_time_general(last_internet_error_time_filename, dt)
+
     def write_internet_errors(self) -> None:
         '''
         Increments the total number of internet-related errors.
@@ -183,54 +166,51 @@ class WriteFiles(WriteFilesInterface):
         :Returns: None
         '''
         number = self.read_files.read_internet_errors()
-        self.general_write_int(internet_errors_filename , number)
-    
-    
-    def write_number_of_removed_machines(self , number: int) -> None:
+        self.general_write_int(internet_errors_filename, number)
+
+    def write_number_of_removed_machines(self, number: int) -> None:
         '''
         Writes/increases the number of removed machines.
 
         :Parameters: None
         :Returns: None
         '''
-        self.general_write_int(number_of_removed_machines_filename , number)
+        self.general_write_int(number_of_removed_machines_filename, number)
 
-
-    def write_number_of_inserted_machines(self , number: int) -> None:
+    def write_number_of_inserted_machines(self, number: int) -> None:
         '''
         Writes/increases the number of inserted machines.
 
         :Parameters: None
         :Returns: None
         '''
-        self.general_write_int(number_of_inserted_machines_filename , number)
+        self.general_write_int(number_of_inserted_machines_filename, number)
 
-
-    def write_update_number_of_machine(self , line: int) -> None:
+    def write_update_number_of_machine(self, line: int) -> None:
         '''
         Increments the update count for a specific machine.
 
         :Parameters: line (int): Line index corresponding to the machine.
         :Returns: None
         '''
-        with open(updates_per_machine_filename , 'r') as f1 , open(urls_filename , 'r') as f2:
+        with open(updates_per_machine_filename, 'r') as f1, open(urls_filename, 'r') as f2:
             lines = f1.readlines()
             url_lines = f2.readlines()
-        
-        if(len(lines) != len(url_lines)):
-            raise ValueError(f'Number of lines in \'{updates_per_machine_filename}\' and \'{urls_filename}\' does not match.')
-        
-        if(line < 1 or line > len(lines)):
-            raise ValueError(f'Invalid position selected from file \'{updates_per_machine_filename}\'.')
-        
+
+        if (len(lines) != len(url_lines)):
+            raise ValueError(
+                f'Number of lines in \'{updates_per_machine_filename}\' and \'{urls_filename}\' does not match.')
+
+        if (line < 1 or line > len(lines)):
+            raise ValueError(
+                f'Invalid position selected from file \'{updates_per_machine_filename}\'.')
+
         current_update_number_of_machine = int(lines[line - 1])
-        new_line = '\n' if(line < len(lines)) else ''
+        new_line = '\n' if (line < len(lines)) else ''
         lines[line - 1] = str(current_update_number_of_machine + 1) + new_line
 
-        with open(updates_per_machine_filename , 'w') as f:
+        with open(updates_per_machine_filename, 'w') as f:
             f.writelines(lines)
-
-
 
     def write_number_of_github_updates(self) -> None:
         '''
@@ -240,10 +220,9 @@ class WriteFiles(WriteFilesInterface):
         :Returns: None
         '''
         number = self.read_files.read_number_of_github_updates()
-        self.general_write_int(number_of_github_updates_filename , number)
-    
-    
-    def write_time_general(self , filename: str , dt: str) -> None:
+        self.general_write_int(number_of_github_updates_filename, number)
+
+    def write_time_general(self, filename: str, dt: str) -> None:
         '''
         Writes a time value to the specified file.
 
@@ -252,64 +231,61 @@ class WriteFiles(WriteFilesInterface):
         :Returns: None
         '''
         try:
-            with open(filename , 'w') as f:
+            with open(filename, 'w') as f:
                 f.write(dt)
 
         except FileNotFoundError:
             raise ValueError(f'File \'{filename}\' not found.')
-        
+
         except ValueError:
-            raise ValueError(f'File \'{filename}\' does not contain a valid time value.')
-            
+            raise ValueError(
+                f'File \'{filename}\' does not contain a valid time value.')
+
         except Exception as e:
             raise ValueError(f'An error occured: {str(e)}')
 
-
-    def write_error_time(self , dt: str) -> None:
+    def write_error_time(self, dt: str) -> None:
         '''
         Writes the timestamp of the most recent application error.
 
         :Parameters: dt (str): Time value in HH:MM:SS format.
         :Returns: None
         '''
-        self.write_time_general(last_error_time_filename , dt)
+        self.write_time_general(last_error_time_filename, dt)
 
-
-
-    def add_machine(self , url_link: str) -> None:
+    def add_machine(self, url_link: str) -> None:
         '''
         Adds a new machine URL and initializes its update counter.
 
         add url link to the bottom of 'urls.txt' file
         add a new line with '0' updates to the bottom of 'updates_per_machine' file
-        
+
         :Parameters: url_link (str): URL of the machine to be added.
         :Returns: None
         '''
-        try:                
-            is_empty_f1  = False
+        try:
+            is_empty_f1 = False
             is_empty_f2 = False
-            
-            with open(urls_filename , 'r') as f1 , open(updates_per_machine_filename , 'r') as f2:
-                if(f1.read(1) == ''):
+
+            with open(urls_filename, 'r') as f1, open(updates_per_machine_filename, 'r') as f2:
+                if (f1.read(1) == ''):
                     is_empty_f1 = True
-                
-                if(f2.read(1) == ''):
+
+                if (f2.read(1) == ''):
                     is_empty_f2 = True
-                    
-            with open(urls_filename , 'a') as f1 , open(updates_per_machine_filename , 'a') as f2:
+
+            with open(urls_filename, 'a') as f1, open(updates_per_machine_filename, 'a') as f2:
                 f1.write('\n' + url_link if not is_empty_f1 else url_link)
                 f2.write('\n' + str(0) if not is_empty_f2 else str(0))
-                
 
         except FileNotFoundError:
-            raise ValueError(f'File \'{urls_filename}\' or \'{updates_per_machine_filename} not found.')
-        
+            raise ValueError(
+                f'File \'{urls_filename}\' or \'{updates_per_machine_filename} not found.')
+
         except Exception as e:
             raise ValueError(f'An error occured: {str(e)}')
 
-
-    def remove_machine(self , url_link: str) -> None:
+    def remove_machine(self, url_link: str) -> None:
         '''
         Removes a machine URL and its corresponding update counter.
 
@@ -317,30 +293,30 @@ class WriteFiles(WriteFilesInterface):
         :Returns: None
         '''
         try:
-            with open(urls_filename , 'r') as f1 , open(updates_per_machine_filename , 'r') as f2:
+            with open(urls_filename, 'r') as f1, open(updates_per_machine_filename, 'r') as f2:
                 f1_lines = f1.read().splitlines()
                 f2_lines = f2.read().splitlines()
-                
-                if(url_link in f1_lines):
+
+                if (url_link in f1_lines):
                     line_of_url_link = f1_lines.index(url_link)
                     f1_lines.pop(line_of_url_link)
                     f2_lines.pop(line_of_url_link)
                 else:
-                    print(f'File \'{urls_filename}\' does not contain \'{url_link}\' url link.')
-            
-            with open(urls_filename , 'w') as f1 , open(updates_per_machine_filename , 'w') as f2:
+                    print(
+                        f'File \'{urls_filename}\' does not contain \'{url_link}\' url link.')
+
+            with open(urls_filename, 'w') as f1, open(updates_per_machine_filename, 'w') as f2:
                 f1.write('\n'.join(f1_lines))
                 f2.write('\n'.join(f2_lines))
 
         except FileNotFoundError:
-            raise ValueError(f'File \'{urls_filename}\' or \'{updates_per_machine_filename} not found.')
-       
+            raise ValueError(
+                f'File \'{urls_filename}\' or \'{updates_per_machine_filename} not found.')
+
         except Exception as e:
             raise ValueError(f'An error occured: {str(e)}')
-        
-        
-        
-    def write_email_uids(self , email_uid: bytes) -> None:
+
+    def write_email_uids(self, email_uid: bytes) -> None:
         '''
         Stores a processed email id to prevent duplicate handling.
 
@@ -349,27 +325,25 @@ class WriteFiles(WriteFilesInterface):
         '''
         try:
             is_empty = False
-            
-            with open(read_email_uids_filename , 'rb') as f:
-                if(f.read(1) == b''):
+
+            with open(read_email_uids_filename, 'rb') as f:
+                if (f.read(1) == b''):
                     is_empty = True
-                    
-            with open(read_email_uids_filename , 'ab') as f:
+
+            with open(read_email_uids_filename, 'ab') as f:
                 f.write(b'\n' + email_uid if not is_empty else email_uid)
-                
+
         except FileNotFoundError:
             raise ValueError(f'File \'{read_email_uids_filename}\' not found.')
-        
+
         except ValueError:
-            raise ValueError(f'File \'{read_email_uids_filename}\' does not contain a valid uid value.')
-            
+            raise ValueError(
+                f'File \'{read_email_uids_filename}\' does not contain a valid uid value.')
+
         except Exception as e:
             raise ValueError(f'An error occured: {str(e)}')
-        
-    
-    
-    
-    def write_number_in_file(self , filename , number) -> None:
+
+    def write_number_in_file(self, filename, number) -> None:
         '''
         Writes a numeric value directly to the specified file.
 
@@ -378,21 +352,19 @@ class WriteFiles(WriteFilesInterface):
         :Returns: None
         '''
         try:
-            with open(filename , 'w') as f:
+            with open(filename, 'w') as f:
                 f.write(str(number))
-                
+
         except FileNotFoundError:
             raise ValueError(f'File \'{filename}\' not found.')
-        
+
         except ValueError:
-            raise ValueError(f'File \'{filename}\' does not contain a valid integer.')
-            
+            raise ValueError(
+                f'File \'{filename}\' does not contain a valid integer.')
+
         except Exception as e:
             raise ValueError(f'An error occured: {str(e)}')
-        
-        
-        
-        
+
     def write_app_started(self) -> None:
         '''
         Marks the application as started.
@@ -400,11 +372,8 @@ class WriteFiles(WriteFilesInterface):
         :Parameters: None
         :Returns: None
         '''
-        self.write_number_in_file(app_started_filename , 1)
-        
-        
-        
-        
+        self.write_number_in_file(app_started_filename, 1)
+
     def write_app_ended(self) -> None:
         '''
         Marks the application as ended.
@@ -412,11 +381,8 @@ class WriteFiles(WriteFilesInterface):
         :Parameters: None
         :Returns: None
         '''
-        self.general_write_int(app_ended_filename , 1)
-        
-    
-        
-        
+        self.general_write_int(app_ended_filename, 1)
+
     def write_number_of_captcha_challenge(self) -> None:
         '''
         Increments the number of CAPTCHA challenges encountered.
@@ -425,24 +391,18 @@ class WriteFiles(WriteFilesInterface):
         :Returns: None
         '''
         number = self.read_files.read_number_of_captcha_challenges()
-        self.general_write_int(number_of_captcha_challenges_filename , number)
-        
-        
-        
-        
-    def write_check_email_every_20_minutes(self , time_: str) -> None:
+        self.general_write_int(number_of_captcha_challenges_filename, number)
+
+    def write_check_email_every_20_minutes(self, time_: str) -> None:
         '''
         Writes the timestamp of the last email check operation.
 
         :Parameters: time_ (str): Time value in HH:MM:SS format.
         :Returns: None
         '''
-        self.write_time_general(check_email_every_20_minutes_filename , time_)
-        
-        
-        
-        
-    def update_credentials_from_env(self , new_username: str | None , new_password: str | None) -> None:
+        self.write_time_general(check_email_every_20_minutes_filename, time_)
+
+    def update_credentials_from_env(self, new_username: str | None, new_password: str | None) -> None:
         '''
         Updates stored login credentials in the environment file.
 
@@ -451,40 +411,36 @@ class WriteFiles(WriteFilesInterface):
         :Returns: None
         '''
         try:
-            with open(env_filename , 'r') as f:
+            with open(env_filename, 'r') as f:
                 lines = f.readlines()
-                
-            with open(env_filename , 'w') as f:
-                for i in range(len(lines)): # first 2 lines are the credentials
-                    if(i == 0 and 'site_username' in lines[i]):
-                        if(new_username is not None):
+
+            with open(env_filename, 'w') as f:
+                for i in range(len(lines)):  # first 2 lines are the credentials
+                    if (i == 0 and 'site_username' in lines[i]):
+                        if (new_username is not None):
                             lines[i] = f"site_username='{new_username}'\n"
-                            
-                    elif(i == 1 and 'site_password' in lines[i]):
-                        if(new_password is not None):
+
+                    elif (i == 1 and 'site_password' in lines[i]):
+                        if (new_password is not None):
                             lines[i] = f"site_password='{new_password}'\n"
-                    
+
                 f.writelines(lines)
-                    
-                
+
         except FileNotFoundError:
             raise ValueError(f'File \'{env_filename}\' not found.')
-        
+
         except ValueError:
-            raise ValueError(f'File \'{env_filename}\' does not contain valid strings.')
-            
+            raise ValueError(
+                f'File \'{env_filename}\' does not contain valid strings.')
+
         except Exception as e:
             raise ValueError(f'An error occured: {str(e)}')
-        
-        
-        
-        
-        
-    def write_daily_report_sent(self , value: int) -> None:
+
+    def write_daily_report_sent(self, value: int) -> None:
         '''
         Writes the daily report sent flag value.
 
         :Parameters: value (int): Flag indicating whether the daily report was sent.
         :Returns: None
         '''
-        self.write_number_in_file(daily_report_sent_filename , value)
+        self.write_number_in_file(daily_report_sent_filename, value)

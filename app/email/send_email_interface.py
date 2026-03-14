@@ -1,4 +1,4 @@
-from abc import ABC , abstractmethod
+from abc import ABC, abstractmethod
 
 
 class SendEmailInterface(ABC):
@@ -6,107 +6,86 @@ class SendEmailInterface(ABC):
     def send_email_launch(self) -> None:
         pass
 
-
     @abstractmethod
-    def send_email_no_internet_connection(self , occured: str , restored: str) -> None:
+    def send_email_no_internet_connection(self, occured: str, restored: str) -> None:
         pass
-
 
     @abstractmethod
     def send_email_daily_report(self) -> None:
         pass
 
-
     @abstractmethod
-    def send_email_link_inserted(self , list_added_links: list[str] , list_added_invalied_links: list[str]) -> None:
+    def send_email_link_inserted(self, list_added_links: list[str], list_added_invalied_links: list[str]) -> None:
         pass
 
-
     @abstractmethod
-    def send_email_link_removed(self , list_removed_links: list[str] , list_removed_invalied_links: list[str]) -> None:
+    def send_email_link_removed(self, list_removed_links: list[str], list_removed_invalied_links: list[str]) -> None:
         pass
-
 
     @abstractmethod
     def send_email_new_version_updated(self) -> None:
         pass
 
-
     @abstractmethod
-    def send_email_credentials_updated(self , cond_str: str) -> None:
+    def send_email_credentials_updated(self, cond_str: str) -> None:
         pass
-
 
     @abstractmethod
     def send_email_progress(self) -> None:
         pass
-    
-    
+
     @abstractmethod
     def send_email_new_version_failed_to_update(self) -> None:
         pass
-    
-    
+
     @abstractmethod
     def send_email_error_installing_new_version_missing_type(self) -> None:
         pass
-    
-    
+
     @abstractmethod
     def send_email_all_links(self) -> None:
         pass
-    
-    
+
     @abstractmethod
     def send_email_unable_to_login(self) -> None:
         pass
-    
-    
+
     @abstractmethod
     def send_email_login_error(self) -> None:
         pass
-    
-    
+
     @abstractmethod
     def send_email_captcha_failed_to_be_solved_in_login(self) -> None:
         pass
-    
-    
+
     @abstractmethod
     def send_email_captcha_failed_to_be_solved(self) -> None:
         pass
 
-    
     @abstractmethod
-    def send_email_every_10_errors_occured(self , errors: int) -> None:
+    def send_email_every_10_errors_occured(self, errors: int) -> None:
         pass
-    
-        
+
     @abstractmethod
     def send_email_teamviewer_connected(self) -> None:
         pass
-    
-    
+
     @abstractmethod
     def send_email_teamviewer_disconnected(self) -> None:
         pass
-    
-    
+
     @abstractmethod
     def send_email_teamviewer_connection_already_opened(self) -> None:
         pass
-    
-    
+
     @abstractmethod
     def send_email_teamviewer_connection_already_closed(self) -> None:
         pass
-    
-    
+
     @abstractmethod
     def send_email_failed_to_open_teamviewer(self) -> None:
         pass
-    
-    
+
     @abstractmethod
     def send_email_failed_to_close_teamviewer(self) -> None:
         pass

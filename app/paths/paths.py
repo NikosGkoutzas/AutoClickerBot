@@ -19,4 +19,4 @@ NOTE: The directory must exist before running the application.
 Example:
     mkdir -p /home/nick/selenium-profile
 '''
-user_data_dir = os.path.join(f'{os.getcwd()}/app/' , 'selenium-profile')
+user_data_dir = os.path.join(f'{os.getcwd()}/app/', 'selenium-profile')

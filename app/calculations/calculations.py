@@ -2,27 +2,25 @@ from .calculations_interface import CalculationInterface
 from ..driver.driver_interface import DriverInterface
 from ..files.read_files_interface import ReadFilesInterface
 from ..files.write_files_interface import WriteFilesInterface
-from datetime import datetime , timedelta
+from datetime import datetime, timedelta
 from ..messages.numbers import number
 from dotenv import load_dotenv
-import os , time , inject
-
+import os
+import time
+import inject
 
 
 class Calculations(CalculationInterface):
     @inject.autoparams()
-    def __init__(self , 
-                 driver_interface: DriverInterface , 
-                 read_files_interface: ReadFilesInterface , 
+    def __init__(self,
+                 driver_interface: DriverInterface,
+                 read_files_interface: ReadFilesInterface,
                  write_files_interface: WriteFilesInterface
                  ):
-        
+
         self.driver = driver_interface
         self.read_files = read_files_interface
         self.write_files = write_files_interface
-
-
-
 
     def app_in_time(self) -> bool:
         '''
@@ -32,7 +30,7 @@ class Calculations(CalculationInterface):
         :Returns: bool: True if the current time is between the configured
                         start and end time, otherwise False.
         '''
-        
+
         end_time_from_file = str(self.read_files.read_end_time())
         end_time_hour = int(end_time_from_file.split(':')[0])
         end_time_minute = int(end_time_from_file.split(':')[1])
@@ -41,14 +39,13 @@ class Calculations(CalculationInterface):
         start_time_hour = int(start_time_from_file.split(':')[0])
         start_time_minute = int(start_time_from_file.split(':')[1])
 
-        end_time = datetime.now().replace(hour=end_time_hour , minute=end_time_minute , second=0 , microsecond=0)
-        start_time = datetime.now().replace(hour=start_time_hour , minute=start_time_minute , second=0 , microsecond=0)
+        end_time = datetime.now().replace(
+            hour=end_time_hour, minute=end_time_minute, second=0, microsecond=0)
+        start_time = datetime.now().replace(hour=start_time_hour,
+                                            minute=start_time_minute, second=0, microsecond=0)
         current_time = datetime.now()
 
         return current_time >= start_time and current_time < end_time
-
-
-
 
     def updates_completed(self) -> bool:
         '''
@@ -58,14 +55,11 @@ class Calculations(CalculationInterface):
         :Returns: bool: True if the number of completed updates matches
                         the required total updates, otherwise False.
         '''
-        
+
         current_updates = self.read_files.read_total_updates()
         load_dotenv(override=True)
         total_updates = int(os.getenv('total_required_updates'))
         return current_updates == total_updates
-
-
-
 
     def extract_update_results(self) -> str:
         '''
@@ -75,24 +69,25 @@ class Calculations(CalculationInterface):
         :Returns: str: A HTML string containing the update count and clickable
                         links for each processed URL.
         '''
-        
+
         urls_list = self.read_files.read_every_url()
         slug_list = []
         pretty_links = []
 
         for url in urls_list:
             inner_list = url.split('-')[1:]
-            for i , words in enumerate(inner_list):
-                if('www' in words or 'zitiste' in words):
+            for i, words in enumerate(inner_list):
+                if ('www' in words or 'zitiste' in words):
                     inner_list = inner_list[:i]
                     break
             slug_list.append(' '.join(inner_list))
 
         for i in range(len(slug_list)):
-            pretty_links.append(f'<a href="{urls_list[i]}" target="_blank">{slug_list[i]}</a><br>')
+            pretty_links.append(
+                f'<a href="{urls_list[i]}" target="_blank">{slug_list[i]}</a><br>')
 
         updates_per_url = self.read_files.read_update_number_of_machine()
-        number_list = number(1 , len(pretty_links) , None)
+        number_list = number(1, len(pretty_links), None)
 
         summary = f'''
                     <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:15px; border-radius:16px;">
@@ -110,24 +105,19 @@ class Calculations(CalculationInterface):
                                         <td style='width:150px; text-align:center;vertical-align:top;'>{pretty_links[i]}</td>
                                     </tr>
                                     <tr>
-                                        {'<br>' if i < len(pretty_links)-1  else ''}
+                                        {'<br>' if i < len(pretty_links)-1 else ''}
                                     </tr>
                                  '''
-                            for i in range(len(pretty_links)))
-                        }
+                                  for i in range(len(pretty_links)))
+                         }
                     </table>
                     '''
-        
+
         final_html = f'''
                         {summary}
                       '''
-        
+
         return final_html
-
-
-
-
-
 
     def sleep_till_next_day(self) -> None:
         '''
@@ -137,27 +127,23 @@ class Calculations(CalculationInterface):
         :Parameters: None
         :Returns: None
         '''
-        
+
         try:
             print(f'Sleeping until {self.read_files.read_start_time()} ...')
             start_time_from_file = str(self.read_files.read_start_time())
             start_time_hour = int(start_time_from_file.split(':')[0])
-            start_time = (datetime.now() + timedelta(days=1)).replace(hour=start_time_hour , minute=0 , second=1 , microsecond=0)
+            start_time = (datetime.now() + timedelta(days=1)).replace(
+                hour=start_time_hour, minute=0, second=1, microsecond=0)
             current_time = datetime.now()
-            total_seconds_of_sleep = (start_time - current_time).total_seconds()
+            total_seconds_of_sleep = (
+                start_time - current_time).total_seconds()
             time.sleep(total_seconds_of_sleep)
 
         except Exception as e:
-            print(f'An error occured while trying to sleep till next day: {str(e)}')
+            print(
+                f'An error occured while trying to sleep till next day: {str(e)}')
             self.write_files.write_total_errors()
-        
 
-            
-            
-            
-            
-
-    
     def delay_between_updates(self) -> int:
         '''
         Calculates the delay time between updates.
@@ -166,27 +152,28 @@ class Calculations(CalculationInterface):
         :Returns: int: The delay in seconds between updates
                        with a minimum value of 1 second.
         '''
-        
+
         load_dotenv(override=True)
-        total_required_updates = int(os.getenv('total_required_updates')) 
+        total_required_updates = int(os.getenv('total_required_updates'))
         total_current_updates = self.read_files.read_total_updates()
         current_time = datetime.now().replace(microsecond=0)
-        
+
         end_time_from_file = str(self.read_files.read_end_time())
         end_time_hour = int(end_time_from_file.split(':')[0])
         end_time_minutes = int(end_time_from_file.split(':')[1])
         end_time_seconds = int(end_time_from_file.split(':')[2])
-        end_time = datetime.now().replace(hour=end_time_hour , minute=end_time_minutes , second=end_time_seconds , microsecond=0)
+        end_time = datetime.now().replace(hour=end_time_hour,
+                                          minute=end_time_minutes,
+                                          second=end_time_seconds,
+                                          microsecond=0)
 
-        if(total_required_updates - total_current_updates <= 0):
+        if (total_required_updates - total_current_updates <= 0):
             return 1
-        
-        delay = (end_time - current_time).total_seconds() / (total_required_updates - total_current_updates) if(end_time > current_time) else 1
-        return max(1 , delay - 5)
-    
-    
-    
-    
+
+        delay = (end_time - current_time).total_seconds() / (total_required_updates -
+                                                             total_current_updates) if (end_time > current_time) else 1
+        return max(1, delay - 5)
+
     def check_emails(self) -> bool:
         '''
         Checks whether it is time to perform emails check.
@@ -195,22 +182,23 @@ class Calculations(CalculationInterface):
         :Returns: bool: True if at least 20 minutes have passed since the last emails check,
                   otherwise False.
         '''
-        
+
         dif_minutes = 20
         last_time_check_emails = self.read_files.read_check_email_every_20_minutes()
         current_time = datetime.now().time().replace(microsecond=0)
-        current_time_minutes = current_time.hour * 60 + current_time.minute + current_time.second / 60
-        last_time_check_emails_minutes = last_time_check_emails.hour * 60 + last_time_check_emails.minute + last_time_check_emails.second / 60
+        current_time_minutes = current_time.hour * 60 + \
+            current_time.minute + current_time.second / 60
+        last_time_check_emails_minutes = last_time_check_emails.hour * 60 + \
+            last_time_check_emails.minute + last_time_check_emails.second / 60
 
         result = current_time_minutes - last_time_check_emails_minutes >= dif_minutes
 
-        if(result):
-            self.write_files.write_check_email_every_20_minutes(current_time.strftime('%H:%M:%S'))
-        
+        if (result):
+            self.write_files.write_check_email_every_20_minutes(
+                current_time.strftime('%H:%M:%S'))
+
         return result
-    
-    
-    
+
     def updates_completed_earlier_wait(self) -> None:
         '''
         Waits until the scheduled end time, if all updates finish early.
@@ -218,15 +206,21 @@ class Calculations(CalculationInterface):
         :Parameters: None
         :Returns: None
         '''
-        
+
         current_time = datetime.now().time().replace(microsecond=0)
-        current_time_in_seconds = current_time.hour * 3600 + current_time.minute * 60 + current_time.second
+        current_time_in_seconds = current_time.hour * 3600 + \
+            current_time.minute * 60 + current_time.second
         end_time = self.read_files.read_end_time()
         end_time_hour = int(str(end_time).split(':')[0])
         end_time_min = int(str(end_time).split(':')[1])
-        end_time = datetime.now().replace(hour=end_time_hour , minute=end_time_min , second=0 , microsecond=0)
-        end_time_in_seconds = end_time.hour * 3600 + end_time.minute * 60 + end_time.second
-        
-        if(current_time_in_seconds < end_time_in_seconds):
-            print(f'Updates were completed earlier than expected. Waiting until {end_time_in_seconds}:{end_time_min}...')
+        end_time = datetime.now().replace(hour=end_time_hour,
+                                          minute=end_time_min,
+                                          second=0,
+                                          microsecond=0)
+        end_time_in_seconds = end_time.hour * 3600 + \
+            end_time.minute * 60 + end_time.second
+
+        if (current_time_in_seconds < end_time_in_seconds):
+            print(
+                f'Updates were completed earlier than expected. Waiting until {end_time_in_seconds}:{end_time_min}...')
             time.sleep(end_time_in_seconds - current_time_in_seconds)

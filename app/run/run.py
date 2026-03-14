@@ -72,8 +72,8 @@ class Run(RunInterface):
                     self.calculation.sleep_till_next_day()
 
             else:
-                # if(self.calculation.check_emails()):
-                #    self.read_email.fetch_last_emails()
+                if (self.calculation.check_emails()):
+                    self.read_email.fetch_last_emails()
 
                 if (not self.calculation.updates_completed()):
                     if (self.internet.check_for_internet_connection()):

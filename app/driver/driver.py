@@ -156,22 +156,22 @@ class Driver(DriverInterface):
             # y = -45
 
             # Coordinates for other laptop.
-            x = -300
-            y = -130
+            x = -370
+            y = -90
 
             pyautogui.FAILSAFE = False
-            pyautogui.moveTo(width / 2 + x, height / 2 + y, duration=1)
 
             captcha_attempts = 10
             for _ in range(captcha_attempts):
-                if ("needs to review the security" in self.driver.page_source.lower()):
+                if ("performing security verification" in self.driver.page_source.lower()):
+                    pyautogui.moveTo(width / 2 + x, height / 2 + y, duration=1)
                     pyautogui.click()
                     time.sleep(7)
 
                 else:
                     return 0
 
-            if ("needs to review the security" in self.driver.page_source.lower()):
+            if ("performing security verification" in self.driver.page_source.lower()):
                 return 2
 
         else:
@@ -199,14 +199,7 @@ class Driver(DriverInterface):
 
             # Coordinates for other laptop.
             x = -100
-            y = 15
-
-            # Sleep untill CAPTCHA challenge pops up
-            while (1):
-                if ('challenge' in self.driver.page_source.lower()):
-                    break
-
-                time.sleep(0.2)
+            y = 0
 
             pyautogui.FAILSAFE = False
             pyautogui.moveTo(width / 2 + x, height / 2 + y, duration=1)

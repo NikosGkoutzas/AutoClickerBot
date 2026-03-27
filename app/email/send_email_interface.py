@@ -89,3 +89,7 @@ class SendEmailInterface(ABC):
     @abstractmethod
     def send_email_failed_to_close_teamviewer(self) -> None:
         pass
+
+    @abstractmethod
+    def send_email_unable_to_read_emails(self) -> None:
+        pass

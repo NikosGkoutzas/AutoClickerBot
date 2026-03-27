@@ -320,3 +320,7 @@ class SendEmail(SendEmailInterface):
         '''
         self.send_email_to_all_receivers(self.email_message.failed_to_close_teamviewer_subject_message(),
                                          self.email_message.failed_to_close_teamviewer_body_message())
+
+    def send_email_unable_to_read_emails(self) -> None:
+        self.send_email_to_all_receivers(self.email_message.email_message_unable_to_read_emails_subject_message(),
+                                         self.email_message.email_message_unable_to_read_emails_body_message())

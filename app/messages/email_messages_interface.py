@@ -197,3 +197,11 @@ class EmailMessagesInterface(ABC):
     @abstractmethod
     def failed_to_close_teamviewer_body_message(self) -> str:
         pass
+
+    @abstractmethod
+    def email_message_unable_to_read_emails_subject_message(self) -> str:
+        pass
+
+    @abstractmethod
+    def email_message_unable_to_read_emails_body_message(self) -> str:
+        pass

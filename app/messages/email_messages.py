@@ -1230,3 +1230,30 @@ class EmailMessages(EmailMessagesInterface):
             </tr>
         </table>
         '''
+
+    def email_message_unable_to_read_emails_subject_message(self) -> str:
+        return '❌ Unable To Read Emails'
+
+    def email_message_unable_to_read_emails_body_message(self) -> str:
+        msg = ("The application was unable to connect to the email server and retrieve incoming messages.<br>"
+               "This may be due to a temporary network issue or incorrect configuration.<br>"
+               "The system remains operational. However, email-based functionality is currently unavailable."
+               )
+
+        return f'''
+        <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
+            <tr>
+                <td width="100%" style="padding:0; margin:0;">
+                    {self.time_message()}
+                </td>
+            </tr>
+            <tr><br></tr>
+            <tr>
+                <td colspan="2" align="center" style="padding-top:12px;">{msg}</td>
+            </tr>
+            <tr><br><br></tr>
+            <tr>
+                <td>{self.built_with_python_and_copyright_message()}</td>
+            </tr>
+        </table>
+        '''

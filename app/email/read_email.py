@@ -49,51 +49,57 @@ class ReadEmail(ReadEmailInterface):
         :Parameters: None
         :Returns: None
         '''
-        self.SMTP_SERVER = 'imap.gmail.com'                                         # server domain
-        self.SMTP_PORT = 993                                                        # port
-        # connect to gmail server
-        mail = imaplib.IMAP4_SSL(self.SMTP_SERVER)
-        load_dotenv(override=True)
-        mail.login(os.getenv('email_sender'), os.getenv(
-            'email_sender_password'))  # login to gmail with credentials
-        # select inbox
-        mail.select('inbox')
-        # get the last X recent emails
-        number_of_recent_emails = int(
-            os.getenv('read_number_of_recent_emails'))
-        _, data = mail.uid('search', None, 'ALL')
-        # first 20 recent unique email ids
-        uids = data[0].split()[-number_of_recent_emails:]
+        try:
+            # server domain
+            self.SMTP_SERVER = 'imap.gmail.com'
+            self.SMTP_PORT = 993                                                        # port
+            # connect to gmail server
+            mail = imaplib.IMAP4_SSL(self.SMTP_SERVER)
+            load_dotenv(override=True)
+            mail.login(os.getenv('email_sender'), os.getenv(
+                'email_sender_password'))  # login to gmail with credentials
+            # select inbox
+            mail.select('inbox')
+            # get the last X recent emails
+            number_of_recent_emails = int(
+                os.getenv('read_number_of_recent_emails'))
+            _, data = mail.uid('search', None, 'ALL')
+            # first 20 recent unique email ids
+            uids = data[0].split()[-number_of_recent_emails:]
 
-        for email_uid in uids:
-            status, email_data = mail.uid('fetch', email_uid, '(RFC822)')
+            for email_uid in uids:
+                status, email_data = mail.uid('fetch', email_uid, '(RFC822)')
 
-            if (status == 'OK'):
-                msg = email.message_from_bytes(email_data[0][1])
-                email_subject = msg['subject'].lower(
-                ).strip() if msg['subject'] else 'No subject'
+                if (status == 'OK'):
+                    msg = email.message_from_bytes(email_data[0][1])
+                    email_subject = msg['subject'].lower(
+                    ).strip() if msg['subject'] else 'No subject'
 
-                if (email_uid not in self.read_files.read_email_uids()):
-                    self._read_add_subject(email_subject,
-                                           msg,
-                                           email_uid)
-                    self._read_remove_subject(email_subject,
-                                              msg,
-                                              email_uid)
-                    self._read_connect_via_teamviewer_email(email_subject,
-                                                            email_uid)
-                    self._read_disconnect_from_teamviewer_email(email_subject,
-                                                                email_uid)
-                    self._read_new_version_email(email_subject,
-                                                 msg,
-                                                 email_uid)
-                    self._read_progress_email(email_subject,
-                                              email_uid)
-                    self._read_credentials_subject(email_subject,
-                                                   msg,
-                                                   email_uid)
-                    self._read_all_links_email(email_subject,
+                    if (email_uid not in self.read_files.read_email_uids()):
+                        self._read_add_subject(email_subject,
+                                               msg,
                                                email_uid)
+                        self._read_remove_subject(email_subject,
+                                                  msg,
+                                                  email_uid)
+                        self._read_connect_via_teamviewer_email(email_subject,
+                                                                email_uid)
+                        self._read_disconnect_from_teamviewer_email(email_subject,
+                                                                    email_uid)
+                        self._read_new_version_email(email_subject,
+                                                     msg,
+                                                     email_uid)
+                        self._read_progress_email(email_subject,
+                                                  email_uid)
+                        self._read_credentials_subject(email_subject,
+                                                       msg,
+                                                       email_uid)
+                        self._read_all_links_email(email_subject,
+                                                   email_uid)
+
+        except Exception as e:
+            print("An error occured: " + str(e))
+            self.send_email.send_email_unable_to_read_emails()
 
     def _read_email_body(self,
                          msg: email.message.Message

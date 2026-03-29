@@ -93,3 +93,7 @@ class SendEmailInterface(ABC):
     @abstractmethod
     def send_email_unable_to_read_emails(self) -> None:
         pass
+
+    @abstractmethod
+    def send_email_reset_all_files(self) -> None:
+        pass

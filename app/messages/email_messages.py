@@ -66,6 +66,7 @@ class EmailMessages(EmailMessagesInterface):
         action_credentials = 'Updates the user login credentials.'
         action_start_teamviewer = 'Enables remote access via TeamViewer using your access credentials.'
         action_stop_teamviewer = 'Disables remote access and closes TeamViewer.'
+        action_reset = 'Reset all files.'
         email = os.getenv('email_sender')
         perform_email = f'To perform an action, send an email to {email}.'
         summary_email = f'A summary email is sent every day at {':'.join(str(self.read_files.read_end_time()).split(':')[:-1])}'
@@ -263,8 +264,19 @@ class EmailMessages(EmailMessagesInterface):
                         <tr>
                             <td></td>
                             <td style='width:60px;  vertical-align:top;'><i>Action:</i></td>
-                            <td>{action_stop_teamviewer}<br></td>
+                            <td>{action_stop_teamviewer}<br><br></td>
                         </tr>
+                        
+                        <!-- RESET -->
+                        <tr>
+                            <td style='padding-right:7px;  vertical-align:top;'>🔄</td>
+                            <td style='padding-right:4px;'><i>Subject:</i></td>
+                            <td style='padding-right:4px;'><b>Reset</b></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td style='width:60px;  vertical-align:top;'><i>Action:</i></td>
+                            <td>{action_reset}<br></td>
                     </table>
                     
                     <tr>
@@ -1239,6 +1251,30 @@ class EmailMessages(EmailMessagesInterface):
                "This may be due to a temporary network issue or incorrect configuration.<br>"
                "The system remains operational. However, email-based functionality is currently unavailable."
                )
+
+        return f'''
+        <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">
+            <tr>
+                <td width="100%" style="padding:0; margin:0;">
+                    {self.time_message()}
+                </td>
+            </tr>
+            <tr><br></tr>
+            <tr>
+                <td colspan="2" align="center" style="padding-top:12px;">{msg}</td>
+            </tr>
+            <tr><br><br></tr>
+            <tr>
+                <td>{self.built_with_python_and_copyright_message()}</td>
+            </tr>
+        </table>
+        '''
+
+    def email_message_reset_all_files_subject_message(self) -> str:
+        return '🔄 App Reset'
+
+    def email_message_reset_all_files_body_message(self) -> str:
+        msg = 'Application reset all files upon request.<br>It continues to operate normally.'
 
         return f'''
         <table cellpadding="0" cellspacing="0" style="background-color:#f1f1f1; padding:7px; border-radius:16px; table-layout:fixed; width:100%;">

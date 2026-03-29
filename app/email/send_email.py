@@ -65,9 +65,9 @@ class SendEmail(SendEmailInterface):
         self.send_email_general(subject=subject,
                                 body_message=message,
                                 email_receiver=os.getenv('email_receiver_1'))
-        self.send_email_general(subject=subject,
-                                body_message=message,
-                                email_receiver=os.getenv('email_receiver_2'))
+        # self.send_email_general(subject=subject,
+        #                        body_message=message,
+        #                        email_receiver=os.getenv('email_receiver_2'))
 
     def send_email_launch(self) -> None:
         '''
@@ -324,3 +324,7 @@ class SendEmail(SendEmailInterface):
     def send_email_unable_to_read_emails(self) -> None:
         self.send_email_to_all_receivers(self.email_message.email_message_unable_to_read_emails_subject_message(),
                                          self.email_message.email_message_unable_to_read_emails_body_message())
+
+    def send_email_reset_all_files(self) -> None:
+        self.send_email_to_all_receivers(self.email_message.email_message_reset_all_files_subject_message(),
+                                         self.email_message.email_message_reset_all_files_body_message())

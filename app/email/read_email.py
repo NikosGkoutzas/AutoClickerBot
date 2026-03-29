@@ -2,6 +2,7 @@ from .read_email_interface import ReadEmailInterface
 from .process_emails_interface import ProcessEmailsInterface
 from .send_email_interface import SendEmailInterface
 from ..files.read_files_interface import ReadFilesInterface
+from ..files.reset_files_interface import ResetFilesInterface
 from ..files.write_files_interface import WriteFilesInterface
 from ..driver.driver_interface import DriverInterface
 from ..action.action_interface import ActionInterface
@@ -19,6 +20,7 @@ class ReadEmail(ReadEmailInterface):
                  process_emails_interface: ProcessEmailsInterface,
                  send_email_interface: SendEmailInterface,
                  read_files_interface: ReadFilesInterface,
+                 reset_files_interface: ResetFilesInterface,
                  write_files_interface: WriteFilesInterface,
                  driver_interface: DriverInterface,
                  action_interface: ActionInterface):
@@ -26,6 +28,7 @@ class ReadEmail(ReadEmailInterface):
         self.process_emails = process_emails_interface
         self.send_email = send_email_interface
         self.read_files = read_files_interface
+        self.reset_files = reset_files_interface
         self.write_files = write_files_interface
         self.driver = driver_interface
         self.action = action_interface
@@ -96,6 +99,8 @@ class ReadEmail(ReadEmailInterface):
                                                        email_uid)
                         self._read_all_links_email(email_subject,
                                                    email_uid)
+                        self._reset_all_files(email_subject,
+                                              email_uid)
 
         except Exception as e:
             print("An error occured: " + str(e))
@@ -200,7 +205,7 @@ class ReadEmail(ReadEmailInterface):
 
     def _read_progress_email(self,
                              email_subject: str,
-                             email_uid: int,
+                             email_uid: int
                              ) -> None:
         '''
         Handles emails with the subject "progress" and sends a progress status email.
@@ -221,7 +226,7 @@ class ReadEmail(ReadEmailInterface):
     def _read_new_version_email(self,
                                 email_subject: str,
                                 msg: email.message.Message,
-                                email_uid: int,
+                                email_uid: int
                                 ) -> None:
         '''
         Handles emails with the subject "update" and triggers the application update process.
@@ -262,7 +267,7 @@ class ReadEmail(ReadEmailInterface):
     def _read_credentials_subject(self,
                                   email_subject: str,
                                   msg: email.message.Message,
-                                  email_uid: int,
+                                  email_uid: int
                                   ) -> None:
         '''
         Handles emails with the subject "credentials" and processes credential update requests.
@@ -295,7 +300,7 @@ class ReadEmail(ReadEmailInterface):
 
     def _read_connect_via_teamviewer_email(self,
                                            email_subject: str,
-                                           email_uid: int,
+                                           email_uid: int
                                            ) -> None:
         '''
         Handles emails with the subject "start teamviewer" and initiates
@@ -318,7 +323,7 @@ class ReadEmail(ReadEmailInterface):
 
     def _read_disconnect_from_teamviewer_email(self,
                                                email_subject: str,
-                                               email_uid: int,
+                                               email_uid: int
                                                ) -> None:
         '''
         Handles emails with the subject "stop teamviewer" and terminates
@@ -340,7 +345,7 @@ class ReadEmail(ReadEmailInterface):
 
     def _read_all_links_email(self,
                               email_subject: str,
-                              email_uid: int,
+                              email_uid: int
                               ) -> None:
         '''
         Handles emails with the subject "links" and sends back all stored links.
@@ -357,3 +362,21 @@ class ReadEmail(ReadEmailInterface):
         if (email_subject.lower().strip() == 'links'):
             self.write_files.write_email_uids(email_uid)
             self.send_email.send_email_all_links()
+
+    def _reset_all_files(self,
+                         email_subject: str,
+                         email_uid: int
+                         ) -> None:
+        '''
+        Reset all files of the application.
+
+        :Parameters: email_subject (str): The subject of the email being processed.
+                     email_uid (int): The unique ID of the email.
+
+        :Returns: None
+        '''
+        if (email_subject.lower().strip() == 'reset'):
+            self.write_files.write_email_uids(email_uid)
+            self.reset_files.reset_all_files()
+            self.reset_files.reset_all_updates_per_machine()
+            self.send_email.send_email_reset_all_files()

@@ -85,8 +85,10 @@ class Driver(DriverInterface):
                 password_input.click()
                 password_input.clear()
                 password_input.send_keys(site_password)
-                log_in_button = self._find_button(By.CSS_SELECTOR,
-                                                  ".submit-btn")
+                log_in_button = WebDriverWait(self.driver, 10).until(
+                    EC.element_to_be_clickable(
+                        (By.XPATH, "//button[contains(., 'Σύνδεση')]"))
+                )
                 log_in_button.click()
 
                 result = self._is_captcha_active_after_login_credentials()

@@ -15,6 +15,8 @@ import os
 import time
 import pyautogui
 import inject
+import subprocess
+import sys
 
 
 class Driver(DriverInterface):
@@ -36,11 +38,31 @@ class Driver(DriverInterface):
         :Returns: None
         '''
 
-        chrome_options = Options()
-        chrome_options.add_experimental_option("debuggerAddress",
-                                               "127.0.0.1:9222")
-        service = Service("/usr/local/bin/chromedriver")
-        self.driver = webdriver.Chrome(service=service, options=chrome_options)
+        try:
+            chrome_options = Options()
+            chrome_options.add_experimental_option("debuggerAddress",
+                                                   "127.0.0.1:9222")
+            service = Service("./chromedriver-linux64/chromedriver")
+            self.driver = webdriver.Chrome(
+                service=service, options=chrome_options)
+
+        except Exception:
+            os.system('rm -rf chromedr*')
+            os.system(f"pkill -f 'remote-debugging-port={port}'")
+            latest_chromedriver_version = subprocess.check_output('wget -qO- "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_$(google-chrome --version | grep -oP \'\\d+\' | head -1)"',
+                                                                  shell=True,
+                                                                  text=True).strip()
+
+            print(
+                f"Downloading the latest chromedriver {latest_chromedriver_version} ...")
+            subprocess.run(["wget",
+                            f"https://storage.googleapis.com/chrome-for-testing-public/{latest_chromedriver_version}/linux64/chromedriver-linux64.zip"],
+                           check=True
+                           )
+            os.system('unzip chromedriver-linux64.zip')
+            os.system('chmod +x /usr/local/bin/chromedriver')
+            os.system('rm -rf chromedriver-linux64.zip')
+            os.execv(sys.executable, [sys.executable, "-m", "app.main"])
 
     def quit_driver(self):
         '''
